@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { ProjectCard } from '../../components/ProjectCard';
 import { MOCK_PROJECTS, MOCK_SECTOR_INTEL } from '../../data/mockData';
 
-// Styles - Using relative paths to find your global file
-import '../../styles/global.css'; 
-import './WorkbenchBoard.css';
+// Styles - Reusing the Console Layout for consistency
+import './ConsoleLayout.css'; 
 import './MissionModal.css';
 
 export const WorkbenchBoard = () => {
@@ -39,43 +38,67 @@ export const WorkbenchBoard = () => {
   };
 
   return (
-    <div className="workbench-container">
-      <header className="workbench-header">
-        <h1 className="brand-text">MarketLens <span className="highlight">Workbench</span></h1>
-        <button className="btn-primary main-action" onClick={() => setIsModalOpen(true)}>
-          + New Project
-        </button>
-      </header>
+    <div>
+      {/* 1. HEADER SECTION */}
+      <div className="module-header">
+        <span>🧪 MY WORKSPACE // LABORATORY</span>
+        <span>ACTIVE PROJECTS: <span className="text-success">{projects.length}</span></span>
+      </div>
 
-      <div className="intel-ticker glass-panel">
-        <span className="label">SECTOR INTEL:</span>
-        <span className="ticker-text">
-            {sectorIntel.seasonal} | <span className="accent-text">Trending: {sectorIntel.trending.join(', ')}</span>
+      {/* 2. INTEL TICKER */}
+      <div style={{ 
+          background: 'rgba(255, 255, 255, 0.05)', 
+          padding: '15px', 
+          borderLeft: '4px solid var(--accent-primary)',
+          marginBottom: '30px',
+          fontSize: '0.9rem',
+          color: 'var(--text-muted)'
+      }}>
+        <strong style={{ color: 'white' }}>SECTOR INTEL:</strong> {sectorIntel.seasonal} 
+        <span style={{ marginLeft: '15px', color: 'var(--accent-primary)' }}>
+           Trending: {sectorIntel.trending.join(', ')}
         </span>
       </div>
 
-      <div className="project-grid">
+      {/* 3. NEW PROJECT BUTTON */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+         <button className="btn-primary" style={{ width: 'auto', padding: '10px 24px' }} onClick={() => setIsModalOpen(true)}>
+            + Initialize Project
+         </button>
+      </div>
+
+      {/* 4. THE CARDS (This was missing!) */}
+      {/* We use a specific wrapper style here to handle the 3D flip height issues */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
+        gap: '25px',
+        paddingBottom: '50px' 
+      }}>
         {projects.map((project) => (
-          <ProjectCard 
-            key={project.id} 
-            project={project}
-            onDelete={() => handleDeleteProject(project.id)}
-          />
+          <div key={project.id} className="project-card-wrapper">
+             <ProjectCard 
+               project={project}
+               onDelete={() => handleDeleteProject(project.id)}
+             />
+          </div>
         ))}
       </div>
 
+      {/* 5. MODAL (Pop-up) */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content glass-panel">
-            <h2 className="accent-text">New Research Mission</h2>
+          <div className="modal-content">
+            <h2 style={{ color: 'var(--accent-primary)', marginTop: 0 }}>New Research Mission</h2>
             <form onSubmit={handleCreateProject}>
               <input 
-                className="brand-input"
                 type="text" 
                 placeholder="Target Product Name..." 
                 value={newProjectTitle}
                 onChange={(e) => setNewProjectTitle(e.target.value)}
                 autoFocus
+                className="cost-input" 
+                style={{ marginBottom: '20px' }}
               />
               <div className="modal-actions">
                 <button type="button" className="btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
