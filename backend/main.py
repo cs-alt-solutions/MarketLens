@@ -44,11 +44,14 @@ def read_root():
 
 @app.get("/api/projects")
 def get_projects():
-    """Fetch all saved projects from Supabase"""
-    if not supabase:
-        return []
-    response = supabase.table("projects").select("*").order("created_at", desc=True).execute()
-    return response.data
+    try:
+        # Query the 'projects' table in Supabase
+        response = supabase.table("projects").select("*").execute()
+        return response.data
+    except Exception as e:
+        # Fallback to empty list or raise detailed HTTP error if DB fails
+        print(f"Database error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/analyze")
 def analyze_market(request: AnalysisRequest):
