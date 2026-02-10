@@ -1,18 +1,62 @@
-/* src/components/ProjectCard.css */
+/* --- THE CARD CONTAINER --- */
+/* This matches the .panel-industrial vibe but specific for grid items */
+.ops-panel { 
+  background: var(--bg-panel); 
+  border: 1px solid var(--border-subtle);
+  border-left-width: 4px; /* Status Indicator */
+  border-radius: 2px; /* Squared */
+  padding: 0;
+  transition: all 0.2s ease; 
+  cursor: pointer; 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  min-height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ops-panel-inner { 
+  padding: 24px; 
+  display: flex; 
+  flex-direction: column; 
+  flex: 1; 
+}
+
+.ops-panel:hover { 
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* --- BADGES & LISTS --- */
+.uplink-badge { 
+  font-size: 0.65rem; 
+  font-weight: 800; 
+  padding: 4px 8px; 
+  border-radius: 2px; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  border: 1px solid currentColor; 
+}
+.uplink-badge.active { color: var(--neon-teal); border-color: rgba(45, 212, 191, 0.3); background: rgba(45, 212, 191, 0.1); }
+.uplink-badge.draft { color: var(--neon-orange); border-color: rgba(251, 146, 60, 0.3); background: rgba(251, 146, 60, 0.1); }
+.uplink-badge.completed { color: var(--neon-blue); border-color: rgba(96, 165, 250, 0.3); background: rgba(96, 165, 250, 0.1); }
 
 .mission-list {
   list-style: none;
   padding: 0;
-  margin: 10px 0;
+  margin: 0 0 20px 0;
   flex-grow: 1;
 }
 
 .mission-list li {
   font-size: 0.85rem;
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-main);
+  margin-bottom: 4px;
 }
 
 .mission-list li.completed {
@@ -21,18 +65,9 @@
   opacity: 0.6;
 }
 
-.uplink-badge.active { color: var(--neon-teal); border-color: var(--neon-teal); }
-.uplink-badge.draft { color: var(--neon-orange); border-color: var(--neon-orange); }
-.uplink-badge.completed { color: var(--neon-blue); border-color: var(--neon-blue); }
-
-.btn-icon.delete {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  filter: grayscale(1);
-  transition: filter 0.2s;
-}
-
-.btn-icon.delete:hover {
-  filter: grayscale(0);
+.mission-list li.empty {
+  font-style: italic;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 20px;
 }

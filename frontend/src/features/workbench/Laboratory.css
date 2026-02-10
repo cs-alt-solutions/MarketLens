@@ -1,0 +1,56 @@
+/* --- MAIN LAB LAYOUT --- */
+.lab-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 30px;
+  height: calc(100% - 80px);
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+/* --- RECIPE LIST --- */
+.lab-recipe-list {
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 100%;
+}
+
+.recipe-row {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px dashed var(--border-subtle);
+  transition: background 0.2s;
+}
+.recipe-row:hover { background: rgba(255,255,255,0.02); }
+
+.recipe-name { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.recipe-meta { font-family: monospace; font-size: 0.7rem; color: var(--text-muted); }
+.yield-value { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+
+.unit-badge {
+  background: var(--bg-panel);
+  color: #fff;
+  border: 1px solid var(--border-subtle);
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 2px;
+}
+
+.lab-note {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 30px;
+  padding: 15px;
+  background: rgba(34, 211, 238, 0.05);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 2px;
+}
+
+.lab-form-group { margin-bottom: 20px; }
+.lab-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }

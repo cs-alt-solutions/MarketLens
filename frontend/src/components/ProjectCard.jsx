@@ -1,55 +1,75 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ProjectCard.css';
 
 export const ProjectCard = ({ project, onDelete }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  // Map statuses to the new badge classes
+  const getStatusClass = (s) => {
+    if (s === 'active') return 'active'; // Teal
+    if (s === 'draft') return 'draft';   // Orange
+    if (s === 'completed') return 'completed'; // Blue
+    return '';
+  };
 
-  // Front Face: Industrial Ops Panel
-  if (!isFlipped) {
-    return (
-      <div className="ops-panel" style={{ borderLeftColor: 'var(--neon-cyan)' }}>
-        <div className="ops-panel-inner">
-          <div className="panel-header">
-            <h3 className="panel-title">{project.title}</h3>
-            <span className={`uplink-badge ${project.status}`}>{project.status}</span>
-          </div>
-          
-          <div className="growth-big" style={{ fontSize: '1.2rem', marginTop: '10px' }}>
-            DEMAND: {project.demand}
-          </div>
+  return (
+    <div className="ops-panel">
+      <div className="ops-panel-inner">
+        
+        {/* HEADER */}
+        <div className="flex-between" style={{marginBottom:'15px'}}>
+          <span className={`uplink-badge ${getStatusClass(project.status)}`}>
+            {project.status}
+          </span>
+          <button 
+            className="btn-icon"
+            onClick={onDelete}
+            title="Archive Mission"
+          >
+            ×
+          </button>
+        </div>
 
-          <div className="panel-footer" style={{ marginTop: '20px' }}>
-            <div className="mini-stat">
-              <span className="mini-label">COMPETITION</span>
-              <span className="mini-val">{project.competition}</span>
+        {/* TITLE */}
+        <h3 style={{marginTop:0, marginBottom:'10px', fontSize:'1.1rem', color:'var(--text-main)'}}>
+          {project.title}
+        </h3>
+
+        {/* STATS GRID */}
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginBottom:'20px'}}>
+          <div>
+            <span className="label-industrial">DEMAND</span>
+            <div className={`glow-${project.demand === 'High' || project.demand === 'Very High' ? 'teal' : 'orange'}`} style={{fontWeight:800}}>
+              {project.demand}
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button className="btn-ghost" onClick={() => setIsFlipped(true)}>MISSIONS</button>
-              <button className="btn-icon delete" onClick={onDelete} title="Delete Project">🗑️</button>
+          </div>
+          <div>
+            <span className="label-industrial">COMPETITION</span>
+            <div style={{fontWeight:800, color:'var(--text-muted)'}}>
+              {project.competition}
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
 
-  // Back Face: Mission Details
-  return (
-    <div className="ops-panel" style={{ borderLeftColor: 'var(--neon-purple)' }}>
-      <div className="ops-panel-inner">
-        <h3 className="section-label" style={{ marginTop: 0 }}>ACTIVE MISSIONS</h3>
+        {/* MISSIONS LIST */}
         <ul className="mission-list">
-          {project.missions && project.missions.length > 0 ? (
-            project.missions.map(m => (
-              <li key={m.id} className={m.status}>{m.title}</li>
-            ))
+          {project.missions.length === 0 ? (
+            <li className="empty">No active protocols.</li>
           ) : (
-            <li className="empty">No missions initialized</li>
+            project.missions.map(m => (
+              <li key={m.id} className={m.status === 'completed' ? 'completed' : ''}>
+                {m.title}
+              </li>
+            ))
           )}
         </ul>
-        <button className="btn-text" style={{ color: 'var(--neon-cyan)', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }} onClick={() => setIsFlipped(false)}>
-          ← BACK TO OVERVIEW
-        </button>
+
+        {/* FOOTER */}
+        <div style={{marginTop:'auto', paddingTop:'15px', borderTop:'1px solid var(--border-subtle)', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+           <span className="label-industrial" style={{margin:0}}>ID: {project.id}</span>
+           <span style={{fontSize:'0.7rem', color:'var(--neon-purple)'}}>
+             {project.tags && project.tags.length > 0 ? `${project.tags.length} TAGS` : 'UNTAGGED'}
+           </span>
+        </div>
+
       </div>
     </div>
   );
