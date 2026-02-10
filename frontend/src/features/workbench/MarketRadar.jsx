@@ -2,6 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext';
 import './ConsoleLayout.css'; 
 
+// --- NEW COMPONENT: LIVE TICKER ---
+const NewsTicker = () => {
+  return (
+    <div style={{
+      marginTop: '20px', 
+      background: 'rgba(34, 211, 238, 0.05)', 
+      borderTop: '1px solid var(--neon-cyan)', 
+      borderBottom: '1px solid var(--neon-cyan)',
+      height: '30px',
+      overflow: 'hidden',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center'
+    }}>
+      <div className="ticker-wrap">
+        <div className="ticker-move">
+          <span className="ticker-item">:: MARKET UPDATE :: RESIN PRICES UP 4% :: WALNUT WOOD SCARCITY DETECTED :: NEW TREND "CYBER-PLANTS" EMERGING :: SHIPPING DELAYS IN SECTOR 7 ::</span>
+          <span className="ticker-item">:: MARKET UPDATE :: RESIN PRICES UP 4% :: WALNUT WOOD SCARCITY DETECTED :: NEW TREND "CYBER-PLANTS" EMERGING :: SHIPPING DELAYS IN SECTOR 7 ::</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const PerformanceDial = ({ label, value, subtext, color, percent }) => {
   const radius = 35;
   const circumference = 2 * Math.PI * radius;
@@ -64,12 +88,15 @@ export const MarketRadar = () => {
       {/* LEFT COLUMN: MARKET PULSE */}
       <div className="radar-scroll-area">
         
-        <div className="inventory-header" style={{marginBottom: '20px'}}>
-           <div>
+        <div className="inventory-header" style={{marginBottom: '20px', position: 'relative'}}>
+           {/* SCANNER ANIMATION */}
+           <div className="radar-scanner" style={{top: '-20px', right: '0px'}}></div>
+           
+           <div style={{zIndex: 1}}>
              <h2 className="header-title">MARKET PULSE</h2>
              <span style={{color: 'var(--text-muted)', fontSize: '0.8rem'}}>INTELLIGENCE CENTER</span>
            </div>
-           <div className="label-industrial" style={{color:'var(--neon-teal)', border:'1px solid var(--neon-teal)', padding:'4px 8px', borderRadius:'2px'}}>
+           <div className="label-industrial" style={{color:'var(--neon-teal)', border:'1px solid var(--neon-teal)', padding:'4px 8px', borderRadius:'2px', zIndex: 1}}>
               LIVE FEED :: ACTIVE
            </div>
         </div>
@@ -103,7 +130,7 @@ export const MarketRadar = () => {
                 </div>
                 <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                   {config.data.map(sector => (
-                    <div key={sector.id} className="panel-industrial" style={{minHeight:'auto', borderLeft:`3px solid var(--${config.color})`}}>
+                    <div key={sector.id} className="panel-industrial hover-glow" style={{minHeight:'auto', borderLeft:`3px solid var(--${config.color})`, cursor:'pointer'}}>
                       <div className="panel-content" style={{padding:'15px'}}>
                          <div className="flex-between">
                            <h3 style={{margin:0, fontSize:'0.95rem'}}>{sector.name}</h3>
@@ -116,6 +143,9 @@ export const MarketRadar = () => {
                 </div>
               </React.Fragment>
             ))}
+            
+            {/* NEW TICKER */}
+            <NewsTicker />
         </div>
       </div>
 

@@ -125,9 +125,3 @@
 
 .readiness-grid { background: var(--bg-app); border-top: 1px solid var(--border-subtle); padding: 5px 0; }
 .readiness-item { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px dashed var(--border-subtle); font-size: 0.75rem; }
-
-/* Stepper */
-.stepper-container { display: flex; align-items: center; background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: 2px; padding: 2px; height: 40px; }
-.btn-stepper { width: 30px; height: 100%; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-weight: 800; }
-.btn-stepper:hover { color: #fff; background: rgba(255,255,255,0.1); }
-.input-stepper { width: 50px; height: 100%; border: none; background: transparent; color: #fff; text-align: center; font-weight: 700; outline: none; }

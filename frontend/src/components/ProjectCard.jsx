@@ -19,13 +19,20 @@ export const ProjectCard = ({ project, onDelete }) => {
           <span className={`uplink-badge ${getStatusClass(project.status)}`}>
             {project.status}
           </span>
-          <button 
-            className="btn-icon"
-            onClick={onDelete}
-            title="Archive Mission"
-          >
-            ×
-          </button>
+          <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+             {/* NEW: STOCK INDICATOR */}
+             <div style={{textAlign:'right'}}>
+                <span className="label-industrial" style={{fontSize:'0.55rem', margin:0}}>STOCK</span>
+                <span style={{color:'var(--neon-teal)', fontWeight:800, fontSize:'0.9rem'}}>{project.stockQty || 0}</span>
+             </div>
+             <button 
+                className="btn-icon"
+                onClick={onDelete}
+                title="Archive Mission"
+             >
+                ×
+             </button>
+          </div>
         </div>
 
         {/* TITLE */}

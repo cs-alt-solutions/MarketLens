@@ -4,19 +4,25 @@ import { MarketRadar } from './MarketRadar';
 import { ProfitMatrix } from './ProfitMatrix';
 import { InventoryManager } from './InventoryManager';
 import { Workshop } from './Workshop';
-// NEW IMPORTS
 import { Radar, WorkshopIcon, Box, Finance, Menu, ChevronLeft } from '../../components/Icons';
 
 export const ConsoleLayout = () => {
   // Defaulting to 'radar' (Market Pulse)
   const [activeView, setActiveView] = useState('radar'); 
   const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // State to track if the sub-view needs full width (e.g. Workshop Studio)
+  const [isFullWidthMode, setIsFullWidthMode] = useState(false);
+
+  // Helper to determine sidebar state: Manual Collapse OR Auto-Collapse (Focus Mode)
+  const sidebarCollapsed = isCollapsed || isFullWidthMode;
 
   return (
     <div className="console-container">
       
       {/* --- LEFT NAVIGATION RAIL --- */}
-      <div className={`console-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      {/* FIXED: Now uses isFullWidthMode to auto-collapse the sidebar in Studio Mode */}
+      <div className={`console-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         
         {/* Header & Toggle */}
         <div className="sidebar-header">
@@ -38,7 +44,7 @@ export const ConsoleLayout = () => {
           
           <div 
             className={`nav-link ${activeView === 'radar' ? 'active' : ''}`}
-            onClick={() => setActiveView('radar')}
+            onClick={() => { setActiveView('radar'); setIsFullWidthMode(false); }}
             title="Market Pulse"
           >
             <Radar />
@@ -47,7 +53,7 @@ export const ConsoleLayout = () => {
 
           <div 
             className={`nav-link ${activeView === 'workshop' ? 'active' : ''}`}
-            onClick={() => setActiveView('workshop')}
+            onClick={() => { setActiveView('workshop'); setIsFullWidthMode(false); }}
             title="Workshop"
           >
             <WorkshopIcon />
@@ -56,7 +62,7 @@ export const ConsoleLayout = () => {
 
           <div 
             className={`nav-link ${activeView === 'inventory' ? 'active' : ''}`}
-            onClick={() => setActiveView('inventory')}
+            onClick={() => { setActiveView('inventory'); setIsFullWidthMode(false); }}
             title="Inventory"
           >
             <Box />
@@ -65,7 +71,7 @@ export const ConsoleLayout = () => {
 
           <div 
             className={`nav-link ${activeView === 'matrix' ? 'active' : ''}`}
-            onClick={() => setActiveView('matrix')}
+            onClick={() => { setActiveView('matrix'); setIsFullWidthMode(false); }}
             title="Profit Matrix"
           >
             <Finance />
@@ -77,8 +83,9 @@ export const ConsoleLayout = () => {
 
       {/* --- MAIN CONTENT AREA --- */}
       <div className="console-main">
+        {/* Pass the setFullWidth setter to Workshop so it can request full space when entering a project */}
         {activeView === 'radar' && <MarketRadar />}
-        {activeView === 'workshop' && <Workshop />}
+        {activeView === 'workshop' && <Workshop onRequestFullWidth={setIsFullWidthMode} />}
         {activeView === 'inventory' && <InventoryManager />}
         {activeView === 'matrix' && <ProfitMatrix />}
       </div>

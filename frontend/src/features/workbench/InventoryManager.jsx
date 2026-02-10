@@ -203,6 +203,11 @@ export const InventoryManager = () => {
                 else if (isLowStock) { statusClass = 'glow-orange'; StatusIcon = Alert; statusText = 'LOW STOCK'; } 
                 else if (m.status === 'Dormant') { statusClass = 'text-muted'; StatusIcon = Box; statusText = 'DORMANT'; }
                 
+                // NEW: Calculate visual bar width (capped at 100%)
+                const maxStock = 100; // Arbitrary "full" amount for visualization
+                const barWidth = Math.min((m.qty / maxStock) * 100, 100);
+                const barColor = isOutOfStock ? 'var(--neon-red)' : isLowStock ? 'var(--neon-orange)' : 'var(--neon-teal)';
+
                 return (
                   <React.Fragment key={m.id}>
                     <tr className={`inventory-row ${selectedMaterial?.id === m.id ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`} onClick={() => handleSelectMaterial(m)}>
@@ -215,10 +220,19 @@ export const InventoryManager = () => {
                       </td>
                       <td className="td-cell cell-meta">{m.lastUsed}</td>
                       <td className="td-cell td-right cell-meta">${m.costPerUnit.toFixed(2)}</td>
+                      
+                      {/* UPDATED: QTY CELL WITH HEALTH BAR */}
                       <td className="td-cell td-center">
-                        <span style={{fontWeight: 700}} className={isOutOfStock ? 'glow-red' : 'text-main'}>{m.qty}</span> 
-                        <span style={{fontSize:'0.7rem', color:'var(--text-muted)', marginLeft:'2px'}}>{m.unit}</span>
+                        <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'2px'}}>
+                            <div style={{fontWeight: 700}} className={isOutOfStock ? 'glow-red' : 'text-main'}>
+                                {m.qty} <span style={{fontSize:'0.7rem', color:'var(--text-muted)'}}>{m.unit}</span>
+                            </div>
+                            <div style={{width:'60px', height:'3px', background:'rgba(255,255,255,0.1)', borderRadius:'2px', overflow:'hidden'}}>
+                                <div style={{width: `${barWidth}%`, height:'100%', background: barColor, transition:'width 0.5s ease'}}></div>
+                            </div>
+                        </div>
                       </td>
+
                       <td className="td-cell">
                         <div className="cell-actions">
                            <button onClick={(e) => toggleHistoryRow(e, m.id)} className="btn-icon" style={{color: isExpanded ? 'var(--neon-cyan)' : 'var(--text-muted)'}}>
@@ -285,7 +299,6 @@ export const InventoryManager = () => {
         </div>
         <div className="keyword-list">
           {/* ... Sidebar content (Detail view, Intake form, Readiness) is fine as is ... */}
-          {/* Copy the existing logic for the sidebar here. For brevity, I am assuming you can keep the logic you had. The key change was the imports. */}
           {!showIntakeForm && selectedMaterial && (
             <div className="sidebar-panel" style={{ borderLeftColor: selectedMaterial.qty === 0 ? 'red' : 'var(--neon-purple)' }}>
               <div className="sidebar-inner">

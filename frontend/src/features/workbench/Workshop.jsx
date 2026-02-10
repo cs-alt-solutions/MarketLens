@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext'; 
 import { ProjectCard } from '../../components/ProjectCard';
-import { Plus, Back, Save, Finance } from '../../components/Icons'; // <--- Added Finance Icon
+import { Plus, Back, Save, Finance } from '../../components/Icons'; 
 
 // --- UNIT CATEGORY DEFINITIONS ---
 const UNIT_GROUPS = {
@@ -20,7 +20,8 @@ const getUnitOptions = (currentUnit) => {
   return [currentUnit]; 
 };
 
-export const Workshop = () => {
+// Accept the new prop `onRequestFullWidth` to control layout mode
+export const Workshop = ({ onRequestFullWidth }) => {
   const { projects, addProject, deleteProject, updateProject, materials, manufactureProduct } = useWorkbench();
   
   const [activeProject, setActiveProject] = useState(null);
@@ -32,6 +33,13 @@ export const Workshop = () => {
   const [tags, setTags] = useState([]); 
   const [newTagInput, setNewTagInput] = useState('');
   const [newIngredientId, setNewIngredientId] = useState('');
+
+  // Sync Layout Mode
+  useEffect(() => {
+    if (onRequestFullWidth) {
+      onRequestFullWidth(!!activeProject); // TRUE if activeProject exists (Full Width), FALSE if Hub (Sidebar visible)
+    }
+  }, [activeProject, onRequestFullWidth]);
 
   // --- ACTIONS: HUB ---
   const handleCreateProject = (e) => {
@@ -51,11 +59,8 @@ export const Workshop = () => {
   const closeStudio = () => setActiveProject(null);
 
   const handleCompleteProject = () => {
-    // 1. Manufacture (Deduct Stock & Log Cost)
     const result = manufactureProduct(activeProject.id, recipe);
-    
     if (result.success) {
-      // 2. Save Tags & Price updates explicitly on complete (Double Safety)
       updateProject({ ...activeProject, status: 'completed', tags });
       alert(result.message);
       closeStudio();
@@ -67,10 +72,8 @@ export const Workshop = () => {
   // --- LIVE UPDATES ---
   const handlePriceChange = (val) => {
     const numVal = parseFloat(val);
-    // Update Local View
     const updated = { ...activeProject, retailPrice: isNaN(numVal) ? 0 : numVal };
     setActiveProject(updated);
-    // Sync to Global Context immediately
     updateProject(updated);
   };
 
@@ -104,17 +107,47 @@ export const Workshop = () => {
   };
 
   return (
-    <div className="radar-grid-layout">
+    // Apply dynamic class based on activeProject presence
+    <div className={`radar-grid-layout ${activeProject ? 'layout-full-width' : ''}`}>
       <style>{`
         .workshop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 40px; }
-        .studio-container { display: grid; grid-template-columns: 350px 1fr; gap: 25px; height: 100%; overflow: hidden; padding-bottom: 20px; }
-        .studio-col { display: flex; flex-direction: column; gap: 20px; overflow-y: auto; max-height: 100%; padding-right: 5px; }
+        
+        /* UPDATED: FLEXBOX LAYOUT FOR STUDIO */
+        /* This ensures the container fills the parent flex space exactly, without overflowing the bottom */
+        .studio-layout-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden; /* Prevent double scrollbars */
+        }
+        
+        .studio-container { 
+            display: grid; 
+            grid-template-columns: 350px 1fr; 
+            gap: 25px; 
+            flex: 1; /* Take remaining height */
+            min-height: 0; /* Critical for Flex children to scroll internally */
+            padding-bottom: 20px; 
+        }
+        
+        .studio-col { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            overflow-y: auto; 
+            height: 100%; /* Fill the grid track */
+            padding-right: 5px; 
+            padding-bottom: 40px; /* Extra breathing room at bottom */
+        }
       `}</style>
 
-      <div className="radar-scroll-area">
-        
-        {/* --- VIEW 1: PROJECT HUB --- */}
-        {!activeProject && (
+      {/* If activeProject is null, we render the Scroll Area normally.
+         If activeProject is SET, we remove the scroll area wrapper so we can control flex layout precisely. 
+      */}
+      
+      {/* --- VIEW 1: PROJECT HUB --- */}
+      {!activeProject && (
+        <div className="radar-scroll-area">
           <div className="animate-fade-in">
             <div className="inventory-header">
               <div>
@@ -147,12 +180,16 @@ export const Workshop = () => {
               </div>
             )}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* --- VIEW 2: THE STUDIO --- */}
-        {activeProject && (
-          <div className="animate-fade-in" style={{height:'100%'}}>
-            <div className="inventory-header" style={{marginBottom:'20px'}}>
+      {/* --- VIEW 2: THE STUDIO --- */}
+      {activeProject && (
+        // We use a specific wrapper here that is NOT .radar-scroll-area to control the layout manually
+        <div className="animate-fade-in" style={{height:'100%', padding:'30px 40px', display:'flex', flexDirection:'column', overflow:'hidden'}}>
+            
+            {/* 1. HEADER (Fixed Height, does not shrink) */}
+            <div className="inventory-header" style={{marginBottom:'20px', flexShrink: 0}}>
                <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
                  <button onClick={closeStudio} className="btn-icon" style={{border:'1px solid var(--border-subtle)', padding:'8px'}}><Back /></button>
                  <div>
@@ -165,93 +202,95 @@ export const Workshop = () => {
                </button>
             </div>
 
-            <div className="studio-container">
-               {/* --- LEFT COLUMN: METADATA --- */}
-               <div className="studio-col">
-                  
-                  {/* TAGS PANEL */}
-                  <div className="panel-industrial" style={{padding:'20px', marginTop:0}}>
-                     <div className="floating-manifest-label" style={{color:'var(--neon-orange)', borderColor:'var(--neon-orange)'}}>MARKETING DATA</div>
-                     <label className="lab-label">TAG ARRAY ({tags.length}/13)</label>
-                     <div className="tag-input-area" style={{marginBottom:'10px', display:'flex', flexWrap:'wrap', gap:'5px'}}>
-                        {tags.map(t => <div key={t} className="unit-badge" style={{borderColor:'var(--neon-cyan)', color:'var(--neon-cyan)'}}><span>{t}</span></div>)}
-                        <input className="input-industrial" placeholder="Add tag..." value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={addTag} />
-                     </div>
-                  </div>
+            {/* 2. CONTENT (Flex Grow, handles internal scroll) */}
+            <div className="studio-layout-wrapper">
+                <div className="studio-container">
+                {/* --- LEFT COLUMN: METADATA --- */}
+                <div className="studio-col">
+                    
+                    {/* TAGS PANEL */}
+                    <div className="panel-industrial" style={{padding:'20px', marginTop:0}}>
+                        <div className="floating-manifest-label" style={{color:'var(--neon-orange)', borderColor:'var(--neon-orange)'}}>MARKETING DATA</div>
+                        <label className="lab-label">TAG ARRAY ({tags.length}/13)</label>
+                        <div className="tag-input-area" style={{marginBottom:'10px', display:'flex', flexWrap:'wrap', gap:'5px'}}>
+                            {tags.map(t => <div key={t} className="unit-badge" style={{borderColor:'var(--neon-cyan)', color:'var(--neon-cyan)'}}><span>{t}</span></div>)}
+                            <input className="input-industrial" placeholder="Add tag..." value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={addTag} />
+                        </div>
+                    </div>
 
-                  {/* NEW: FINANCIAL TARGETS PANEL */}
-                  <div className="panel-industrial" style={{padding:'20px'}}>
-                     <div className="floating-manifest-label" style={{color:'var(--neon-teal)', borderColor:'var(--neon-teal)'}}>FINANCIAL TARGETS</div>
-                     <label className="lab-label">RETAIL PRICE ($)</label>
-                     <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
-                        <Finance />
-                        <input 
-                           className="input-industrial" 
-                           type="number" 
-                           step="0.01" 
-                           placeholder="0.00" 
-                           value={activeProject.retailPrice || ''} 
-                           onChange={(e) => handlePriceChange(e.target.value)}
-                           style={{fontSize:'1.1rem', fontWeight:'bold', color:'var(--neon-teal)'}}
-                        />
-                     </div>
-                     <div className="lab-note" style={{marginTop:'10px', fontSize:'0.65rem'}}>
-                        * Setting this now auto-fills the Sales Terminal when you sell this item.
-                     </div>
-                  </div>
+                    {/* FINANCIAL TARGETS PANEL */}
+                    <div className="panel-industrial" style={{padding:'20px'}}>
+                        <div className="floating-manifest-label" style={{color:'var(--neon-teal)', borderColor:'var(--neon-teal)'}}>FINANCIAL TARGETS</div>
+                        <label className="lab-label">RETAIL PRICE ($)</label>
+                        <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
+                            <Finance />
+                            <input 
+                            className="input-industrial" 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="0.00" 
+                            value={activeProject.retailPrice || ''} 
+                            onChange={(e) => handlePriceChange(e.target.value)}
+                            style={{fontSize:'1.1rem', fontWeight:'bold', color:'var(--neon-teal)'}}
+                            />
+                        </div>
+                        <div className="lab-note" style={{marginTop:'10px', fontSize:'0.65rem'}}>
+                            * Setting this now auto-fills the Sales Terminal when you sell this item.
+                        </div>
+                    </div>
 
-               </div>
+                </div>
 
-               {/* --- RIGHT COLUMN: RECIPE --- */}
-               <div className="studio-col">
-                  <div className="panel-industrial" style={{padding:'0', marginTop:0, display:'flex', flexDirection:'column'}}>
-                     <div className="floating-manifest-label" style={{color:'var(--neon-purple)', borderColor:'var(--neon-purple)'}}>COMPOSITION MATRIX</div>
-                     <div style={{padding:'20px', borderBottom:'1px solid var(--border-subtle)', display:'flex', gap:'10px'}}>
-                        <select className="input-industrial" value={newIngredientId} onChange={e => setNewIngredientId(e.target.value)}>
-                          <option value="">+ Add Component...</option>
-                          {materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)}
-                        </select>
-                        <button onClick={addIngredient} className="btn-primary" style={{padding:'5px 15px'}}>ADD</button>
-                     </div>
-                     <div style={{padding:'0'}}>
-                       {recipe.length === 0 && <div style={{padding:'20px', color:'var(--text-muted)', fontStyle:'italic'}}>No materials added yet.</div>}
-                       {recipe.map(r => {
-                         const unitOptions = getUnitOptions(r.unit);
-                         return (
-                           <div key={r.id} className="recipe-row">
-                             <div style={{flex:2}}>
-                               <div className="recipe-name">{r.name}</div>
-                             </div>
-                             <div style={{flex:1.5, display:'flex', alignItems:'center', gap:'5px'}}>
-                               <input 
-                                 className="input-industrial" 
-                                 type="number" 
-                                 placeholder="0" 
-                                 value={r.reqPerUnit} 
-                                 onChange={e => updateRecipeUsage(r.id, 'reqPerUnit', e.target.value)} 
-                                 style={{textAlign:'center'}} 
-                               />
-                               <select 
-                                 className="input-industrial" 
-                                 value={r.unit} 
-                                 onChange={e => updateRecipeUsage(r.id, 'unit', e.target.value)}
-                                 style={{padding:'8px 4px', fontSize:'0.75rem', width:'60px'}}
-                               >
-                                 {unitOptions.map(u => <option key={u} value={u}>{u}</option>)}
-                               </select>
-                             </div>
-                             <button onClick={() => removeIngredient(r.id)} className="btn-icon" style={{color:'red', marginLeft:'10px'}}>×</button>
-                           </div>
-                         );
-                       })}
-                     </div>
-                  </div>
-               </div>
+                {/* --- RIGHT COLUMN: RECIPE --- */}
+                <div className="studio-col">
+                    <div className="panel-industrial" style={{padding:'0', marginTop:0, display:'flex', flexDirection:'column', minHeight:'400px'}}>
+                        <div className="floating-manifest-label" style={{color:'var(--neon-purple)', borderColor:'var(--neon-purple)'}}>COMPOSITION MATRIX</div>
+                        <div style={{padding:'20px', borderBottom:'1px solid var(--border-subtle)', display:'flex', gap:'10px'}}>
+                            <select className="input-industrial" value={newIngredientId} onChange={e => setNewIngredientId(e.target.value)}>
+                            <option value="">+ Add Component...</option>
+                            {materials.map(m => <option key={m.id} value={m.id}>{m.name} ({m.qty} {m.unit})</option>)}
+                            </select>
+                            <button onClick={addIngredient} className="btn-primary" style={{padding:'5px 15px'}}>ADD</button>
+                        </div>
+                        <div style={{padding:'0', flex:1}}>
+                        {recipe.length === 0 && <div style={{padding:'20px', color:'var(--text-muted)', fontStyle:'italic'}}>No materials added yet.</div>}
+                        {recipe.map(r => {
+                            const unitOptions = getUnitOptions(r.unit);
+                            return (
+                            <div key={r.id} className="recipe-row">
+                                <div style={{flex:2}}>
+                                <div className="recipe-name">{r.name}</div>
+                                </div>
+                                <div style={{flex:1.5, display:'flex', alignItems:'center', gap:'5px'}}>
+                                <input 
+                                    className="input-industrial" 
+                                    type="number" 
+                                    placeholder="0" 
+                                    value={r.reqPerUnit} 
+                                    onChange={e => updateRecipeUsage(r.id, 'reqPerUnit', e.target.value)} 
+                                    style={{textAlign:'center'}} 
+                                />
+                                <select 
+                                    className="input-industrial" 
+                                    value={r.unit} 
+                                    onChange={e => updateRecipeUsage(r.id, 'unit', e.target.value)}
+                                    style={{padding:'8px 4px', fontSize:'0.75rem', width:'60px'}}
+                                >
+                                    {unitOptions.map(u => <option key={u} value={u}>{u}</option>)}
+                                </select>
+                                </div>
+                                <button onClick={() => removeIngredient(r.id)} className="btn-icon" style={{color:'red', marginLeft:'10px'}}>×</button>
+                            </div>
+                            );
+                        })}
+                        </div>
+                    </div>
+                </div>
 
+                </div>
             </div>
           </div>
         )}
-      </div>
 
       {/* RIGHT SIDEBAR (Only visible in Hub Mode) */}
       {!activeProject && (

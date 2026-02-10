@@ -4,7 +4,7 @@ import './ConsoleLayout.css';
 import { StatCard } from '../../components/StatCard';
 import { Plus } from '../../components/Icons';
 
-// --- VISUAL CHART (Placeholder) ---
+// --- VISUAL CHART (ANIMATED) ---
 const RevenueChart = () => {
   const data = [20, 45, 30, 60, 55, 80, 75];
   const max = Math.max(...data);
@@ -24,7 +24,15 @@ const RevenueChart = () => {
           </linearGradient>
         </defs>
         <path d={`M0,100 ${points} 100,100`} fill="url(#grad1)" stroke="none" />
-        <polyline points={points} fill="none" stroke="var(--neon-teal)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+        {/* ADDED: CLASSNAME FOR ANIMATION */}
+        <polyline 
+            className="chart-line-animate"
+            points={points} 
+            fill="none" 
+            stroke="var(--neon-teal)" 
+            strokeWidth="2" 
+            vectorEffect="non-scaling-stroke" 
+        />
       </svg>
     </div>
   )
@@ -49,7 +57,7 @@ export const ProfitMatrix = () => {
   const netProfit = totalRev - totalCost;
   const margin = totalRev > 0 ? (netProfit / totalRev) * 100 : 0;
 
-  // Smart Handler: When selecting a project, auto-fill details
+  // Smart Handler: When selecting a project, auto-fill details AND set type to SALE
   const handleProjectSelect = (e) => {
     const pid = e.target.value;
     if (!pid) {
@@ -61,6 +69,7 @@ export const ProfitMatrix = () => {
         setTxnForm({ 
             ...txnForm, 
             relatedProjectId: pid, 
+            type: 'SALE', // Force Sale
             item: `Sold Unit: ${proj.title}`, 
             amount: proj.retailPrice || '' 
         });
@@ -178,8 +187,7 @@ export const ProfitMatrix = () => {
               </div>
 
               {/* NEW: Project Link */}
-              {txnForm.type === 'SALE' && (
-                <div className="lab-form-group" style={{background:'rgba(34, 211, 238, 0.05)', padding:'10px', border:'1px dashed var(--neon-teal)'}}>
+              <div className="lab-form-group" style={{background:'rgba(34, 211, 238, 0.05)', padding:'10px', border:'1px dashed var(--neon-teal)'}}>
                    <label className="label-industrial" style={{color:'var(--neon-teal)'}}>Select Stock Item (Optional)</label>
                    <select className="input-industrial" value={txnForm.relatedProjectId} onChange={handleProjectSelect}>
                       <option value="">-- Manual Entry --</option>
@@ -189,8 +197,7 @@ export const ProfitMatrix = () => {
                           </option>
                       ))}
                    </select>
-                </div>
-              )}
+              </div>
 
               <div className="lab-form-group">
                 <label className="label-industrial">Description</label>
