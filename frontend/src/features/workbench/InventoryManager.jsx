@@ -1,21 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext';
 import './InventoryManager.css';
-
-// --- ICONS ---
-const Icons = {
-  Zap: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-  Refresh: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>,
-  Alert: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-  Clock: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  Box: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
-  Settings: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.82 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
-  Plus: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  GraphUp: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-  ChevronDown: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>,
-  ChevronUp: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"/></svg>,
-  History: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
-};
+// NEW IMPORTS
+import { Box, Alert, Plus, History, ChevronDown, ChevronUp } from '../../components/Icons';
+import { StatCard } from '../../components/StatCard';
 
 const CATEGORIES = ['Raw Material', 'Packaging', 'Shipping', 'Consumables', 'Hardware', 'Electronics', 'Tools'];
 const UNITS = { 'Weight': ['lbs', 'oz', 'kg'], 'Volume': ['gal', 'fl oz', 'L'], 'Length': ['ft', 'yd'], 'Count': ['count', 'box', 'ea'] };
@@ -24,8 +12,6 @@ export const InventoryManager = () => {
   const { materials, addAsset, restockAsset, projects } = useWorkbench(); 
   const [filter, setFilter] = useState('ALL');
   const [expandedProject, setExpandedProject] = useState(null);
-  
-  // New State for Accordion
   const [expandedRowId, setExpandedRowId] = useState(null);
 
   // UI State
@@ -69,11 +55,9 @@ export const InventoryManager = () => {
       if (m.usageType === 'Project Component' && m.status !== 'Discontinued') {
          const isLow = m.qty < 10 && m.qty > 0;
          const isOut = m.qty === 0;
-         const yieldCount = 100; // Mock yield
-         
          const linkedTitle = projects[0]?.title || 'Unknown'; 
          if(projectMap[linkedTitle]) {
-             projectMap[linkedTitle].materials.push({ ...m, health: isOut ? 'CRITICAL' : isLow ? 'LOW' : 'GOOD', yieldCount });
+             projectMap[linkedTitle].materials.push({ ...m, health: isOut ? 'CRITICAL' : isLow ? 'LOW' : 'GOOD' });
          }
       }
     });
@@ -170,22 +154,27 @@ export const InventoryManager = () => {
           </div>
         </div>
 
-        {/* METRICS */}
+        {/* METRICS ROW (Replaced with StatCard) */}
         <div className="inventory-metrics">
-           <div className="metric-card">
-            <span className="label-industrial">ASSET VALUE</span>
-            <div className="metric-value glow-purple">${metrics.totalValue.toLocaleString(undefined, {minimumFractionDigits: 0})}</div>
-           </div>
+           <StatCard 
+             label="ASSET VALUE" 
+             value={`$${metrics.totalValue.toLocaleString(undefined, {minimumFractionDigits: 0})}`} 
+             glowColor="purple" 
+           />
            
-           <div className={`metric-card ${metrics.outOfStockCount > 0 ? 'alert' : ''}`} onClick={() => metrics.outOfStockCount > 0 && setFilter('OUT_OF_STOCK')}>
-             <span className="label-industrial" style={{color: metrics.outOfStockCount > 0 ? '#fff' : 'var(--text-muted)'}}>OUT OF STOCK</span>
-             <div className={`metric-value ${metrics.outOfStockCount > 0 ? 'glow-red' : 'text-muted'}`}>{metrics.outOfStockCount}</div>
-           </div>
+           <StatCard 
+             label="OUT OF STOCK" 
+             value={metrics.outOfStockCount} 
+             glowColor={metrics.outOfStockCount > 0 ? 'red' : 'teal'}
+             isAlert={metrics.outOfStockCount > 0}
+             onClick={() => metrics.outOfStockCount > 0 && setFilter('OUT_OF_STOCK')}
+           />
            
-           <div className="metric-card">
-            <span className="label-industrial">LOW STOCK</span>
-            <div className={`metric-value ${metrics.lowStockCount > 0 ? 'glow-orange' : 'text-muted'}`}>{metrics.lowStockCount}</div>
-           </div>
+           <StatCard 
+             label="LOW STOCK" 
+             value={metrics.lowStockCount} 
+             glowColor={metrics.lowStockCount > 0 ? 'orange' : 'teal'}
+           />
         </div>
 
         {/* TABLE SECTION */}
@@ -200,7 +189,7 @@ export const InventoryManager = () => {
                  <th>LAST USED</th>
                  <th className="td-right">AVG COST</th>
                  <th className="td-center">QTY</th>
-                 <th></th> {/* Action Column */}
+                 <th></th>
                </tr>
             </thead>
             <tbody>
@@ -209,14 +198,13 @@ export const InventoryManager = () => {
                 const isLowStock = m.qty < 10 && m.qty > 0;
                 const isExpanded = expandedRowId === m.id;
                 
-                let statusClass = 'glow-teal'; let StatusIcon = Icons.Box; let statusText = 'STOCKED';
-                if (isOutOfStock) { statusClass = 'glow-red'; StatusIcon = Icons.Alert; statusText = 'OUT OF STOCK'; }
-                else if (isLowStock) { statusClass = 'glow-orange'; StatusIcon = Icons.Alert; statusText = 'LOW STOCK'; } 
-                else if (m.status === 'Dormant') { statusClass = 'text-muted'; StatusIcon = Icons.Box; statusText = 'DORMANT'; }
+                let statusClass = 'glow-teal'; let StatusIcon = Box; let statusText = 'STOCKED';
+                if (isOutOfStock) { statusClass = 'glow-red'; StatusIcon = Alert; statusText = 'OUT OF STOCK'; }
+                else if (isLowStock) { statusClass = 'glow-orange'; StatusIcon = Alert; statusText = 'LOW STOCK'; } 
+                else if (m.status === 'Dormant') { statusClass = 'text-muted'; StatusIcon = Box; statusText = 'DORMANT'; }
                 
                 return (
                   <React.Fragment key={m.id}>
-                    {/* PRIMARY ROW */}
                     <tr className={`inventory-row ${selectedMaterial?.id === m.id ? 'selected' : ''} ${isOutOfStock ? 'out-of-stock' : ''}`} onClick={() => handleSelectMaterial(m)}>
                       <td className="td-cell">
                         <div className={`cell-name ${isOutOfStock ? 'glow-red' : ''}`}>{m.name}</div>
@@ -234,22 +222,22 @@ export const InventoryManager = () => {
                       <td className="td-cell">
                         <div className="cell-actions">
                            <button onClick={(e) => toggleHistoryRow(e, m.id)} className="btn-icon" style={{color: isExpanded ? 'var(--neon-cyan)' : 'var(--text-muted)'}}>
-                             {isExpanded ? <Icons.ChevronUp /> : <Icons.Plus />}
+                             {isExpanded ? <ChevronUp /> : <Plus />}
                            </button>
                         </div>
                       </td>
                     </tr>
-
+                    
                     {/* EXPANSION ROW (HISTORY) */}
                     {isExpanded && (
                       <tr className="history-expansion">
                         <td colSpan="6" style={{padding:0}}>
                           <div className="history-inner">
                              <div className="flex-between" style={{marginBottom:'10px'}}>
-                               <span className="label-industrial" style={{margin:0, color:'var(--neon-cyan)'}}><Icons.History /> PURCHASE HISTORY LOG</span>
+                               <span className="label-industrial" style={{margin:0, color:'var(--neon-cyan)'}}><History /> PURCHASE HISTORY LOG</span>
                                <span style={{fontSize:'0.65rem', color:'var(--text-muted)'}}>ID: {m.id}</span>
                              </div>
-                             
+                             {/* ... (History table content remains same) ... */}
                              {m.history && m.history.length > 0 ? (
                                <table className="mini-history-table">
                                  <thead>
@@ -274,9 +262,7 @@ export const InventoryManager = () => {
                                  </tbody>
                                </table>
                              ) : (
-                               <div style={{color:'var(--text-muted)', fontStyle:'italic', fontSize:'0.75rem', padding:'10px 0'}}>
-                                 No detailed history records found for this asset.
-                               </div>
+                               <div style={{color:'var(--text-muted)', fontStyle:'italic', fontSize:'0.75rem', padding:'10px 0'}}>No detailed history records found.</div>
                              )}
                           </div>
                         </td>
@@ -290,7 +276,7 @@ export const InventoryManager = () => {
         </div>
       </div>
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR REMAINS UNCHANGED */}
       <div className="sidebar-col" style={{width:'340px'}}>
          <div className="keyword-header">
            <h3 className="label-industrial glow-purple" style={{ margin: 0, fontSize: '0.9rem' }}>
@@ -298,8 +284,8 @@ export const InventoryManager = () => {
            </h3>
         </div>
         <div className="keyword-list">
-          
-          {/* A. MATERIAL DETAIL (Simplified now that history is in table) */}
+          {/* ... Sidebar content (Detail view, Intake form, Readiness) is fine as is ... */}
+          {/* Copy the existing logic for the sidebar here. For brevity, I am assuming you can keep the logic you had. The key change was the imports. */}
           {!showIntakeForm && selectedMaterial && (
             <div className="sidebar-panel" style={{ borderLeftColor: selectedMaterial.qty === 0 ? 'red' : 'var(--neon-purple)' }}>
               <div className="sidebar-inner">
@@ -308,7 +294,6 @@ export const InventoryManager = () => {
                   <div className="detail-brand">Brand: {selectedMaterial.brand || 'N/A'}</div>
                   {selectedMaterial.qty === 0 && <div style={{color:'red', fontWeight:800, marginTop:'10px'}}>⚠️ ITEM OUT OF STOCK</div>}
                 </div>
-                
                 <div className="stock-grid">
                   <div className="stock-box">
                     <div className="stock-label">STOCK LEVEL</div>
@@ -320,17 +305,15 @@ export const InventoryManager = () => {
                     <div className="stock-value glow-purple">${selectedMaterial.costPerUnit.toFixed(2)}</div>
                   </div>
                 </div>
-
                 <button onClick={handleQuickRestock} className="btn-primary" style={{width:'100%', marginBottom:'20px'}}>
                     {selectedMaterial.qty === 0 ? '⚡ URGENT RESTOCK' : '+ RESTOCK THIS ITEM'}
                 </button>
-                
                 <button onClick={() => setSelectedMaterial(null)} className="btn-ghost" style={{width:'100%', marginTop:'15px', fontSize:'0.75rem'}}>CLOSE DETAIL</button>
               </div>
             </div>
           )}
-
-          {/* B. INTAKE FORM */}
+          
+          {/* INTAKE FORM */}
           {showIntakeForm && (
              <div className="sidebar-panel" style={{ borderLeftColor: 'var(--neon-purple)' }}>
                <div className="sidebar-inner">
@@ -339,7 +322,6 @@ export const InventoryManager = () => {
                        <input type="checkbox" checked={isExistingItem} onChange={(e) => { setIsExistingItem(e.target.checked); if(!e.target.checked) resetForm(true); }} style={{accentColor:'var(--neon-purple)'}} />
                        <label className="label-industrial" style={{margin:0, cursor:'pointer'}}>Item already in Locker?</label>
                    </div>
-                   
                    {isExistingItem && (
                       <div className="animate-fade-in" style={{marginBottom: '15px'}}>
                         <select className="input-industrial" value={selectedExistingId} onChange={handleExistingSelect} style={{borderColor:'var(--neon-teal)'}}>
@@ -348,7 +330,6 @@ export const InventoryManager = () => {
                         </select>
                       </div>
                    )}
-                   
                    {isExistingItem && currentItemSnapshot && (
                      <div className="animate-fade-in" style={{background: '#18181b', padding:'15px', borderRadius:'2px', marginBottom:'15px', border:'1px solid #27272a'}}>
                        <div className="flex-between" style={{marginBottom:'10px'}}>
@@ -357,7 +338,6 @@ export const InventoryManager = () => {
                        </div>
                      </div>
                    )}
-
                    <div className="animate-fade-in">
                      {!isExistingItem && (
                        <>
@@ -365,23 +345,19 @@ export const InventoryManager = () => {
                          <div className="lab-form-group"><label className="label-industrial">Category</label><select className="input-industrial" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>{CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
                        </>
                      )}
-                     
                      <div style={{background:'rgba(255,255,255,0.05)', padding:'10px', borderRadius:'2px', marginTop:'15px'}}>
                         <div className="lab-form-row">
                           <div><label className="label-industrial">Add Qty</label><input type="number" step="0.01" className="input-industrial" placeholder="0" value={formData.qty} onChange={e => setFormData({...formData, qty: e.target.value})} /></div>
                           <div><label className="label-industrial">Total Cost ($)</label><input type="number" step="0.01" className="input-industrial" placeholder="0.00" value={formData.totalCost} onChange={e => setFormData({...formData, totalCost: e.target.value})} /></div>
                         </div>
-                        
                         {!isExistingItem && (
                              <div style={{marginTop:'10px'}}>
                                  <label className="label-industrial">Unit</label>
                                  <select className="input-industrial" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})}>{UNITS['Weight'].map(u => <option key={u} value={u}>{u}</option>)}</select>
                              </div>
                         )}
-                        
                         {formData.qty && formData.totalCost && <div style={{textAlign:'center', fontSize:'0.7rem', color:'var(--neon-purple)', marginTop:'5px'}}>New Unit Cost: <strong>${(formData.totalCost / formData.qty).toFixed(2)}</strong></div>}
                      </div>
-                     
                      <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
                          <button type="button" className="btn-ghost" onClick={() => resetForm(false)}>CANCEL</button>
                          <button type="submit" className="btn-primary" style={{flex:1}}>{isExistingItem ? 'UPDATE STOCK' : 'SAVE ASSET'}</button>
@@ -391,8 +367,7 @@ export const InventoryManager = () => {
                </div>
              </div>
           )}
-
-          {/* C. PROJECT READINESS */}
+          {/* READINESS */}
           {!showIntakeForm && !selectedMaterial && (
             <div>
                {projectReadiness.length === 0 && <div style={{padding:'20px', color:'var(--text-muted)', textAlign:'center'}}>All Systems Normal.</div>}
@@ -410,10 +385,9 @@ export const InventoryManager = () => {
                            <div style={{fontSize:'0.65rem', color: statusColor}}>{statusLabel}</div>
                          </div>
                          <div>
-                           {isExpanded ? <Icons.ChevronUp /> : <Icons.ChevronDown />} 
+                           {isExpanded ? <ChevronUp /> : <ChevronDown />} 
                          </div>
                       </div>
-                      
                       {isExpanded && (
                         <div className="readiness-grid">
                            {p.materials.map(mat => (
@@ -429,7 +403,6 @@ export const InventoryManager = () => {
                 })}
             </div>
           )}
-
         </div>
       </div>
     </div>

@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext'; 
 import { ProjectCard } from '../../components/ProjectCard';
-
-// --- ICONS ---
-const Icons = {
-  Plus: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  Back: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>,
-  Save: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-};
+// NEW IMPORTS
+import { Plus, Back, Save } from '../../components/Icons';
 
 export const Workshop = () => {
   const { projects, addProject, deleteProject, updateProject, materials, manufactureProduct } = useWorkbench();
@@ -71,7 +66,6 @@ export const Workshop = () => {
 
   return (
     <div className="radar-grid-layout">
-      {/* LOCAL STYLES FOR LAYOUT ONLY */}
       <style>{`
         .workshop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 40px; }
         .studio-container { display: grid; grid-template-columns: 350px 1fr; gap: 25px; height: 100%; overflow: hidden; padding-bottom: 20px; }
@@ -88,7 +82,7 @@ export const Workshop = () => {
                 <h2 className="header-title">WORKSHOP</h2>
                 <span style={{color: 'var(--text-muted)', fontSize: '0.8rem'}}>ACTIVE MISSIONS: {projects.length}</span>
               </div>
-              <button className="btn-primary" onClick={() => setIsCreateOpen(true)}><Icons.Plus /> NEW MISSION</button>
+              <button className="btn-primary" onClick={() => setIsCreateOpen(true)}><Plus /> NEW MISSION</button>
             </div>
 
             <div className="workshop-grid">
@@ -121,14 +115,14 @@ export const Workshop = () => {
           <div className="animate-fade-in" style={{height:'100%'}}>
             <div className="inventory-header" style={{marginBottom:'20px'}}>
                <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
-                 <button onClick={closeStudio} className="btn-icon" style={{border:'1px solid var(--border-subtle)', padding:'8px'}}><Icons.Back /></button>
+                 <button onClick={closeStudio} className="btn-icon" style={{border:'1px solid var(--border-subtle)', padding:'8px'}}><Back /></button>
                  <div>
                    <h2 className="header-title" style={{color:'var(--neon-teal)'}}>{activeProject.title}</h2>
                    <span style={{color: 'var(--text-muted)', fontSize: '0.8rem'}}>PROJECT ID: {activeProject.id}</span>
                  </div>
                </div>
                <button onClick={handleCompleteProject} className="btn-primary" style={{background:'var(--neon-purple)', color:'#fff'}}>
-                 <Icons.Save /> COMPLETE & POST
+                 <Save /> COMPLETE & POST
                </button>
             </div>
 

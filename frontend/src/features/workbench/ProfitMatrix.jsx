@@ -1,5 +1,6 @@
 import React from 'react';
 import './ConsoleLayout.css'; 
+import { StatCard } from '../../components/StatCard';
 
 // --- SIMPLE SVG CHART ---
 const RevenueChart = () => {
@@ -117,28 +118,16 @@ export const ProfitMatrix = () => {
 
       </div>
 
-      {/* RIGHT SIDEBAR: METRICS */}
+      {/* RIGHT SIDEBAR: METRICS (REFACTORED) */}
       <div className="sidebar-col" style={{padding:'15px'}}>
          <div className="keyword-header" style={{padding:'0 0 15px 0'}}>
             <h3 className="label-industrial glow-purple" style={{ margin: 0 }}>FINANCIALS</h3>
          </div>
          <div style={{display:'flex', flexDirection:'column', gap:'15px', paddingTop:'15px'}}>
-              <div className="panel-industrial" style={{padding:'20px', justifyContent:'center'}}>
-                 <span className="label-industrial">GROSS REVENUE</span>
-                 <div className="metric-value glow-teal">${totalRev.toFixed(0)}</div>
-              </div>
-              <div className="panel-industrial" style={{padding:'20px', justifyContent:'center'}}>
-                 <span className="label-industrial">NET PROFIT</span>
-                 <div className="metric-value glow-purple">${netProfit.toFixed(0)}</div>
-              </div>
-              <div className="panel-industrial" style={{padding:'20px', justifyContent:'center'}}>
-                 <span className="label-industrial">EXPENSES (COGS)</span>
-                 <div className="metric-value" style={{color:'var(--neon-orange)'}}>${totalCost.toFixed(0)}</div>
-              </div>
-              <div className="panel-industrial" style={{padding:'20px', justifyContent:'center'}}>
-                 <span className="label-industrial">AVG MARGIN</span>
-                 <div className="metric-value glow-cyan">{margin.toFixed(1)}%</div>
-              </div>
+            <StatCard label="GROSS REVENUE" value={`$${totalRev.toFixed(0)}`} glowColor="teal" />
+            <StatCard label="NET PROFIT" value={`$${netProfit.toFixed(0)}`} glowColor="purple" />
+            <StatCard label="EXPENSES (COGS)" value={`$${totalCost.toFixed(0)}`} glowColor="orange" />
+            <StatCard label="AVG MARGIN" value={`${margin.toFixed(1)}%`} glowColor="cyan" />
          </div>
       </div>
 
