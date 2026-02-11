@@ -1,3 +1,5 @@
+/* src/features/workbench/Workshop.css */
+
 /* --- WORKSHOP LAYOUT --- */
 .workshop-grid { 
   display: grid; 
@@ -178,15 +180,6 @@
 }
 
 /* --- SIDEBAR FOLDER STACK --- */
-.sidebar-col {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  border-left: 1px solid var(--border-subtle);
-  background: var(--bg-app);
-  overflow: hidden;
-}
-
 .folder-stack {
   display: flex;
   flex-direction: column;
@@ -200,10 +193,11 @@
 .folder-stack-item {
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease;
   position: relative;
-  margin-top: -220px; /* STACKING: Adjusted for better density */
+  margin-top: -160px; /* IMPROVED: Adjusted from -220px to fix click hitboxes */
   cursor: pointer;
   filter: brightness(0.7) grayscale(0.4);
   transform-origin: center left;
+  z-index: 1;
 }
 .folder-stack-item:first-child { margin-top: 0; }
 .folder-stack-item:last-child { margin-bottom: 100px; }
@@ -211,7 +205,7 @@
 .folder-stack-item:hover {
   transform: translateX(-15px) translateY(-5px) scale(1.02);
   filter: brightness(1.1) grayscale(0);
-  z-index: 1000 !important; 
+  z-index: 1000 !important; /* FIXED: Ensure hovered items are on top */
   box-shadow: -10px 10px 30px rgba(0,0,0,0.8);
 }
 

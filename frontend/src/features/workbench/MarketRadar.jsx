@@ -1,7 +1,9 @@
+/* src/features/workbench/MarketRadar.jsx */
 import React, { useState } from 'react';
 import './MarketRadar.css';
 import { InputGroup } from '../../components/InputGroup';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
+import { TERMINOLOGY } from '../../utils/glossary'; // NEW
 
 export const MarketRadar = () => {
   const [competitors, setCompetitors] = useState([
@@ -20,11 +22,12 @@ export const MarketRadar = () => {
 
   return (
     <div className="radar-grid-layout">
+       <div className="radar-scanner" /> {/* FIXED: Animation scanner restored */}
        <div className="radar-scroll-area">
           <div className="inventory-header">
              <div>
-               <h2 className="header-title">MARKET RADAR</h2>
-               <span className="header-subtitle">COMPETITIVE INTELLIGENCE</span>
+               <h2 className="header-title">{TERMINOLOGY.MARKET.HEADER}</h2>
+               <span className="header-subtitle">{TERMINOLOGY.MARKET.SUBTITLE}</span>
              </div>
           </div>
 
@@ -77,7 +80,7 @@ export const MarketRadar = () => {
        {/* SIDEBAR ANALYTICS */}
        <div className="sidebar-col pad-20">
           <div className="keyword-header">
-             <h3 className="label-industrial glow-purple">MARKET PULSE</h3>
+             <h3 className="label-industrial glow-purple">{TERMINOLOGY.MARKET.PULSE_HEADER}</h3>
           </div>
           <div className="panel-industrial pad-20 mt-20">
              <div className="label-industrial">AVG MARKET PRICE</div>
