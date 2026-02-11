@@ -7,17 +7,22 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false }) =>
 
   return (
     <div className="folder-container" onClick={onClick}>
-      {/* THE TAB: This creates the actual folder tab look at the top */}
       <div className="folder-tab">
         <span className="folder-tab-text">ID: {project.id.toString().slice(-4)}</span>
       </div>
 
-      {/* THE BODY: Using the industrial hover effects from your CSS */}
       <div className={`folder-body card-hover-effect ${status === 'completed' ? 'catalog-mode' : ''}`}>
+        
+        {/* Updated "HALTED" to "SUSPENDED" */}
+        <div className={`status-stamp ${status}`}>
+          {status === 'on_hold' ? 'SUSPENDED' : status}
+        </div>
+
+        {status === 'completed' && <div className="catalog-stamp-large">CATALOGED</div>}
         
         {/* STATUS STAMP: Rotated and styled via CSS */}
         <div className={`status-stamp ${status}`}>
-          {status === 'on_hold' ? 'HALTED' : status}
+          {status === 'on_hold' ? 'SUSPENDED' : status}
         </div>
 
         {status === 'completed' && <div className="catalog-stamp-large">CATALOGED</div>}

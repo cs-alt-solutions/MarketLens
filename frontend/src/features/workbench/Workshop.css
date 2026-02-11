@@ -180,32 +180,41 @@
 }
 
 /* --- SIDEBAR FOLDER STACK --- */
+
+/* src/features/workbench/Workshop.css */
+
+/* --- DECLUTTERED VAULT LAYOUT --- */
 .folder-stack {
   display: flex;
   flex-direction: column;
-  padding: 60px 20px;
+  padding: 20px; /* Reduced padding since we aren't stacking */
+  gap: 15px;     /* Even spacing between items */
   overflow-y: auto;
-  perspective: 1000px; /* Adds depth to the stack */
 }
 
-/* Adjusted from -160px to ensure title visibility and hitbox integrity */
 .folder-stack-item {
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
-  margin-top: -135px; 
+  margin-top: 0; /* REMOVED: No more overlapping cards */
   cursor: pointer;
-  filter: brightness(0.7) grayscale(0.4);
-  transform-origin: center left;
-  z-index: 1;
+  filter: brightness(0.85); /* Slightly dim until hover */
 }
 
-/* Rule 7 Implementation: Elevate z-index on hover to fix layering conflicts */
 .folder-stack-item:hover {
-  transform: translateX(-15px) translateY(-5px) scale(1.02);
-  filter: brightness(1.1) grayscale(0);
-  z-index: 1000 !important; 
-  box-shadow: -10px 10px 30px rgba(0,0,0,0.8);
+  transform: translateX(-5px); /* Subtle slide for interaction feedback */
+  filter: brightness(1.1);
+  z-index: 10;
 }
+
+/* --- REPAIRED STATUS STYLES --- */
+/* Ensure the "on_hold" status from your data matches your CSS classes */
+.status-stamp.on_hold { 
+  transform: rotate(8deg); 
+  color: var(--neon-red); 
+  border-color: var(--neon-red); 
+}
+
+.sidebar-header-pad { padding: 15px; }
 
 /* --- HEADER UTILS --- */
 .header-title { margin: 0; font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
