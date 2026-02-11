@@ -8,6 +8,47 @@ import { formatCurrency, formatPercent } from '../../utils/formatters';
 import { TERMINOLOGY } from '../../utils/glossary';
 import './Workshop.css';
 
+// --- SUB-COMPONENT: VAULT FOLDERS ---
+const VaultFolder = ({ title, status, projects, onProjectClick, stampText }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (projects.length === 0) return null;
+
+  return (
+    <div className={`vault-folder-root ${isOpen ? 'is-open' : ''}`}>
+      <div className="vault-main-folder" onClick={() => setIsOpen(!isOpen)}>
+        <div className="folder-tab-top">
+          <span className="folder-id-tag">{status.toUpperCase()} {TERMINOLOGY.GENERAL.SYSTEMS_LABEL}</span>
+        </div>
+        <div className="folder-cover-body">
+          <div className="folder-stamp-large">{stampText}</div>
+          <div className="folder-info">
+            <h3 className="folder-title">{title}</h3>
+            <span className="folder-count">{projects.length} {TERMINOLOGY.GENERAL.SYSTEMS_LABEL}</span>
+          </div>
+          <div className={`folder-chevron ${isOpen ? 'up' : ''}`}>▼</div>
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="vault-folder-grid animate-fade-in">
+          {projects.map(p => (
+            <div key={p.id} className="mini-vault-card" onClick={() => onProjectClick(p)}>
+               <div className="mini-card-preview">
+                  <ImagePlaceholder height="80px" label="" />
+               </div>
+               <div className="mini-card-meta">
+                  <div className="mini-card-title">{p.title}</div>
+                  <div className="mini-card-id">{TERMINOLOGY.GENERAL.ID_LABEL}: {p.id.toString().slice(-4)}</div>
+               </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const UNIT_GROUPS = {
   'Weight': ['lbs', 'oz', 'kg', 'g'],
   'Volume': ['gal', 'fl oz', 'L', 'ml'],
@@ -46,7 +87,9 @@ export const Workshop = ({ onRequestFullWidth }) => {
 
   const activeProjects = useMemo(() => projects.filter(p => p.status === 'active'), [projects]);
   const draftProjects = useMemo(() => projects.filter(p => p.status === 'draft'), [projects]);
-  const archiveProjects = useMemo(() => projects.filter(p => ['completed', 'on_hold'].includes(p.status)), [projects]);
+  
+  const catalogedProjects = useMemo(() => projects.filter(p => p.status === 'completed'), [projects]);
+  const suspendedProjects = useMemo(() => projects.filter(p => p.status === 'on_hold'), [projects]);
 
   const totalUnitCost = useMemo(() => calculateRecipeCost(recipe, materials), [recipe, materials]);
   const projectedMargin = activeProject ? (activeProject.retailPrice - totalUnitCost) : 0;
@@ -138,7 +181,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
             <div className="section-separator">
                <span className="separator-label">{TERMINOLOGY.WORKSHOP.ACTIVE_OPS}</span>
                <div className="separator-line" />
-               <span className="separator-count active">{activeProjects.length} ACTIVE</span>
+               <span className="separator-count active">{activeProjects.length} {TERMINOLOGY.WORKSHOP.ACTIVE_OPS}</span>
             </div>
             
             <div className="workshop-grid">
@@ -152,7 +195,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
             <div className="section-separator mt-20">
                <span className="separator-label draft">{TERMINOLOGY.WORKSHOP.DRAFTS}</span>
                <div className="separator-line" />
-               <span className="separator-count">{draftProjects.length} DRAFTS</span>
+               <span className="separator-count">{draftProjects.length} {TERMINOLOGY.WORKSHOP.DRAFTS}</span>
             </div>
 
             <div className="workshop-grid opacity-90">
@@ -166,9 +209,9 @@ export const Workshop = ({ onRequestFullWidth }) => {
             {isCreateOpen && (
               <div className="blueprint-overlay">
                 <div className="panel-industrial modal-panel">
-                  <h2 className="modal-title">{TERMINOLOGY.GENERAL.INITIATE}</h2>
+                  <h2 className="modal-title">{TERMINOLOGY.WORKSHOP.NEW_PROJECT}</h2>
                   <form onSubmit={handleCreateProject}>
-                    <InputGroup placeholder="Project Title..." value={newProjectTitle} onChange={e => setNewProjectTitle(e.target.value)} />
+                    <InputGroup placeholder={TERMINOLOGY.GENERAL.ID_LABEL} value={newProjectTitle} onChange={e => setNewProjectTitle(e.target.value)} />
                     <div className="flex-end gap-10 mt-20">
                       <button type="button" className="btn-ghost" onClick={() => setIsCreateOpen(false)}>{TERMINOLOGY.GENERAL.CANCEL}</button>
                       <button type="submit" className="btn-primary">{TERMINOLOGY.GENERAL.CREATE}</button>
@@ -228,7 +271,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
                         <div className="panel-industrial studio-panel pad-20 flex-1">
                              <div className="floating-manifest-label">{TERMINOLOGY.WORKSHOP.NOTES_LABEL}</div>
                              <div className="mt-10 h-full">
-                               <textarea className="input-area-industrial" placeholder="Observations..." value={notes} onChange={(e) => setNotes(e.target.value)} />
+                               <textarea className="input-area-industrial" placeholder={TERMINOLOGY.WORKSHOP.NOTES_LABEL} value={notes} onChange={(e) => setNotes(e.target.value)} />
                              </div>
                         </div>
 
@@ -236,7 +279,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
                             <div className="floating-manifest-label text-cyan border-cyan">{TERMINOLOGY.WORKSHOP.TAGS_LABEL}</div>
                             <div className="tag-input-area mt-10">
                                 {tags.map(t => <div key={t} className="unit-badge"><span>{t}</span></div>)}
-                                <input className="input-chromeless tag-input" placeholder="+ Tag..." value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={addTag} />
+                                <input className="input-chromeless tag-input" placeholder={TERMINOLOGY.GENERAL.ADD} value={newTagInput} onChange={e => setNewTagInput(e.target.value)} onKeyDown={addTag} />
                             </div>
                         </div>
                     </div>
@@ -245,7 +288,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
                         <div className="panel-industrial studio-panel no-pad min-h-250">
                             <div className="floating-manifest-label text-blue border-blue">{TERMINOLOGY.WORKSHOP.MISSIONS_HEADER}</div>
                             <div className="mission-input-area mt-10">
-                                <input className="input-industrial" placeholder="+ Milestone..." value={newMissionTitle} onChange={e => setNewMissionTitle(e.target.value)} onKeyDown={addMission} />
+                                <input className="input-industrial" placeholder={TERMINOLOGY.GENERAL.ADD} value={newMissionTitle} onChange={e => setNewMissionTitle(e.target.value)} onKeyDown={addMission} />
                             </div>
                             <div className="checklist-container">
                                 {missions.map(m => (
@@ -263,7 +306,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
                             <div className="floating-manifest-label text-purple border-purple">{TERMINOLOGY.WORKSHOP.BOM_HEADER}</div>
                             <div className="bom-toolbar mt-10">
                                 <select className="input-industrial" value={newIngredientId} onChange={e => setNewIngredientId(e.target.value)}>
-                                    <option value="">+ Select Material...</option>
+                                    <option value="">{TERMINOLOGY.GENERAL.ADD}...</option>
                                     {materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                                 </select>
                                 <button onClick={addIngredient} className="btn-primary">{TERMINOLOGY.GENERAL.ADD}</button>
@@ -298,12 +341,23 @@ export const Workshop = ({ onRequestFullWidth }) => {
                 <h3 className="label-industrial glow-purple">{TERMINOLOGY.WORKSHOP.VAULT_HEADER}</h3>
                 <span className="sidebar-subtitle">{TERMINOLOGY.WORKSHOP.VAULT_SUBTITLE}</span>
              </div>
-             <div className="folder-stack">
-                {archiveProjects.map((p) => (
-                    <div key={p.id} className="folder-stack-item" onClick={() => openStudio(p)}>
-                        <ProjectCard project={p} readOnly />
-                    </div>
-                ))}
+             
+             <div className="folder-stack-v2">
+                <VaultFolder 
+                  title={TERMINOLOGY.WORKSHOP.VAULT_HEADER} 
+                  status="cataloged" 
+                  stampText="CATALOGED"
+                  projects={catalogedProjects}
+                  onProjectClick={openStudio}
+                />
+
+                <VaultFolder 
+                  title={TERMINOLOGY.WORKSHOP.VAULT_SUBTITLE} 
+                  status="suspended" 
+                  stampText="SUSPENDED"
+                  projects={suspendedProjects}
+                  onProjectClick={openStudio}
+                />
              </div>
         </div>
       )}

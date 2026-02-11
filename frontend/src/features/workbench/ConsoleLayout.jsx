@@ -5,6 +5,7 @@ import { ProfitMatrix } from './ProfitMatrix';
 import { InventoryManager } from './InventoryManager';
 import { Workshop } from './Workshop';
 import { Radar, WorkshopIcon, Box, Finance, Menu, ChevronLeft } from '../../components/Icons';
+import { TERMINOLOGY } from '../../utils/glossary';
 
 export const ConsoleLayout = () => {
   const [activeView, setActiveView] = useState('radar'); 
@@ -33,42 +34,42 @@ export const ConsoleLayout = () => {
         </div>
         
         <div className="nav-group">
-          <div className="section-label">Main Modules</div>
+          <div className="section-label">{TERMINOLOGY.GENERAL.SYSTEMS_LABEL}</div>
           
           <div 
             className={`nav-link ${activeView === 'radar' ? 'active' : ''}`}
             onClick={() => { setActiveView('radar'); setIsFullWidthMode(false); }}
-            title="Market Pulse"
+            title={TERMINOLOGY.MARKET.HEADER}
           >
             <Radar />
-            <span className="nav-text">Market Pulse</span>
+            <span className="nav-text">{TERMINOLOGY.MARKET.HEADER}</span>
           </div>
 
           <div 
             className={`nav-link ${activeView === 'workshop' ? 'active' : ''}`}
             onClick={() => { setActiveView('workshop'); setIsFullWidthMode(false); }}
-            title="Workshop"
+            title={TERMINOLOGY.WORKSHOP.HUB_HEADER}
           >
             <WorkshopIcon />
-            <span className="nav-text">Workshop</span>
+            <span className="nav-text">{TERMINOLOGY.WORKSHOP.HUB_HEADER}</span>
           </div>
 
           <div 
             className={`nav-link ${activeView === 'inventory' ? 'active' : ''}`}
             onClick={() => { setActiveView('inventory'); setIsFullWidthMode(false); }}
-            title="Inventory"
+            title={TERMINOLOGY.INVENTORY.HEADER}
           >
             <Box />
-            <span className="nav-text">Inventory</span>
+            <span className="nav-text">{TERMINOLOGY.INVENTORY.HEADER}</span>
           </div>
 
           <div 
             className={`nav-link ${activeView === 'matrix' ? 'active' : ''}`}
             onClick={() => { setActiveView('matrix'); setIsFullWidthMode(false); }}
-            title="Profit Matrix"
+            title={TERMINOLOGY.FINANCE.HEADER}
           >
             <Finance />
-            <span className="nav-text">Profit Matrix</span>
+            <span className="nav-text">{TERMINOLOGY.FINANCE.HEADER}</span>
           </div>
         </div>
 

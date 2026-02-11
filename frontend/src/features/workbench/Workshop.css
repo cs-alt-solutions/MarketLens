@@ -31,7 +31,7 @@
 /* --- STUDIO GRID SYSTEM --- */
 .studio-grid {
   display: grid;
-  grid-template-columns: 350px 1fr; /* Left Specs, Right Blueprint */
+  grid-template-columns: 350px 1fr;
   gap: 25px;
   height: 100%;
   overflow: hidden;
@@ -46,13 +46,12 @@
   padding-right: 5px; 
 }
 
-/* Cascade Animation */
 .studio-panel {
   animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   opacity: 0; 
-  margin-top: 15px; /* BUFFER: Space for floating labels */
+  margin-top: 15px;
   position: relative;
-  overflow: visible !important; /* ALLOW: Labels to float outside border */
+  overflow: visible !important;
 }
 
 .studio-panel:nth-child(1) { animation-delay: 0.1s; }
@@ -92,7 +91,7 @@
 }
 .input-area-industrial:focus {
   border-color: var(--neon-cyan);
-  color: #fff;
+  color: var(--text-main);
 }
 
 /* --- MISSION CHECKLIST --- */
@@ -110,7 +109,7 @@
   border-bottom: 1px dashed var(--border-subtle);
   transition: background 0.2s;
 }
-.checklist-item:hover { background: rgba(255,255,255,0.02); }
+.checklist-item:hover { background: var(--bg-row-odd); }
 .checklist-item.completed .mission-text {
   text-decoration: line-through;
   color: var(--text-muted);
@@ -133,33 +132,131 @@
 }
 .mission-text { font-size: 0.9rem; font-weight: 500; }
 
-/* --- BOM / RECIPE TABLE --- */
-.bom-header {
+/* --- VAULT V2 STRUCTURE --- */
+.folder-stack-v2 {
+  padding: 15px;
   display: flex;
-  padding: 8px 15px;
-  background: rgba(255,255,255,0.02);
-  border-bottom: 1px solid var(--border-subtle);
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  font-weight: 700;
-  letter-spacing: 1px;
+  flex-direction: column;
+  gap: 25px;
 }
-.bom-body { flex: 1; overflow-y: auto; }
-.bom-row {
+
+.vault-main-folder {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.vault-main-folder:hover {
+  transform: translateX(-5px);
+}
+
+.folder-tab-top {
+  width: 100px;
+  height: 20px;
+  background: var(--bg-panel-header);
+  border: 1px solid var(--border-subtle);
+  border-bottom: none;
+  border-radius: 4px 10px 0 0;
   display: flex;
   align-items: center;
-  padding: 10px 15px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding-left: 10px;
 }
-.bom-row:hover { background: rgba(34, 211, 238, 0.02); }
 
-.empty-state {
-  padding: 30px;
-  text-align: center;
+.folder-id-tag {
+  font-size: 0.55rem;
   color: var(--text-muted);
-  font-style: italic;
-  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
+
+.folder-cover-body {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.folder-stamp-large {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--neon-purple);
+  opacity: 0.15;
+  transform: rotate(-10deg);
+  border: 3px solid var(--neon-purple);
+  padding: 2px 10px;
+  right: 15px;
+  pointer-events: none;
+}
+
+.vault-folder-root.is-open .folder-cover-body {
+  border-bottom: 2px solid var(--neon-purple);
+}
+
+/* --- GRID VIEW INSIDE FOLDERS --- */
+.vault-folder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+  border-top: none;
+}
+
+.mini-vault-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mini-vault-card:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(34, 211, 238, 0.05);
+}
+
+.mini-card-meta {
+  padding: 8px;
+}
+
+.mini-card-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-card-id {
+  font-size: 0.6rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.folder-chevron {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform 0.3s;
+}
+
+.folder-chevron.up {
+  transform: rotate(180deg);
+  color: var(--neon-teal);
+}
+
+/* --- HEADER UTILS --- */
+.header-title { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
+.header-subtitle { color: var(--text-muted); font-size: 0.8rem; }
+.project-id { font-size: 0.65rem; color: var(--neon-cyan); letter-spacing: 1px; }
+.project-title-large { font-size: 1.2rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; }
 
 /* --- SEPARATORS --- */
 .section-separator {
@@ -168,6 +265,9 @@
    display: flex;
    align-items: center;
 }
+.separator-line { height: 1px; background: var(--border-subtle); flex: 1; }
+.separator-count { font-size: 0.7rem; margin-left: 10px; font-weight: 700; }
+.separator-count.active { color: var(--neon-teal); }
 .separator-label {
    background: var(--bg-app);
    padding-right: 15px;
@@ -178,63 +278,7 @@
    font-weight: 700;
    text-transform: uppercase;
 }
-
-/* --- SIDEBAR FOLDER STACK --- */
-
-/* src/features/workbench/Workshop.css */
-
-/* --- DECLUTTERED VAULT LAYOUT --- */
-.folder-stack {
-  display: flex;
-  flex-direction: column;
-  padding: 20px; /* Reduced padding since we aren't stacking */
-  gap: 15px;     /* Even spacing between items */
-  overflow-y: auto;
-}
-
-.folder-stack-item {
-  transition: all 0.2s ease;
-  position: relative;
-  margin-top: 0; /* REMOVED: No more overlapping cards */
-  cursor: pointer;
-  filter: brightness(0.85); /* Slightly dim until hover */
-}
-
-.folder-stack-item:hover {
-  transform: translateX(-5px); /* Subtle slide for interaction feedback */
-  filter: brightness(1.1);
-  z-index: 10;
-}
-
-/* --- REPAIRED STATUS STYLES --- */
-/* Ensure the "on_hold" status from your data matches your CSS classes */
-.status-stamp.on_hold { 
-  transform: rotate(8deg); 
-  color: var(--neon-red); 
-  border-color: var(--neon-red); 
-}
-
-.sidebar-header-pad { padding: 15px; }
-
-/* --- HEADER UTILS --- */
-.header-title { margin: 0; font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
-.header-subtitle { color: var(--text-muted); font-size: 0.8rem; }
-.project-id { font-size: 0.65rem; color: var(--neon-cyan); letter-spacing: 1px; }
-.project-title-large { font-size: 1.2rem; font-weight: 800; color: #fff; text-transform: uppercase; }
-
-/* --- SEPARATORS --- */
-.separator-line { height: 1px; background: var(--border-subtle); flex: 1; }
-.separator-count { font-size: 0.7rem; margin-left: 10px; font-weight: 700; }
-.separator-count.active { color: var(--neon-teal); }
 .separator-label.draft { color: var(--neon-blue); }
-
-/* --- EMPTY STATES --- */
-.workshop-empty-state {
-  padding: 30px; text-align: center; border: 1px dashed var(--border-subtle);
-  border-radius: 4px; color: var(--text-muted); margin-bottom: 20px;
-}
-.workshop-empty-state.muted { opacity: 0.5; font-style: italic; border: none; }
-.vault-empty { color: var(--text-muted); font-style: italic; font-size: 0.8rem; text-align: center; margin-top: 20px; }
 
 /* --- MODAL --- */
 .blueprint-overlay {
@@ -248,11 +292,11 @@
 .studio-container { height: 100%; padding: 30px; display: flex; flex-direction: column; overflow: hidden; background: #000; }
 .header-close-btn { border-right: 1px solid var(--border-subtle); padding-right: 15px; margin-right: 15px; }
 .btn-save { border-color: var(--neon-teal); color: var(--neon-teal); }
-.btn-finalize { background: var(--neon-purple); color: #fff; }
+.btn-finalize { background: var(--neon-purple); color: var(--text-main); }
 
 .cost-display { font-size: 1.1rem; color: var(--neon-orange); font-weight: 700; }
 .margin-indicator {
-  background: rgba(255,255,255,0.05); padding: 10px; border-radius: 2px;
+  background: var(--bg-row-odd); padding: 10px; border-radius: 2px;
   display: flex; justify-content: space-between; align-items: center;
 }
 .margin-value { font-size: 1.1rem; font-weight: 800; }
@@ -274,27 +318,19 @@
 
 /* --- BOM TABLE --- */
 .bom-toolbar { padding: 15px; border-bottom: 1px solid var(--border-subtle); display: flex; gap: 10px; }
-.bom-select { font-size: 0.8rem; padding: 8px; flex: 1; }
-.bom-add-btn { padding: 5px 12px; font-size: 0.7rem; }
-.bom-name { flex: 2; font-weight: 700; font-size: 0.85rem; color: #fff; }
+.bom-body { flex: 1; overflow-y: auto; }
+.bom-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.bom-name { flex: 2; font-weight: 700; font-size: 0.85rem; color: var(--text-main); }
 .bom-qty-group { flex: 1; display: flex; align-items: center; gap: 5px; justify-content: center; }
 .bom-qty-input { text-align: right; width: 40px; color: var(--neon-cyan); }
-.bom-unit-select { font-size: 0.7rem; width: auto; padding: 0; border: none; text-align: center; color: var(--text-muted); }
-.bom-cost { flex: 1; text-align: right; font-family: monospace; color: var(--text-muted); }
 
 /* --- UTILS --- */
-.w-30 { width: 30px; }
-.flex-2 { flex: 2; }
-.flex-1 { flex: 1; }
 .flex-gap-10 { display: flex; gap: 10px; }
 .ml-5 { margin-left: 5px; }
-.font-small { font-size: 0.8rem; }
-.text-teal { color: var(--neon-teal); }
-.border-teal { border-color: var(--neon-teal); }
-.text-cyan { color: var(--neon-cyan); }
-.border-cyan { border-color: var(--neon-cyan); }
-.text-blue { color: var(--neon-blue); }
-.border-blue { border-color: var(--neon-blue); }
-.text-purple { color: var(--neon-purple); }
-.border-purple { border-color: var(--neon-purple); }
+.font-bold { font-weight: 700; }
 .sidebar-header-pad { padding: 15px; }
