@@ -1,29 +1,25 @@
 import React, { useState, useMemo } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import './InventoryManager.css';
-import { Box, Alert, Plus, History, ChevronDown, ChevronUp } from '../../components/Icons';
+import { Box, History, ChevronDown, ChevronUp, Plus } from '../../components/Icons';
 import { StatCard } from '../../components/StatCard';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
 import { formatCurrency } from '../../utils/formatters';
+import { TERMINOLOGY } from '../../utils/glossary';
 
 const CATEGORIES = ['Raw Material', 'Packaging', 'Shipping', 'Consumables', 'Hardware', 'Electronics', 'Tools'];
-const UNITS = { 'Weight': ['lbs', 'oz', 'kg'], 'Volume': ['gal', 'fl oz', 'L'], 'Length': ['ft', 'yd'], 'Count': ['count', 'box', 'ea'] };
 
 export const InventoryManager = () => {
-  const { materials, addAsset, restockAsset, projects } = useInventory(); 
+  const { materials, addAsset, restockAsset } = useInventory(); 
   const [filter, setFilter] = useState('ALL');
-  const [expandedProject, setExpandedProject] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);
-
-  // UI State
   const [showIntakeForm, setShowIntakeForm] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null); 
   const [isExistingItem, setIsExistingItem] = useState(false);
   const [selectedExistingId, setSelectedExistingId] = useState('');
   
   const [formData, setFormData] = useState({
-    name: '', brand: '', category: 'Raw Material', unitType: 'Weight', unit: 'lbs', qty: '', totalCost: '', 
-    status: 'Active', usageType: 'Project Component', linkedProjectId: '' 
+    name: '', brand: '', category: 'Raw Material', unit: 'lbs', qty: '', totalCost: '', status: 'Active'
   });
 
   // --- LOGIC ---
@@ -42,150 +38,105 @@ export const InventoryManager = () => {
 
   const filteredMaterials = useMemo(() => {
     if (filter === 'ALL') return materials;
-    if (filter === 'OUT_OF_STOCK') return materials.filter(m => m.qty === 0 && m.status === 'Active');
     return materials.filter(m => m.status.toUpperCase() === filter);
   }, [materials, filter]);
 
-  const projectReadiness = useMemo(() => {
-    const projectMap = {};
-    projects.forEach(p => { 
-      projectMap[p.title] = { id: p.id, title: p.title, materials: [], status: 'READY', limitingFactor: Infinity }; 
-    });
-    
-    materials.forEach(m => {
-      if (m.usageType === 'Project Component' && m.status !== 'Discontinued') {
-         const isLow = m.qty < 10 && m.qty > 0;
-         const isOut = m.qty === 0;
-         const linkedTitle = projects[0]?.title || 'Unknown'; 
-         if(projectMap[linkedTitle]) {
-             projectMap[linkedTitle].materials.push({ ...m, health: isOut ? 'CRITICAL' : isLow ? 'LOW' : 'GOOD' });
-         }
-      }
-    });
-    return Object.values(projectMap).filter(p => p.materials.length > 0);
-  }, [materials, projects]);
-
-
-  // --- HANDLERS ---
-  const toggleHistoryRow = (e, id) => {
-    e.stopPropagation();
-    setExpandedRowId(expandedRowId === id ? null : id);
-  };
-
-  const resetForm = (keepOpen = false) => {
-    if (!keepOpen) setShowIntakeForm(false);
-    setIsExistingItem(false);
-    setSelectedExistingId('');
-    setFormData({ name: '', brand: '', category: 'Raw Material', unitType: 'Weight', unit: 'lbs', qty: '', totalCost: '', status: 'Active', usageType: 'Project Component', linkedProjectId: '' });
-  };
-
-  const handleSelectMaterial = (m) => {
-    setSelectedMaterial(m);
-    setShowIntakeForm(false);
-    setIsExistingItem(true);
-    setSelectedExistingId(m.id);
-  };
-
-  const handleQuickRestock = () => {
-    if (!selectedMaterial) return;
-    setFormData(prev => ({ ...prev, name: selectedMaterial.name, brand: selectedMaterial.brand || '', category: selectedMaterial.category, unit: selectedMaterial.unit }));
-    setIsExistingItem(true); 
-    setSelectedExistingId(selectedMaterial.id); 
-    setShowIntakeForm(true); 
-    setSelectedMaterial(null);
-  };
-
   const handleExistingSelect = (e) => {
-    const id = parseInt(e.target.value); 
+    const id = e.target.value;
     setSelectedExistingId(id);
-    if (!id) { resetForm(true); return; }
-    const existing = materials.find(m => m.id === id);
+    const existing = materials.find(m => m.id === parseInt(id));
     if (existing) {
-      setFormData(prev => ({ ...prev, name: existing.name, brand: existing.brand || '', category: existing.category, unit: existing.unit }));
+      setFormData({ 
+        ...formData, 
+        name: existing.name, 
+        brand: existing.brand || '', 
+        category: existing.category, 
+        unit: existing.unit 
+      });
     }
   };
 
   const handleSubmitIntake = (e) => {
     e.preventDefault();
     if (!formData.qty || !formData.totalCost) return;
-    const newQty = parseFloat(formData.qty);
-    const totalCost = parseFloat(formData.totalCost);
 
     if (isExistingItem && selectedExistingId) {
-      restockAsset(selectedExistingId, newQty, totalCost);
+      restockAsset(parseInt(selectedExistingId), parseFloat(formData.qty), parseFloat(formData.totalCost));
     } else {
-      const unitCost = totalCost / newQty;
-      const today = new Date().toISOString().split('T')[0];
-      const newItem = {
+      const unitCost = parseFloat(formData.totalCost) / parseFloat(formData.qty);
+      addAsset({ 
+        ...formData, 
         id: Date.now(), 
-        name: formData.name, 
-        brand: formData.brand, 
-        category: formData.category, 
-        qty: newQty, 
-        unit: formData.unit, 
         costPerUnit: unitCost, 
-        status: 'Active', 
-        usageType: formData.usageType, 
-        linkedProject: 'N/A', 
-        lastUsed: today, 
-        history: [{ date: today, qty: newQty, unitCost: unitCost }]
-      };
-      addAsset(newItem);
+        lastUsed: new Date().toISOString().split('T')[0], 
+        history: [{ 
+            date: new Date().toISOString().split('T')[0], 
+            qty: parseFloat(formData.qty), 
+            unitCost,
+            type: 'INITIAL_INTAKE'
+        }] 
+      });
     }
-    resetForm();
+    
+    // Reset and Close
+    setShowIntakeForm(false);
+    setIsExistingItem(false);
+    setSelectedExistingId('');
+    setFormData({ name: '', brand: '', category: 'Raw Material', unit: 'lbs', qty: '', totalCost: '', status: 'Active' });
   };
-
-  const currentItemSnapshot = useMemo(() => {
-      if (!isExistingItem || !selectedExistingId) return null;
-      return materials.find(m => m.id === selectedExistingId);
-  }, [isExistingItem, selectedExistingId, materials]);
-
-  const toggleProject = (title) => setExpandedProject(expandedProject === title ? null : title);
 
   return (
     <div className="inventory-layout">
       <div className="inventory-scroll-area">
-        {/* HEADER */}
         <div className="inventory-header">
-          <h2 className="header-title">SUPPLY LOCKER</h2>
-          <div className="filter-group">
-             {['ALL', 'ACTIVE', 'DORMANT'].map(f => (
-               <button key={f} onClick={() => setFilter(f)} className={`filter-btn ${filter === f ? 'active' : ''}`}>{f}</button>
-             ))}
+          <div>
+            <h2 className="header-title">{TERMINOLOGY.INVENTORY.HEADER}</h2>
+            <span className="header-subtitle">{TERMINOLOGY.INVENTORY.MANIFEST_LABEL}</span>
+          </div>
+          <div className="flex-center gap-10">
+            <div className="filter-group">
+               {['ALL', 'ACTIVE', 'DORMANT'].map(f => (
+                 <button 
+                    key={f} 
+                    onClick={() => setFilter(f)} 
+                    className={`filter-btn ${filter === f ? 'active' : ''}`}
+                 >
+                    {f}
+                 </button>
+               ))}
+            </div>
+            <button className="btn-primary" onClick={() => setShowIntakeForm(true)}>
+               <Plus /> {TERMINOLOGY.GENERAL.ADD}
+            </button>
           </div>
         </div>
 
-        {/* METRICS ROW */}
         <div className="inventory-metrics">
            <StatCard 
-             label="ASSET VALUE" 
-             value={formatCurrency(metrics.totalValue)} 
-             glowColor="purple" 
+              label="ASSET VALUE" 
+              value={formatCurrency(metrics.totalValue)} 
+              glowColor="purple" 
            />
            <StatCard 
-             label="OUT OF STOCK" 
-             value={metrics.outOfStockCount} 
-             glowColor={metrics.outOfStockCount > 0 ? 'red' : 'teal'}
-             isAlert={metrics.outOfStockCount > 0}
-             onClick={() => metrics.outOfStockCount > 0 && setFilter('OUT_OF_STOCK')}
+              label="OUT OF STOCK" 
+              value={metrics.outOfStockCount} 
+              glowColor={metrics.outOfStockCount > 0 ? 'red' : 'teal'} 
+              isAlert={metrics.outOfStockCount > 0} 
            />
            <StatCard 
-             label="LOW STOCK" 
-             value={metrics.lowStockCount} 
-             glowColor={metrics.lowStockCount > 0 ? 'orange' : 'teal'}
+              label="LOW STOCK" 
+              value={metrics.lowStockCount} 
+              glowColor={metrics.lowStockCount > 0 ? 'orange' : 'teal'} 
            />
         </div>
 
-        {/* TABLE SECTION */}
         <div className="blueprint-section">
-          <div className="floating-manifest-label">MATERIAL MANIFEST</div>
-          
+          <div className="floating-manifest-label">{TERMINOLOGY.INVENTORY.MANIFEST_LABEL}</div>
           <table className="inventory-table">
             <thead>
-               <tr className="table-header-row">
-                 <th>NAME / PROJECT</th>
+               <tr>
+                 <th>ITEM</th>
                  <th>STATUS</th>
-                 <th>LAST USED</th>
                  <th className="td-right">AVG COST</th>
                  <th className="td-center">QTY</th>
                  <th></th>
@@ -194,96 +145,49 @@ export const InventoryManager = () => {
             <tbody>
               {filteredMaterials.map(m => {
                 const isOutOfStock = m.qty === 0;
-                const isLowStock = m.qty < 10 && m.qty > 0;
                 const isExpanded = expandedRowId === m.id;
-                
-                let statusClass = 'text-good'; 
-                let StatusIcon = Box; 
-                let statusText = 'STOCKED';
-
-                if (isOutOfStock) { statusClass = 'text-alert'; StatusIcon = Alert; statusText = 'OUT OF STOCK'; }
-                else if (isLowStock) { statusClass = 'text-warning'; StatusIcon = Alert; statusText = 'LOW STOCK'; } 
-                else if (m.status === 'Dormant') { statusClass = 'text-muted'; StatusIcon = Box; statusText = 'DORMANT'; }
-                
-                const rowStatusClass = isOutOfStock ? 'status-alert' : isLowStock ? 'status-warning' : '';
-                const selectedClass = selectedMaterial?.id === m.id ? 'selected' : '';
-                
-                const barWidth = Math.min((m.qty / 100) * 100, 100); 
-                const barStatusClass = isOutOfStock ? 'status-alert' : isLowStock ? 'status-warning' : '';
+                const barWidth = Math.min((m.qty / 100) * 100, 100);
 
                 return (
                   <React.Fragment key={m.id}>
-                    <tr className={`inventory-row ${selectedClass} ${rowStatusClass}`} onClick={() => handleSelectMaterial(m)}>
+                    <tr className={`inventory-row ${isOutOfStock ? 'status-alert' : ''}`} onClick={() => setSelectedMaterial(m)}>
                       <td className="td-cell">
-                        <div className={`cell-name ${isOutOfStock ? 'text-alert' : ''}`}>{m.name}</div>
+                        <div className="cell-name">{m.name}</div>
                         <div className="cell-meta">{m.brand}</div>
                       </td>
                       <td className="td-cell">
-                        <div className={`flex-center ${statusClass}`} style={{ gap: '5px', fontSize: '0.75rem', fontWeight: 700, justifyContent: 'flex-start' }}>
-                            <StatusIcon /> {statusText}
+                        <div className={`flex-center-start font-bold ${isOutOfStock ? 'text-alert' : 'text-good'}`}>
+                            <Box /> {isOutOfStock ? 'OUT' : 'STOCKED'}
                         </div>
                       </td>
-                      <td className="td-cell cell-meta">{m.lastUsed}</td>
                       <td className="td-cell td-right cell-meta">{formatCurrency(m.costPerUnit)}</td>
-                      
                       <td className="td-cell td-center">
-                        <div className="flex-col" style={{ alignItems: 'center', gap: '2px' }}>
-                            <div className={`font-bold ${isOutOfStock ? 'text-alert' : 'text-main'}`}>
-                                {m.qty} <span className="text-muted" style={{ fontSize: '0.7rem' }}>{m.unit}</span>
-                            </div>
+                        <div className="flex-col-center">
+                            <div className="font-bold">{m.qty} <span className="text-muted">{m.unit}</span></div>
                             <div className="progress-bar-track">
-                                <div 
-                                    className={`progress-bar-fill ${barStatusClass}`} 
-                                    style={{ width: `${barWidth}%` }} 
-                                ></div>
+                                <div className={`progress-bar-fill ${isOutOfStock ? 'status-alert' : ''}`} style={{ width: `${barWidth}%` }} />
                             </div>
                         </div>
                       </td>
-
                       <td className="td-cell">
-                        <div className="cell-actions">
-                           <button onClick={(e) => toggleHistoryRow(e, m.id)} className={`btn-icon ${isExpanded ? 'text-accent' : ''}`}>
-                             {isExpanded ? <ChevronUp /> : <Plus />}
-                           </button>
-                        </div>
+                         <button onClick={(e) => { e.stopPropagation(); setExpandedRowId(isExpanded ? null : m.id); }} className="btn-icon">
+                           {isExpanded ? <ChevronUp /> : <ChevronDown />}
+                         </button>
                       </td>
                     </tr>
-                    
-                    {/* EXPANSION ROW */}
                     {isExpanded && (
                       <tr className="history-expansion">
-                        <td colSpan="6" style={{padding:0}}>
+                        <td colSpan="6" className="no-pad">
                           <div className="history-inner">
-                             <div className="flex-between" style={{marginBottom:'10px'}}>
-                               <span className="label-industrial text-accent" style={{margin:0}}><History /> PURCHASE HISTORY LOG</span>
-                               <span className="text-muted" style={{fontSize:'0.65rem'}}>ID: {m.id}</span>
-                             </div>
-                             {m.history && m.history.length > 0 ? (
-                               <table className="mini-history-table">
-                                 <thead>
-                                   <tr>
-                                     <th>DATE</th>
-                                     <th>ACTIVITY</th>
-                                     <th>QUANTITY</th>
-                                     <th>UNIT COST</th>
-                                     <th>TOTAL</th>
-                                   </tr>
-                                 </thead>
-                                 <tbody>
-                                   {m.history.map((h, idx) => (
-                                     <tr key={idx}>
-                                       <td>{h.date}</td>
-                                       <td>{h.type || 'RESTOCK'}</td>
-                                       <td className="text-good">+{h.qty} {m.unit}</td>
-                                       <td>{formatCurrency(h.unitCost)}</td>
-                                       <td>{formatCurrency(h.qty * h.unitCost)}</td>
-                                     </tr>
-                                   ))}
-                                 </tbody>
-                               </table>
-                             ) : (
-                               <div className="text-muted" style={{fontStyle:'italic', fontSize:'0.75rem', padding:'10px 0'}}>No detailed history records found.</div>
-                             )}
+                             <span className="label-industrial text-accent"><History /> {TERMINOLOGY.INVENTORY.HISTORY_LOG}</span>
+                             <table className="mini-history-table">
+                               <thead><tr><th>DATE</th><th>QTY</th><th>TOTAL</th></tr></thead>
+                               <tbody>
+                                 {m.history?.map((h, i) => (
+                                   <tr key={i}><td>{h.date}</td><td className="text-good">+{h.qty}</td><td>{formatCurrency(h.qty * h.unitCost)}</td></tr>
+                                 ))}
+                               </tbody>
+                             </table>
                           </div>
                         </td>
                       </tr>
@@ -296,130 +200,114 @@ export const InventoryManager = () => {
         </div>
       </div>
 
-      {/* SIDEBAR */}
-      <div className="sidebar-col" style={{width:'340px'}}>
+      <div className="sidebar-col">
          <div className="keyword-header">
-           <h3 className="label-industrial glow-purple" style={{ margin: 0, fontSize: '0.9rem' }}>
-             {showIntakeForm ? (isExistingItem ? 'RESTOCK / UPDATE' : 'NEW ASSET INTAKE') : selectedMaterial ? 'ASSET DETAILS' : 'NOTIFICATIONS'}
+           <h3 className="label-industrial glow-purple">
+             {showIntakeForm ? (isExistingItem ? TERMINOLOGY.INVENTORY.RESTOCK : TERMINOLOGY.INVENTORY.INTAKE) : TERMINOLOGY.INVENTORY.ASSET_DETAILS}
            </h3>
         </div>
         <div className="keyword-list">
-          {!showIntakeForm && selectedMaterial && (
-            <div className="sidebar-panel" style={{ borderLeftColor: selectedMaterial.qty === 0 ? 'var(--status-alert)' : 'var(--neon-purple)' }}>
-              
-              <ImagePlaceholder height="180px" label="ITEM PHOTO" onUpload={() => alert('Inventory Photo Upload')} />
-
+          {showIntakeForm ? (
+            <div className="sidebar-panel animate-fade-in">
               <div className="sidebar-inner">
-                <div className="detail-header">
-                  <h3 className="detail-title">{selectedMaterial.name}</h3>
-                  <div className="detail-brand">Brand: {selectedMaterial.brand || 'N/A'}</div>
-                  {selectedMaterial.qty === 0 && <div className="text-alert font-bold" style={{marginTop:'10px'}}>⚠️ ITEM OUT OF STOCK</div>}
-                </div>
+                <form onSubmit={handleSubmitIntake}>
+                  <div className="flex-center mb-20 gap-10">
+                    <input 
+                      type="checkbox" 
+                      checked={isExistingItem} 
+                      onChange={(e) => setIsExistingItem(e.target.checked)} 
+                    />
+                    <label className="label-industrial no-margin">{TERMINOLOGY.INVENTORY.RESTOCK}</label>
+                  </div>
+
+                  {isExistingItem && (
+                    <div className="lab-form-group">
+                      <label className="label-industrial">SELECT ASSET</label>
+                      <select className="input-industrial" value={selectedExistingId} onChange={handleExistingSelect}>
+                        <option value="">-- Select Material --</option>
+                        {materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {!isExistingItem && (
+                    <>
+                      <div className="lab-form-group">
+                        <label className="label-industrial">MATERIAL NAME</label>
+                        <input 
+                            className="input-industrial" 
+                            value={formData.name} 
+                            onChange={e => setFormData({...formData, name: e.target.value})} 
+                            placeholder="e.g. Soy Wax" 
+                        />
+                      </div>
+                      <div className="lab-form-group">
+                        <label className="label-industrial">CATEGORY</label>
+                        <select 
+                            className="input-industrial" 
+                            value={formData.category} 
+                            onChange={e => setFormData({...formData, category: e.target.value})}
+                        >
+                          {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="lab-form-row">
+                    <div className="lab-form-group">
+                      <label className="label-industrial">ADD QTY</label>
+                      <input 
+                        type="number" 
+                        step="0.01" 
+                        className="input-industrial" 
+                        value={formData.qty} 
+                        onChange={e => setFormData({...formData, qty: e.target.value})} 
+                      />
+                    </div>
+                    <div className="lab-form-group">
+                      <label className="label-industrial">TOTAL COST</label>
+                      <input 
+                        type="number" 
+                        step="0.01" 
+                        className="input-industrial" 
+                        value={formData.totalCost} 
+                        onChange={e => setFormData({...formData, totalCost: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex-end gap-10 mt-20">
+                    <button type="button" className="btn-ghost" onClick={() => setShowIntakeForm(false)}>{TERMINOLOGY.GENERAL.CANCEL}</button>
+                    <button type="submit" className="btn-primary">{TERMINOLOGY.GENERAL.SAVE}</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          ) : selectedMaterial ? (
+            <div className="sidebar-panel animate-fade-in">
+              <ImagePlaceholder height="180px" label="ITEM PHOTO" />
+              <div className="sidebar-inner">
+                <h3 className="detail-title">{selectedMaterial.name}</h3>
+                <div className="detail-brand">BRAND: {selectedMaterial.brand || 'N/A'}</div>
                 <div className="stock-grid">
                   <div className="stock-box">
-                    <div className="stock-label">STOCK LEVEL</div>
-                    <div className={`stock-value ${selectedMaterial.qty === 0 ? 'text-alert' : ''}`}>{selectedMaterial.qty}</div>
-                    <div className="stock-label">{selectedMaterial.unit.toUpperCase()}</div>
+                    <div className="stock-label">STOCK</div>
+                    <div className="stock-value">{selectedMaterial.qty}</div>
                   </div>
                   <div className="stock-box">
-                    <div className="stock-label">AVG COST</div>
+                    <div className="stock-label">COST</div>
                     <div className="stock-value text-accent">{formatCurrency(selectedMaterial.costPerUnit)}</div>
                   </div>
                 </div>
-                <button onClick={handleQuickRestock} className="btn-primary" style={{width:'100%', marginBottom:'20px'}}>
-                    {selectedMaterial.qty === 0 ? '⚡ URGENT RESTOCK' : '+ RESTOCK THIS ITEM'}
+                <button className="btn-ghost w-full mt-20" onClick={() => setSelectedMaterial(null)}>
+                  {TERMINOLOGY.GENERAL.CLOSE}
                 </button>
-                <button onClick={() => setSelectedMaterial(null)} className="btn-ghost" style={{width:'100%', marginTop:'15px'}}>CLOSE DETAIL</button>
               </div>
             </div>
-          )}
-          
-          {showIntakeForm && (
-             <div className="sidebar-panel" style={{ borderLeftColor: 'var(--neon-purple)' }}>
-               <div className="sidebar-inner">
-                 <form onSubmit={handleSubmitIntake}>
-                   <div style={{marginBottom:'15px'}} className="flex-center">
-                       <input type="checkbox" checked={isExistingItem} onChange={(e) => { setIsExistingItem(e.target.checked); if(!e.target.checked) resetForm(true); }} style={{accentColor:'var(--neon-purple)', marginRight: '10px'}} />
-                       <label className="label-industrial" style={{margin:0, cursor:'pointer'}}>Item already in Locker?</label>
-                   </div>
-                   {isExistingItem && (
-                      <div className="animate-fade-in" style={{marginBottom: '15px'}}>
-                        <select className="input-industrial" value={selectedExistingId} onChange={handleExistingSelect} style={{borderColor:'var(--neon-teal)'}}>
-                          <option value="">-- Select Item --</option>
-                          {[...materials].sort((a,b) => a.name.localeCompare(b.name)).map(m => (<option key={m.id} value={m.id}>{m.name}</option>))}
-                        </select>
-                      </div>
-                   )}
-                   {isExistingItem && currentItemSnapshot && (
-                     <div className="animate-fade-in" style={{background: '#18181b', padding:'15px', borderRadius:'2px', marginBottom:'15px', border:'1px solid #27272a'}}>
-                       <div className="flex-between" style={{marginBottom:'10px'}}>
-                        <div className="text-muted" style={{fontSize:'0.75rem'}}>CURRENT STOCK</div>
-                        <div className="text-good font-bold" style={{fontSize:'0.75rem'}}>{currentItemSnapshot.qty} {currentItemSnapshot.unit}</div>
-                       </div>
-                     </div>
-                   )}
-                   <div className="animate-fade-in">
-                     {!isExistingItem && (
-                       <>
-                         <div className="lab-form-group"><label className="label-industrial">Material Name</label><input className="input-industrial" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} autoFocus /></div>
-                         <div className="lab-form-group"><label className="label-industrial">Category</label><select className="input-industrial" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>{CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
-                       </>
-                     )}
-                     <div style={{background:'rgba(255,255,255,0.05)', padding:'10px', borderRadius:'2px', marginTop:'15px'}}>
-                        <div className="lab-form-row">
-                          <div><label className="label-industrial">Add Qty</label><input type="number" step="0.01" className="input-industrial" placeholder="0" value={formData.qty} onChange={e => setFormData({...formData, qty: e.target.value})} /></div>
-                          <div><label className="label-industrial">Total Cost ($)</label><input type="number" step="0.01" className="input-industrial" placeholder="0.00" value={formData.totalCost} onChange={e => setFormData({...formData, totalCost: e.target.value})} /></div>
-                        </div>
-                        {!isExistingItem && (
-                             <div style={{marginTop:'10px'}}>
-                                 <label className="label-industrial">Unit</label>
-                                 <select className="input-industrial" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})}>{UNITS['Weight'].map(u => <option key={u} value={u}>{u}</option>)}</select>
-                             </div>
-                        )}
-                        {formData.qty && formData.totalCost && <div style={{textAlign:'center', fontSize:'0.7rem', marginTop:'5px'}} className="text-accent">New Unit Cost: <strong>{formatCurrency(formData.totalCost / formData.qty)}</strong></div>}
-                     </div>
-                     <div style={{display:'flex', gap:'10px', marginTop:'20px'}}>
-                         <button type="button" className="btn-ghost" onClick={() => resetForm(false)}>CANCEL</button>
-                         <button type="submit" className="btn-primary" style={{flex:1}}>{isExistingItem ? 'UPDATE STOCK' : 'SAVE ASSET'}</button>
-                     </div>
-                   </div>
-                 </form>
-               </div>
-             </div>
-          )}
-          
-          {!showIntakeForm && !selectedMaterial && (
-            <div>
-               {projectReadiness.length === 0 && <div className="text-muted" style={{padding:'20px', textAlign:'center'}}>All Systems Normal.</div>}
-               {projectReadiness.map(p => {
-                  let statusLabel = 'READY';
-                  let statusClass = 'text-good';
-                  if (p.status === 'LOW STOCK') { statusClass = 'text-warning'; statusLabel = 'LOW'; }
-                  if (p.status === 'HALTED') { statusClass = 'text-alert'; statusLabel = 'HALTED'; }
-                  const isExpanded = expandedProject === p.title;
-
-                  return (
-                    <div key={p.title} className="readiness-card">
-                      <div className="readiness-header" onClick={() => toggleProject(p.title)}>
-                         <div style={{flex:1}}>
-                           <div className="readiness-title">{p.title}</div>
-                           <div style={{fontSize:'0.65rem'}} className={statusClass}>{statusLabel}</div>
-                         </div>
-                         <div>{isExpanded ? <ChevronUp /> : <ChevronDown />}</div>
-                      </div>
-                      {isExpanded && (
-                        <div className="readiness-grid">
-                           {p.materials.map(mat => (
-                             <div key={mat.id} className="readiness-item">
-                                <span className={mat.health === 'GOOD' ? 'text-muted' : 'text-main'}>{mat.name}</span>
-                                <span className={mat.health === 'CRITICAL' ? 'text-alert' : 'text-muted'}>{mat.qty} {mat.unit}</span>
-                             </div>
-                           ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+          ) : (
+            <div className="text-center text-muted pad-20 italic">
+               Select an asset to view technical logs.
             </div>
           )}
         </div>
