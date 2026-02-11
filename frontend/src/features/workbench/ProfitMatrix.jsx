@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext';
-import './ConsoleLayout.css'; 
 import { StatCard } from '../../components/StatCard';
 import { Plus } from '../../components/Icons';
 

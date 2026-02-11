@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext';
-import './ConsoleLayout.css'; 
+import './MarketRadar.css'; 
 
 // --- NEW COMPONENT: LIVE TICKER ---
 const NewsTicker = () => {

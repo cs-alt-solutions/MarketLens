@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWorkbench } from '../../context/WorkbenchContext'; 
 import { ProjectCard } from '../../components/ProjectCard';
 import { Plus, Back, Save, Finance, Box } from '../../components/Icons'; 
+import './Workshop.css';
 
 // --- UNIT CATEGORY DEFINITIONS ---
 const UNIT_GROUPS = {
@@ -109,51 +110,6 @@ export const Workshop = ({ onRequestFullWidth }) => {
 
   return (
     <div className={`radar-grid-layout ${activeProject ? 'layout-full-width' : ''}`}>
-      <style>{`
-        .workshop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 40px; }
-        
-        .studio-layout-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden; 
-        }
-        
-        .studio-container { 
-            display: grid; 
-            grid-template-columns: 350px 1fr; 
-            gap: 25px; 
-            flex: 1; 
-            min-height: 0; 
-            padding-bottom: 20px; 
-        }
-        
-        .studio-col { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            overflow-y: auto; 
-            height: 100%; 
-            padding-right: 5px; 
-            padding-bottom: 40px; 
-        }
-
-        .section-separator {
-           margin: 30px 0 15px 0;
-           border-bottom: 1px solid var(--border-subtle);
-           display: flex;
-           align-items: center;
-        }
-        .separator-label {
-           background: var(--bg-app);
-           padding-right: 15px;
-           color: var(--neon-cyan);
-           font-family: var(--font-mono);
-           font-size: 0.8rem;
-           letter-spacing: 2px;
-           font-weight: 700;
-        }
-      `}</style>
       
       {/* --- VIEW 1: PROJECT HUB --- */}
       {!activeProject && (
@@ -169,7 +125,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
 
             {/* --- ZONE 1: ACTIVE WORKBENCH --- */}
             <div className="section-separator">
-               <span className="separator-label">// ACTIVE WORKBENCH</span>
+               <span className="separator-label">ACTIVE WORKBENCH</span>
             </div>
             
             {activeProjects.length === 0 ? (
@@ -190,7 +146,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
             {catalogProjects.length > 0 && (
                 <>
                     <div className="section-separator" style={{marginTop:'10px'}}>
-                       <span className="separator-label" style={{color:'var(--neon-purple)'}}>// CATALOG ARCHIVE</span>
+                       <span className="separator-label" style={{color:'var(--neon-purple)'}}>CATALOG ARCHIVE</span>
                     </div>
                     <div className="workshop-grid">
                       {catalogProjects.map(p => (
@@ -221,7 +177,6 @@ export const Workshop = ({ onRequestFullWidth }) => {
       )}
 
       {/* --- VIEW 2: THE STUDIO --- */}
-      {/* (Same Studio Code as before) */}
       {activeProject && (
         <div className="animate-fade-in" style={{height:'100%', padding:'30px 40px', display:'flex', flexDirection:'column', overflow:'hidden'}}>
             
