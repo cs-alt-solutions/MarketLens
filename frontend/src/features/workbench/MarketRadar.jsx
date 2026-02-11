@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useWorkbench } from '../../context/WorkbenchContext';
+import { useInventory } from '../../context/InventoryContext'; // UPDATED IMPORT
 import './MarketRadar.css'; 
 
-// --- NEW COMPONENT: LIVE TICKER ---
 const NewsTicker = () => {
   return (
-    <div style={{
-      marginTop: '20px', 
-      background: 'rgba(34, 211, 238, 0.05)', 
-      borderTop: '1px solid var(--neon-cyan)', 
-      borderBottom: '1px solid var(--neon-cyan)',
-      height: '30px',
-      overflow: 'hidden',
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center'
-    }}>
+    <div className="ticker-container">
       <div className="ticker-wrap">
         <div className="ticker-move">
           <span className="ticker-item">:: MARKET UPDATE :: RESIN PRICES UP 4% :: WALNUT WOOD SCARCITY DETECTED :: NEW TREND "CYBER-PLANTS" EMERGING :: SHIPPING DELAYS IN SECTOR 7 ::</span>
@@ -38,26 +27,22 @@ const PerformanceDial = ({ label, value, subtext, color, percent }) => {
   }, [percent, circumference]);
 
   return (
-    <div style={{flex:1, display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '80px'}}>
-       <div style={{position: 'relative', width: '80px', height: '80px', marginBottom: '8px'}}>
-         <svg style={{width:'100%', height:'100%', transform:'rotate(-90deg)'}}>
-           <circle cx="40" cy="40" r={radius} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
+    <div className="dial-wrapper">
+       <div className="dial-svg-container">
+         <svg className="dial-svg">
+           <circle cx="40" cy="40" r={radius} className="dial-bg-circle" />
            <circle 
              cx="40" cy="40" r={radius} 
-             fill="none"
+             className="dial-progress-circle"
              style={{ 
                strokeDasharray: circumference, 
                strokeDashoffset: offset, 
-               stroke: `var(--${color})`, 
-               strokeWidth: 5, 
-               transition: 'stroke-dashoffset 1s ease' 
+               stroke: `var(--${color})` 
              }}
            />
          </svg>
-         <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-           <span style={{color: `var(--${color})`, fontSize: '0.9rem', fontWeight: 800, textShadow: `0 0 10px var(--${color})`}}>
+         <div className="dial-value-text" style={{ color: `var(--${color})`, textShadow: `0 0 10px var(--${color})` }}>
              {value}
-           </span>
          </div>
        </div>
        <div className="label-industrial" style={{marginBottom:'2px', fontSize:'0.6rem'}}>{label}</div>
@@ -67,7 +52,7 @@ const PerformanceDial = ({ label, value, subtext, color, percent }) => {
 };
 
 export const MarketRadar = () => {
-  const { projects } = useWorkbench(); 
+  const { projects, marketInsights } = useInventory(); // UPDATED HOOK
 
   const completedProjects = projects.filter(p => p.status === 'completed');
   const activeProjects = projects.filter(p => p.status === 'active');
@@ -75,13 +60,6 @@ export const MarketRadar = () => {
   const completionRate = projects.length > 0 
     ? Math.round((completedProjects.length / projects.length) * 100) 
     : 0;
-
-  const sections = {
-    viral: { title: "VIRAL VECTORS", color: 'neon-teal', data: [
-      { id: 'tm1', name: "Pet Architecture", growth: "+210%", score: 98, desc: "Modern furniture for pets." },
-      { id: 'tm2', name: "Gothic Home Decor", growth: "+125%", score: 85, desc: "Dark aesthetic pieces." },
-    ]}
-  };
 
   return (
     <div className="radar-grid-layout">
@@ -123,28 +101,23 @@ export const MarketRadar = () => {
                 </div>
              </div>
 
-             {Object.entries(sections).map(([key, config]) => (
-              <React.Fragment key={key}>
-                <div className="label-industrial" style={{marginTop:'20px', marginBottom:'10px', color: `var(--${config.color})`}}>
-                  ● {config.title}
-                </div>
-                <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                  {config.data.map(sector => (
-                    <div key={sector.id} className="panel-industrial hover-glow" style={{minHeight:'auto', borderLeft:`3px solid var(--${config.color})`, cursor:'pointer'}}>
-                      <div className="panel-content" style={{padding:'15px'}}>
-                         <div className="flex-between">
-                           <h3 style={{margin:0, fontSize:'0.95rem'}}>{sector.name}</h3>
-                           <span style={{fontSize:'1rem', fontWeight:800, color:`var(--${config.color})`}}>{sector.growth}</span>
-                         </div>
-                         <p style={{fontSize:'0.75rem', color:'var(--text-muted)', margin:'5px 0 0 0'}}>{sector.desc}</p>
+             <div className="label-industrial" style={{marginTop:'20px', marginBottom:'10px', color: 'var(--neon-teal)'}}>
+               ● VIRAL VECTORS
+             </div>
+             <div style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+               {marketInsights.map(sector => (
+                 <div key={sector.id} className="panel-industrial hover-glow" style={{minHeight:'auto', borderLeft:`3px solid var(--neon-teal)`, cursor:'pointer'}}>
+                   <div className="panel-content" style={{padding:'15px'}}>
+                      <div className="flex-between">
+                        <h3 style={{margin:0, fontSize:'0.95rem'}}>{sector.name}</h3>
+                        <span style={{fontSize:'1rem', fontWeight:800, color:'var(--neon-teal)'}}>{sector.growth}</span>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </React.Fragment>
-            ))}
+                      <p style={{fontSize:'0.75rem', color:'var(--text-muted)', margin:'5px 0 0 0'}}>{sector.desc}</p>
+                   </div>
+                 </div>
+               ))}
+             </div>
             
-            {/* NEW TICKER */}
             <NewsTicker />
         </div>
       </div>

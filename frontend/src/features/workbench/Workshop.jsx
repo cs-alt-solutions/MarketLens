@@ -1,8 +1,9 @@
+/* src/features/workbench/Workshop.jsx */
 import React, { useState, useEffect, useMemo } from 'react';
-import { useWorkbench } from '../../context/WorkbenchContext'; 
+import { useInventory } from '../../context/InventoryContext'; 
 import { ProjectCard } from '../../components/ProjectCard';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder'; 
-import { Plus, Back, Save, Finance, Box, WorkshopIcon, Alert } from '../../components/Icons'; 
+import { Plus, Back, Save, Box } from '../../components/Icons'; 
 import './Workshop.css';
 
 // --- UNIT CATEGORY DEFINITIONS ---
@@ -32,7 +33,8 @@ const calculateRecipeCost = (recipe, materials) => {
 };
 
 export const Workshop = ({ onRequestFullWidth }) => {
-  const { projects, addProject, deleteProject, updateProject, materials, manufactureProduct } = useWorkbench();
+  // FIXED: Using useInventory instead of useWorkbench
+  const { projects, addProject, deleteProject, updateProject, materials, manufactureProduct } = useInventory();
   
   const [activeProject, setActiveProject] = useState(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -93,6 +95,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
         tags, 
         missions, 
         notes, 
+        recipe, // Ensure recipe is saved
         updated_at: new Date().toISOString() 
     };
     updateProject(updated);
@@ -102,7 +105,7 @@ export const Workshop = ({ onRequestFullWidth }) => {
   const handleCompleteProject = () => {
     const result = manufactureProduct(activeProject.id, recipe);
     if (result.success) {
-      updateProject({ ...activeProject, status: 'completed', tags, missions, notes });
+      updateProject({ ...activeProject, status: 'completed', tags, missions, notes, recipe });
       alert(result.message);
       closeStudio();
     } else {
@@ -404,7 +407,6 @@ export const Workshop = ({ onRequestFullWidth }) => {
                                                     onChange={e => updateRecipeUsage(r.id, 'reqPerUnit', e.target.value)} 
                                                     style={{textAlign:'right', width:'40px', color:'var(--neon-cyan)'}} 
                                                 />
-                                                {/* FIXED: Replaced static span with proper selector using unitOptions */}
                                                 <select 
                                                     className="input-chromeless" 
                                                     value={r.unit} 

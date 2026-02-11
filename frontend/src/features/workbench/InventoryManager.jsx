@@ -1,5 +1,6 @@
+/* src/features/workbench/InventoryManager.jsx */
 import React, { useState, useMemo } from 'react';
-import { useWorkbench } from '../../context/WorkbenchContext';
+import { useInventory } from '../../context/InventoryContext'; // FIXED IMPORT
 import './InventoryManager.css';
 import { Box, Alert, Plus, History, ChevronDown, ChevronUp } from '../../components/Icons';
 import { StatCard } from '../../components/StatCard';
@@ -9,7 +10,8 @@ const CATEGORIES = ['Raw Material', 'Packaging', 'Shipping', 'Consumables', 'Har
 const UNITS = { 'Weight': ['lbs', 'oz', 'kg'], 'Volume': ['gal', 'fl oz', 'L'], 'Length': ['ft', 'yd'], 'Count': ['count', 'box', 'ea'] };
 
 export const InventoryManager = () => {
-  const { materials, addAsset, restockAsset, projects } = useWorkbench(); 
+  // FIXED: Hook call
+  const { materials, addAsset, restockAsset, projects } = useInventory(); 
   const [filter, setFilter] = useState('ALL');
   const [expandedProject, setExpandedProject] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);

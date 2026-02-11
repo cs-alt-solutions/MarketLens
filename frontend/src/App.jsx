@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ConsoleLayout } from './features/workbench/ConsoleLayout';
-import { WorkbenchProvider } from './context/WorkbenchContext';
+import { InventoryProvider } from './context/InventoryContext'; // NEW
+import { FinancialProvider } from './context/FinancialContext'; // NEW
 import './styles/global.css';
 
 // Boot Screen Component - Logic Only
@@ -45,13 +46,15 @@ function App() {
   const [booted, setBooted] = useState(false);
 
   return (
-    <WorkbenchProvider>
-      {!booted ? (
-        <BootScreen onComplete={() => setBooted(true)} />
-      ) : (
-        <ConsoleLayout />
-      )}
-    </WorkbenchProvider>
+    <InventoryProvider>
+      <FinancialProvider>
+        {!booted ? (
+          <BootScreen onComplete={() => setBooted(true)} />
+        ) : (
+          <ConsoleLayout />
+        )}
+      </FinancialProvider>
+    </InventoryProvider>
   );
 }
 

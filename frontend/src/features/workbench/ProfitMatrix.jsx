@@ -1,5 +1,7 @@
+/* src/features/workbench/ProfitMatrix.jsx */
 import React, { useState } from 'react';
-import { useWorkbench } from '../../context/WorkbenchContext';
+import { useInventory } from '../../context/InventoryContext'; // FOR PROJECTS
+import { useFinancial } from '../../context/FinancialContext'; // FOR TRANSACTIONS
 import { StatCard } from '../../components/StatCard';
 import { Plus } from '../../components/Icons';
 
@@ -37,7 +39,10 @@ const RevenueChart = () => {
 }
 
 export const ProfitMatrix = () => {
-  const { transactions, addTransaction, projects } = useWorkbench();
+  // FIXED: Using split contexts
+  const { transactions, addTransaction } = useFinancial();
+  const { projects } = useInventory();
+  
   const [isTxnFormOpen, setIsTxnFormOpen] = useState(false);
   
   const [txnForm, setTxnForm] = useState({ 
