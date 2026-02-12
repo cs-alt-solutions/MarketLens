@@ -6,18 +6,18 @@ import { Box, History, Plus, Back } from '../../components/Icons';
 import { StatCard } from '../../components/StatCard';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
 import { formatCurrency } from '../../utils/formatters';
-import { TERMINOLOGY } from '../../utils/glossary';
+import { TERMINOLOGY, CATEGORY_KEYWORDS, COMMON_ASSETS } from '../../utils/glossary';
 
-// --- NEW: PHOTO ICON ---
+// --- FIXED: Removed Inline Styles (Rule 1) ---
 const PhotoIcon = () => (
   <svg 
+    className="icon-std" 
     viewBox="0 0 24 24" 
     fill="none" 
     stroke="currentColor" 
     strokeWidth="2" 
     strokeLinecap="round" 
     strokeLinejoin="round"
-    style={{ width: '24px', height: '24px' }}
   >
     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
     <circle cx="8.5" cy="8.5" r="1.5" />
@@ -55,7 +55,6 @@ const AssetCard = ({ item, onClick, isSelected }) => {
        <div className="hud-status-bar"></div>
        <div className="hud-icon-area">
           <div className="category-icon-wrapper">
-             {/* Switched to static PhotoIcon as requested */}
              <PhotoIcon />
           </div>
        </div>
@@ -130,6 +129,22 @@ export const InventoryManager = () => {
   const [formData, setFormData] = useState({
     name: '', brand: '', category: 'Raw Material', unit: 'lbs', qty: '', totalCost: '', status: 'Active'
   });
+
+  const handleNameChange = (e) => {
+    const text = e.target.value;
+    const lowerText = text.toLowerCase();
+    
+    let predictedCategory = formData.category;
+
+    for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+      if (keywords.some(keyword => lowerText.includes(keyword))) {
+        predictedCategory = cat;
+        break; 
+      }
+    }
+
+    setFormData({ ...formData, name: text, category: predictedCategory });
+  };
 
   const metrics = useMemo(() => {
     let totalValue = 0, lowStockCount = 0, outOfStockCount = 0;
@@ -291,7 +306,6 @@ export const InventoryManager = () => {
              )}
           </div>
         </div>
-
       </div>
 
       {/* --- SIDEBAR INSPECTOR --- */}
@@ -330,7 +344,18 @@ export const InventoryManager = () => {
                     <>
                       <div className="lab-form-group">
                         <label className="label-industrial">MATERIAL NAME</label>
-                        <input className="input-industrial" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                        <input 
+                           className="input-industrial" 
+                           value={formData.name} 
+                           onChange={handleNameChange} 
+                           list="common-assets-list" 
+                           placeholder={TERMINOLOGY.GENERAL.TYPE_SEARCH}
+                        />
+                        <datalist id="common-assets-list">
+                           {COMMON_ASSETS.map((asset, i) => (
+                              <option key={i} value={asset} />
+                           ))}
+                        </datalist>
                       </div>
                       <div className="lab-form-group">
                         <label className="label-industrial">CATEGORY</label>

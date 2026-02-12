@@ -21,6 +21,7 @@ export const TERMINOLOGY = {
     ID_LABEL: "REF-ID",
     MODULES: "SECTIONS",
     SEARCH_PLACEHOLDER: "Search...",
+    TYPE_SEARCH: "Type to search...",
     NO_DATA: "Nothing here yet.",
     BRAND: "BRAND",
     UNITS: "UNITS",
@@ -71,10 +72,10 @@ export const TERMINOLOGY = {
     LAST_EDIT: "LAST EDIT"
   },
   INVENTORY: {
-    HEADER: "RESOURCE DEPOT", // Renamed from SUPPLY LOCKER
+    HEADER: "RESOURCE DEPOT",
     MANIFEST_LABEL: "ALL RESOURCES",
-    SECTION_WORKSHOP: "WORKSHOP INVENTORY", // New Label
-    SECTION_LOGISTICS: "LOGISTICS & PACKAGING", // New Label
+    SECTION_WORKSHOP: "WORKSHOP INVENTORY",
+    SECTION_LOGISTICS: "LOGISTICS & PACKAGING",
     ASSET_DETAILS: "ITEM DETAILS",
     RESTOCK: "UPDATE STOCK",
     INTAKE: "ADD NEW RESOURCE",
@@ -106,3 +107,50 @@ export const TERMINOLOGY = {
     EMPTY_LOGS: "Select an item to view logs."
   }
 };
+
+// --- SMART SEARCH CONFIGURATION ---
+export const CATEGORY_KEYWORDS = {
+  'Raw Material': ['wax', 'oil', 'fragrance', 'scent', 'soy', 'beeswax', 'dye', 'pigment'],
+  'Packaging':    ['jar', 'bottle', 'lid', 'label', 'sticker', 'bag', 'pouch', 'tin'],
+  'Shipping':     ['box', 'mailer', 'bubble', 'tape', 'packing', 'peanut', 'wrap'],
+  'Hardware':     ['wick', 'screw', 'nail', 'rod', 'wire', 'bracket', 'hinge'],
+  'Consumables':  ['glue', 'stain', 'paint', 'varnish', 'sandpaper', 'towel', 'glove'],
+  'Tools':        ['hammer', 'drill', 'mold', 'pitcher', 'thermometer', 'scale'],
+  'Electronics':  ['led', 'battery', 'switch', 'sensor', 'chip', 'board']
+};
+
+// --- NEW: SUGGESTED ASSET NAMES ---
+export const COMMON_ASSETS = [
+    // Raw Materials
+    "Golden Brands 464 Soy Wax",
+    "Igi 6006 Paraffin Blend",
+    "Beeswax Pellets (White)",
+    "Beeswax Pellets (Yellow)",
+    "Coco Apricot Creme Wax",
+    "Fragrance Oil: Santal & Coconut",
+    "Fragrance Oil: Lavender Driftwood",
+    "Fragrance Oil: White Sage",
+    "Liquid Dye: Black",
+    "Liquid Dye: Red",
+
+    // Hardware
+    "CD-12 Cotton Wicks",
+    "ECO-10 Cotton Wicks",
+    "Wooden Wicks (Crackling)",
+    "Wick Stickers",
+    "Warning Labels",
+
+    // Packaging
+    "8oz Amber Glass Jar",
+    "9oz Straight Sided Jar (Clear)",
+    "4oz Gold Tin",
+    "Black Metal Lid (Threaded)",
+    "Bamboo Lid (Suction)",
+
+    // Shipping
+    "4x4x4 Shipping Box",
+    "6x6x6 Shipping Box",
+    "Bubble Mailer (6x10)",
+    "Packing Peanuts (Biodegradable)",
+    "Heavy Duty Packing Tape"
+];
