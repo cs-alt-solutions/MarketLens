@@ -1,21 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
-import { MOCK_PROJECTS } from '../data/mockData';
+import { MOCK_PROJECTS, INITIAL_MATERIALS, INITIAL_INSIGHTS } from '../data/mockData';
 import { convertToStockUnit } from '../utils/units';
-
-// --- INITIAL MOCK DATA ---
-const INITIAL_MATERIALS = [
-  { id: 101, name: 'Soy Wax', brand: 'Golden Brands 464', category: 'Raw Material', qty: 45, unit: 'lbs', costPerUnit: 3.50, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-09', history: [] },
-  { id: 102, name: 'Glass Jars', brand: '8oz Amber', category: 'Packaging', qty: 120, unit: 'count', costPerUnit: 1.10, status: 'Active', usageType: 'Project Component', lastUsed: '2025-11-15', history: [] },
-  { id: 103, name: 'Walnut Stain', brand: 'Minwax Dark', category: 'Consumables', qty: 0.5, unit: 'gal', costPerUnit: 24.00, status: 'Dormant', usageType: 'Project Component', lastUsed: '2025-09-01', history: [] },
-  { id: 104, name: 'Brass Rods', brand: '1/4 Inch Solid', category: 'Hardware', qty: 0, unit: 'ft', costPerUnit: 6.00, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-05', history: [] },
-  { id: 105, name: 'Cotton Wicks', brand: 'CD-12', category: 'Hardware', qty: 500, unit: 'count', costPerUnit: 0.05, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-01', history: [] },
-  { id: 106, name: 'Fragrance Oil', brand: 'Santal & Coconut', category: 'Raw Material', qty: 32, unit: 'oz', costPerUnit: 2.20, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-10', history: [] },
-];
-
-const INITIAL_INSIGHTS = [
-  { id: 'tm1', name: "Pet Architecture", growth: "+210%", score: 98, desc: "Modern furniture for pets." },
-  { id: 'tm2', name: "Gothic Home Decor", growth: "+125%", score: 85, desc: "Dark aesthetic pieces." },
-];
 
 const InventoryContext = createContext();
 
@@ -60,19 +45,23 @@ export const InventoryProvider = ({ children }) => {
         const oldTotalValue = (parseFloat(m.qty) || 0) * m.costPerUnit;
         const newTotalValue = oldTotalValue + parseFloat(totalCost);
         const newUnitCost = newTotalQty > 0 ? newTotalValue / newTotalQty : m.costPerUnit;
-        const historyEntry = { date: new Date().toISOString().split('T')[0], qty: addedQty, unitCost: (totalCost/addedQty), type: 'RESTOCK' };
+        const historyEntry = { 
+            date: new Date().toISOString().split('T')[0], 
+            qty: addedQty, 
+            unitCost: (totalCost/addedQty), 
+            type: 'RESTOCK' 
+        };
         return { ...m, qty: newTotalQty, costPerUnit: newUnitCost, lastUsed: new Date().toISOString().split('T')[0], history: [historyEntry, ...(m.history || [])] };
       }
       return m;
     }));
   };
 
-  // ACTIONS: MANUFACTURING (The Engine)
+  // ACTIONS: MANUFACTURING
   const manufactureProduct = (projectId, recipe, batchSize = 1) => {
     let sufficientStock = true;
     let missingItem = '';
     
-    // Check Stock
     recipe.forEach(item => {
       const mat = materials.find(m => m.id === parseInt(item.matId));
       if (mat) {
@@ -89,7 +78,6 @@ export const InventoryProvider = ({ children }) => {
     let batchCost = 0;
     const today = new Date().toISOString().split('T')[0];
     
-    // Deduct Stock
     setMaterials(prev => prev.map(m => {
       const ingredient = recipe.find(r => r.matId === m.id);
       if (ingredient) {
@@ -100,7 +88,6 @@ export const InventoryProvider = ({ children }) => {
       return m;
     }));
 
-    // Update Project Stock
     setProjects(prev => prev.map(p => 
       p.id === projectId ? { ...p, status: 'active', stockQty: (p.stockQty || 0) + batchSize } : p
     ));

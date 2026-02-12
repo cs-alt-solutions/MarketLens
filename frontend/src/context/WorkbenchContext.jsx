@@ -1,37 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { MOCK_PROJECTS } from '../data/mockData';
-
-// --- INITIAL DATA ---
-const INITIAL_MATERIALS = [
-  { id: 101, name: 'Soy Wax', brand: 'Golden Brands 464', category: 'Raw Material', qty: 45, unit: 'lbs', costPerUnit: 3.50, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-09', history: [] },
-  { id: 102, name: 'Glass Jars', brand: '8oz Amber', category: 'Packaging', qty: 120, unit: 'count', costPerUnit: 1.10, status: 'Active', usageType: 'Project Component', lastUsed: '2025-11-15', history: [] },
-  { id: 103, name: 'Walnut Stain', brand: 'Minwax Dark', category: 'Consumables', qty: 0.5, unit: 'gal', costPerUnit: 24.00, status: 'Dormant', usageType: 'Project Component', lastUsed: '2025-09-01', history: [] },
-  { id: 104, name: 'Brass Rods', brand: '1/4 Inch Solid', category: 'Hardware', qty: 0, unit: 'ft', costPerUnit: 6.00, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-05', history: [] },
-  { id: 105, name: 'Cotton Wicks', brand: 'CD-12', category: 'Hardware', qty: 500, unit: 'count', costPerUnit: 0.05, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-01', history: [] },
-  { id: 106, name: 'Fragrance Oil', brand: 'Santal & Coconut', category: 'Raw Material', qty: 32, unit: 'oz', costPerUnit: 2.20, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-10', history: [] },
-];
-
-const INITIAL_INSIGHTS = [
-  { id: 'tm1', name: "Pet Architecture", growth: "+210%", score: 98, desc: "Modern furniture for pets." },
-  { id: 'tm2', name: "Gothic Home Decor", growth: "+125%", score: 85, desc: "Dark aesthetic pieces." },
-];
-
-const convertToStockUnit = (qty, fromUnit, toUnit) => {
-  if (fromUnit === toUnit) return parseFloat(qty);
-  const val = parseFloat(qty);
-  if (fromUnit === 'oz' && toUnit === 'lbs') return val / 16;
-  if (fromUnit === 'lbs' && toUnit === 'oz') return val * 16;
-  if (fromUnit === 'kg' && toUnit === 'lbs') return val * 2.20462;
-  if (fromUnit === 'g' && toUnit === 'oz') return val * 0.035274;
-  if (fromUnit === 'fl oz' && toUnit === 'gal') return val / 128;
-  if (fromUnit === 'gal' && toUnit === 'fl oz') return val * 128;
-  if (fromUnit === 'ml' && toUnit === 'fl oz') return val / 29.5735;
-  if (fromUnit === 'L' && toUnit === 'gal') return val * 0.264172;
-  if (fromUnit === 'in' && toUnit === 'ft') return val / 12;
-  if (fromUnit === 'ft' && toUnit === 'in') return val * 12;
-  if (fromUnit === 'cm' && toUnit === 'in') return val * 0.393701;
-  return val;
-};
+import { MOCK_PROJECTS, INITIAL_MATERIALS, INITIAL_INSIGHTS } from '../data/mockData';
+import { convertToStockUnit } from '../utils/units';
 
 const WorkbenchContext = createContext();
 
@@ -41,10 +10,8 @@ export const WorkbenchProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
   const [marketInsights, setMarketInsights] = useState(INITIAL_INSIGHTS);
   
-  // NEW: Track the last Etsy API pulse
   const [lastEtsyPulse, setLastEtsyPulse] = useState(localStorage.getItem('lastEtsyPulse') || null);
 
-  // --- SILENT ETSY KEEP-ALIVE LOGIC ---
   useEffect(() => {
     const triggerKeepAlivePulse = () => {
       const thirtyDays = 30 * 24 * 60 * 60 * 1000; 
@@ -52,8 +19,6 @@ export const WorkbenchProvider = ({ children }) => {
       const lastPulseTime = lastEtsyPulse ? new Date(lastEtsyPulse).getTime() : 0;
 
       if (now - lastPulseTime > thirtyDays) {
-        console.log("SYSTEM: Executing Etsy Keep-Alive Pulse...");
-        // This will be replaced with a real fetch to Etsy's API v3 endpoint
         const today = new Date().toISOString();
         localStorage.setItem('lastEtsyPulse', today);
         setLastEtsyPulse(today);
@@ -181,5 +146,4 @@ export const WorkbenchProvider = ({ children }) => {
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useWorkbench = () => useContext(WorkbenchContext);

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+/* src/context/FinancialContext.jsx */
+import React, { createContext, useContext, useState, useMemo } from 'react';
 
 const FinancialContext = createContext();
 
@@ -18,6 +19,26 @@ export const FinancialProvider = ({ children }) => {
       {children}
     </FinancialContext.Provider>
   );
+};
+
+// Phase 3: Financial Logic Engine Hook
+export const useFinancialStats = () => {
+  const { transactions } = useContext(FinancialContext);
+
+  return useMemo(() => {
+    const totalRev = transactions
+      .filter(t => t.amount > 0)
+      .reduce((acc, t) => acc + t.amount, 0);
+
+    const totalCost = transactions
+      .filter(t => t.amount < 0)
+      .reduce((acc, t) => acc + Math.abs(t.amount), 0);
+
+    const netProfit = totalRev - totalCost;
+    const margin = totalRev > 0 ? (netProfit / totalRev) * 100 : 0;
+
+    return { totalRev, totalCost, netProfit, margin, transactions };
+  }, [transactions]);
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
