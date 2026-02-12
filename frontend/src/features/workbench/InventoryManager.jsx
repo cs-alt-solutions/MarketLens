@@ -1,30 +1,35 @@
+/* src/features/workbench/InventoryManager.jsx */
 import React, { useState, useMemo } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import './InventoryManager.css';
-import { Box, History, Plus, Back, Radar, WorkshopIcon, Finance } from '../../components/Icons'; // Import existing icons to reuse
+import { Box, History, Plus, Back } from '../../components/Icons'; 
 import { StatCard } from '../../components/StatCard';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
 import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY } from '../../utils/glossary';
 
-// --- HELPER: CATEGORY ICONS ---
-// We reuse existing icons to create a "tech" feel without needing new assets immediately
-const getCategoryIcon = (category) => {
-  switch (category) {
-    case 'Packaging': return <Box />;
-    case 'Raw Material': return <Radar />; // Sci-fi feel for raw mats
-    case 'Hardware': return <WorkshopIcon />;
-    case 'Consumables': return <Finance />; // Abstract choice
-    default: return <Box />;
-  }
-};
+// --- NEW: PHOTO ICON ---
+const PhotoIcon = () => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    style={{ width: '24px', height: '24px' }}
+  >
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+    <circle cx="8.5" cy="8.5" r="1.5" />
+    <polyline points="21 15 16 10 5 21" />
+  </svg>
+);
 
-// --- SUB-COMPONENT: HUD STRIP (The New Look) ---
+// --- SUB-COMPONENT: HUD STRIP ---
 const AssetCard = ({ item, onClick, isSelected }) => {
   const isLow = item.qty < 10 && item.qty > 0;
   const isOut = item.qty === 0;
   
-  // Status Colors
   let statusColor = 'var(--neon-teal)';
   let statusGlow = 'rgba(45, 212, 191, 0.1)';
   let statusText = 'STOCKED';
@@ -47,18 +52,13 @@ const AssetCard = ({ item, onClick, isSelected }) => {
       onClick={() => onClick(item)}
       style={{ '--status-color': statusColor, '--status-glow': statusGlow }}
     >
-       {/* 1. Status Bar (Left Edge) */}
        <div className="hud-status-bar"></div>
-
-       {/* 2. Visual Identity (Icon or Photo) */}
        <div className="hud-icon-area">
-          {/* We simulate checking for a photo. If none, show the Category Icon */}
           <div className="category-icon-wrapper">
-             {getCategoryIcon(item.category)}
+             {/* Switched to static PhotoIcon as requested */}
+             <PhotoIcon />
           </div>
        </div>
-
-       {/* 3. Data Core (Middle) */}
        <div className="hud-info">
           <div className="flex-between mb-5">
              <span className="hud-brand">{item.brand || 'GENERIC'}</span>
@@ -67,8 +67,6 @@ const AssetCard = ({ item, onClick, isSelected }) => {
           <div className="hud-title">{item.name}</div>
           <div className="hud-cost">{formatCurrency(item.costPerUnit)} <span className="text-muted">/ unit</span></div>
        </div>
-
-       {/* 4. Stock Gauge (Right) */}
        <div className="hud-stats">
           <div className="hud-qty">
              {item.qty} <span className="hud-unit">{item.unit}</span>
@@ -118,6 +116,8 @@ const VaultFolder = ({ title, count, items, onItemClick, stampText }) => {
 };
 
 const CATEGORIES = ['Raw Material', 'Packaging', 'Shipping', 'Consumables', 'Hardware', 'Electronics', 'Tools'];
+const LOGISTICS_CATS = ['Packaging', 'Shipping'];
+const WORKSHOP_CATS = ['Raw Material', 'Consumables', 'Hardware', 'Electronics', 'Tools'];
 
 export const InventoryManager = () => {
   const { materials, addAsset, restockAsset } = useInventory(); 
@@ -131,7 +131,6 @@ export const InventoryManager = () => {
     name: '', brand: '', category: 'Raw Material', unit: 'lbs', qty: '', totalCost: '', status: 'Active'
   });
 
-  // --- LOGIC ---
   const metrics = useMemo(() => {
     let totalValue = 0, lowStockCount = 0, outOfStockCount = 0;
     materials.forEach(m => {
@@ -149,6 +148,14 @@ export const InventoryManager = () => {
     if (filter === 'ALL') return materials;
     return materials.filter(m => m.status.toUpperCase() === filter);
   }, [materials, filter]);
+
+  const workshopItems = useMemo(() => 
+    filteredMaterials.filter(m => WORKSHOP_CATS.includes(m.category)), 
+  [filteredMaterials]);
+  
+  const logisticsItems = useMemo(() => 
+    filteredMaterials.filter(m => LOGISTICS_CATS.includes(m.category)), 
+  [filteredMaterials]);
 
   const vaultGroups = useMemo(() => {
     const groups = {};
@@ -238,25 +245,53 @@ export const InventoryManager = () => {
         </div>
 
         <div className="inventory-metrics">
-           <StatCard label="ASSET VALUE" value={formatCurrency(metrics.totalValue)} glowColor="purple" />
+           <StatCard label={TERMINOLOGY.INVENTORY.VALUE_LABEL} value={formatCurrency(metrics.totalValue)} glowColor="purple" />
            <StatCard label="OUT OF STOCK" value={metrics.outOfStockCount} glowColor={metrics.outOfStockCount > 0 ? 'red' : 'teal'} isAlert={metrics.outOfStockCount > 0} />
            <StatCard label="LOW STOCK" value={metrics.lowStockCount} glowColor={metrics.lowStockCount > 0 ? 'orange' : 'teal'} />
         </div>
 
-        {/* --- HUD STRIP GRID --- */}
+        {/* --- SECTION 1: WORKSHOP --- */}
         <div className="blueprint-section">
-          <div className="floating-manifest-label">{TERMINOLOGY.INVENTORY.MANIFEST_LABEL}</div>
+          <div className="section-separator-inventory">
+             <span className="separator-label-inv">{TERMINOLOGY.INVENTORY.SECTION_WORKSHOP}</span>
+             <div className="separator-line-inv" />
+             <span className="separator-count-inv">{workshopItems.length}</span>
+          </div>
           <div className="locker-grid animate-fade-in">
-             {filteredMaterials.map(m => (
+             {workshopItems.length > 0 ? workshopItems.map(m => (
                 <AssetCard 
                    key={m.id} 
                    item={m} 
                    onClick={setSelectedMaterial}
                    isSelected={selectedMaterial?.id === m.id}
                 />
-             ))}
+             )) : (
+               <div className="text-muted italic">{TERMINOLOGY.GENERAL.NO_DATA}</div>
+             )}
           </div>
         </div>
+
+        {/* --- SECTION 2: LOGISTICS --- */}
+        <div className="blueprint-section">
+          <div className="section-separator-inventory">
+             <span className="separator-label-inv logistics">{TERMINOLOGY.INVENTORY.SECTION_LOGISTICS}</span>
+             <div className="separator-line-inv" />
+             <span className="separator-count-inv">{logisticsItems.length}</span>
+          </div>
+          <div className="locker-grid animate-fade-in">
+             {logisticsItems.length > 0 ? logisticsItems.map(m => (
+                <AssetCard 
+                   key={m.id} 
+                   item={m} 
+                   onClick={setSelectedMaterial}
+                   isSelected={selectedMaterial?.id === m.id}
+                />
+             )) : (
+               <div className="text-muted italic">{TERMINOLOGY.GENERAL.NO_DATA}</div>
+             )}
+          </div>
+        </div>
+
       </div>
 
       {/* --- SIDEBAR INSPECTOR --- */}
@@ -265,7 +300,7 @@ export const InventoryManager = () => {
            <h3 className="label-industrial glow-purple">
              {showIntakeForm ? TERMINOLOGY.INVENTORY.INTAKE : 
               selectedMaterial ? TERMINOLOGY.INVENTORY.ASSET_DETAILS : 
-              "SUPPLY VAULT"}
+              "VAULT ACCESS"}
            </h3>
            {(showIntakeForm || selectedMaterial) && (
                <button onClick={closeSidebarPanel} className="btn-icon" title={TERMINOLOGY.GENERAL.CLOSE}>
@@ -276,7 +311,6 @@ export const InventoryManager = () => {
 
         <div className="keyword-list">
           {showIntakeForm ? (
-            /* --- INTAKE FORM --- */
             <div className="sidebar-panel animate-fade-in">
               <div className="sidebar-inner">
                 <form onSubmit={handleSubmitIntake}>
@@ -324,7 +358,6 @@ export const InventoryManager = () => {
               </div>
             </div>
           ) : selectedMaterial ? (
-            /* --- ASSET DETAIL & HISTORY --- */
             <div className="sidebar-panel animate-fade-in">
               <ImagePlaceholder height="180px" label="ITEM PHOTO" />
               <div className="sidebar-inner">
@@ -372,10 +405,25 @@ export const InventoryManager = () => {
               </div>
             </div>
           ) : (
-            /* --- SUPPLY VAULT (DEFAULT) --- */
             <div className="folder-stack-v2">
-                {Object.keys(vaultGroups).map(cat => (
-                    vaultGroups[cat].length > 0 && (
+                <div className="sidebar-section-header">
+                  {TERMINOLOGY.INVENTORY.SECTION_WORKSHOP}
+                </div>
+                {WORKSHOP_CATS.map(cat => (
+                    vaultGroups[cat]?.length > 0 && (
+                        <VaultFolder 
+                            key={cat} title={cat} count={vaultGroups[cat].length}
+                            items={vaultGroups[cat]} onItemClick={setSelectedMaterial}
+                            stampText={cat.split(' ')[0].toUpperCase()}
+                        />
+                    )
+                ))}
+
+                <div className="sidebar-section-header mt-20">
+                  {TERMINOLOGY.INVENTORY.SECTION_LOGISTICS}
+                </div>
+                {LOGISTICS_CATS.map(cat => (
+                    vaultGroups[cat]?.length > 0 && (
                         <VaultFolder 
                             key={cat} title={cat} count={vaultGroups[cat].length}
                             items={vaultGroups[cat]} onItemClick={setSelectedMaterial}

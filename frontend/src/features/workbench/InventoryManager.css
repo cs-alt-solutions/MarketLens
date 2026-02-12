@@ -1,4 +1,4 @@
-/* uploaded file: src/features/workbench/InventoryManager.css */
+/* src/features/workbench/InventoryManager.css */
 
 /* --- LAYOUTS --- */
 .inventory-layout {
@@ -23,17 +23,19 @@
 /* --- LOCKER GRID --- */
 .blueprint-section { position: relative; margin-top: 40px; padding-bottom: 10px; }
 
+/* UPDATED: Reduced min-width to 300px to encourage 3 columns */
 .locker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 15px;
 }
 
 /* --- HUD STRIP (New Design) --- */
+/* UPDATED: Height reduced to 80px */
 .hud-strip {
   display: flex;
   align-items: center;
-  height: 100px;
+  height: 80px; 
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
   border-radius: 2px;
@@ -62,8 +64,9 @@
 }
 
 /* 2. Icon Area */
+/* UPDATED: Width reduced to 70px */
 .hud-icon-area {
-  width: 90px;
+  width: 70px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -75,7 +78,7 @@
 .category-icon-wrapper {
   color: var(--text-muted);
   opacity: 0.5;
-  transform: scale(1.5);
+  transform: scale(1.2); /* Slightly scaled down from 1.5 */
 }
 .hud-strip:hover .category-icon-wrapper {
   color: var(--status-color);
@@ -85,40 +88,42 @@
 /* 3. Info Area */
 .hud-info {
   flex: 1;
-  padding: 15px;
+  padding: 10px 15px; /* Slightly reduced top/bottom padding */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 0; /* Prevents flex flex overflow */
+  min-width: 0;
 }
 
 .hud-brand {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 .hud-status-text {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 1px;
 }
 
+/* UPDATED: Font size reduced */
 .hud-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 4px 0;
+  margin: 2px 0;
 }
-.hud-cost { font-family: var(--font-mono); font-size: 0.75rem; color: var(--neon-cyan); }
+.hud-cost { font-family: var(--font-mono); font-size: 0.7rem; color: var(--neon-cyan); }
 
 /* 4. Stats Area */
+/* UPDATED: Width reduced to 90px */
 .hud-stats {
-  width: 110px;
-  padding: 15px;
+  width: 90px;
+  padding: 10px 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -128,8 +133,9 @@
   height: 100%;
 }
 
-.hud-qty { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 8px; }
-.hud-unit { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; }
+/* UPDATED: Font size reduced */
+.hud-qty { font-size: 1.2rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+.hud-unit { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
 
 .hud-progress-track {
   width: 100%;
@@ -139,6 +145,28 @@
   overflow: hidden;
 }
 .hud-progress-fill { height: 100%; transition: width 0.5s ease; }
+
+/* --- NEW: SECTION SEPARATORS (MAIN GRID) --- */
+.section-separator-inventory {
+   margin: 30px 0 15px 0;
+   border-bottom: 1px solid var(--border-subtle);
+   display: flex;
+   align-items: center;
+}
+.separator-line-inv { height: 1px; background: var(--border-subtle); flex: 1; }
+.separator-count-inv { font-size: 0.7rem; margin-left: 10px; font-weight: 700; color: var(--text-muted); }
+
+.separator-label-inv {
+   background: var(--bg-app);
+   padding-right: 15px;
+   color: var(--neon-teal);
+   font-family: var(--font-mono);
+   font-size: 0.8rem;
+   letter-spacing: 2px;
+   font-weight: 700;
+   text-transform: uppercase;
+}
+.separator-label-inv.logistics { color: var(--neon-orange); }
 
 /* --- SIDEBAR & UTILS --- */
 .sidebar-col { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
@@ -165,7 +193,33 @@
 .mini-history-table td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-muted); }
 
 /* --- VAULT FOLDER STYLES --- */
-.folder-stack-v2 { padding: 15px; display: flex; flex-direction: column; gap: 25px; }
+.folder-stack-v2 { 
+  padding: 15px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 15px; 
+}
+
+/* NEW: Sidebar Section Headers */
+.sidebar-section-header {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--neon-teal);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+  padding-bottom: 5px;
+  margin-bottom: 5px; 
+  margin-top: 10px;
+}
+.sidebar-section-header:first-of-type { margin-top: 0; }
+.sidebar-section-header:nth-of-type(2) {
+  color: var(--neon-orange);
+  border-bottom-color: rgba(251, 146, 60, 0.2); 
+  margin-top: 25px; 
+}
+
 .vault-main-folder { cursor: pointer; transition: transform 0.2s ease; }
 .vault-main-folder:hover { transform: translateX(-5px); }
 .folder-tab-top { width: 100px; height: 20px; background: var(--bg-panel-header); border: 1px solid var(--border-subtle); border-bottom: none; border-radius: 4px 10px 0 0; display: flex; align-items: center; padding-left: 10px; }
