@@ -69,6 +69,7 @@ body {
 .text-accent { color: var(--neon-cyan) !important; }
 .font-mono { font-family: var(--font-mono); }
 .font-bold { font-weight: 700; }
+.font-small { font-size: 0.75rem; }
 
 /* --- COMPONENTS: PANELS --- */
 .panel-industrial {
@@ -177,23 +178,10 @@ body {
 .filter-btn:hover { color: #f4f4f5; }
 .filter-btn.active { background: #27272a; color: var(--neon-cyan); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
-/* --- BOOT SCREEN STYLES --- */
-.boot-container {
-    height: 100vh; width: 100vw; background: var(--bg-app);
-    display: flex; align-items: center; justify-content: center; flex-direction: column;
-    font-family: var(--font-mono); color: var(--neon-cyan);
-}
-.boot-terminal { width: 300px; text-align: left; }
-.boot-line { margin-bottom: 5px; text-shadow: 0 0 5px var(--neon-cyan); }
-.cursor-blink { 
-    display: inline-block; width: 10px; height: 15px; background: var(--neon-cyan);
-    animation: blink 1s step-end infinite; 
-}
-@keyframes blink { 50% { opacity: 0; } }
-
 /* --- INPUTS --- */
 .lab-form-group { margin-bottom: 20px; }
 .lab-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.input-group-wrapper { position: relative; display: flex; align-items: center; }
 
 /* Standard Input */
 .input-industrial {

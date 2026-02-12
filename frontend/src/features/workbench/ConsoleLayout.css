@@ -1,3 +1,5 @@
+/* src/features/workbench/ConsoleLayout.css */
+
 /* --- MAIN LAYOUT STRUCTURE --- */
 .console-container {
   display: flex;
@@ -44,7 +46,7 @@
   display: flex; 
   flex-direction: column; 
   gap: 5px; 
-  flex: 1; /* Allows compliance footer to sit at bottom */
+  flex: 1; 
 }
 
 .nav-link { 
@@ -65,7 +67,14 @@
   border-color: rgba(34, 211, 238, 0.2); 
 }
 
-.nav-icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+/* UPDATED: Directly target the SVG inside the link */
+.nav-link svg { 
+  width: 20px; 
+  height: 20px; 
+  stroke: currentColor; 
+  fill: none; 
+  stroke-width: 2; 
+}
 
 /* --- ETSY COMPLIANCE FOOTER --- */
 .sidebar-compliance-footer {

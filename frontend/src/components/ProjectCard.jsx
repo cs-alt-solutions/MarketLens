@@ -3,7 +3,6 @@ import './ProjectCard.css';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { TERMINOLOGY } from '../utils/glossary';
 
-// NEW PROP: showStatus (defaults to true for backward compatibility)
 export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, showStatus = true }) => {
   const { title, status, retailPrice, updated_at, stockQty } = project;
 
@@ -22,7 +21,6 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
 
       <div className={`folder-body card-hover-effect ${status === 'completed' ? 'catalog-mode' : ''}`}>
         
-        {/* CONDITIONAL RENDER: Only show stamp if showStatus is true */}
         {showStatus && (
           <div className={`status-stamp ${status}`}>
             {statusLabel}
@@ -41,8 +39,6 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
                 {stockQty || 0} {TERMINOLOGY.GENERAL.UNITS}
               </div>
             </div>
-            {/* If status is hidden (Dashboard view), we might want the progress bar to pulse? 
-                For now, we keep the standard logic. */}
             <div className="progress-track">
               <div className="progress-fill" style={{ width: status === 'completed' ? '100%' : '45%' }}></div>
             </div>
@@ -55,7 +51,7 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
              </div>
              <div className="text-right">
                 <span className="label-industrial">{TERMINOLOGY.WORKSHOP.LAST_EDIT}</span>
-                <div className="text-muted" style={{fontSize: '0.75rem'}}>{formatDate(updated_at)}</div>
+                <div className="text-muted font-small">{formatDate(updated_at)}</div>
              </div>
           </div>
           

@@ -1,9 +1,13 @@
 /* src/components/ImagePlaceholder.jsx */
 import React from 'react';
 import { Plus } from './Icons';
+import { TERMINOLOGY } from '../utils/glossary';
 import './ImagePlaceholder.css';
 
-export const ImagePlaceholder = ({ height = '150px', label = 'ADD PHOTO', onUpload }) => {
+export const ImagePlaceholder = ({ height = '150px', label, onUpload }) => {
+  // Use prop if provided, otherwise fallback to Glossary
+  const displayText = label || TERMINOLOGY.INVENTORY.ADD_PHOTO;
+
   return (
     <div 
       onClick={onUpload}
@@ -24,7 +28,7 @@ export const ImagePlaceholder = ({ height = '150px', label = 'ADD PHOTO', onUplo
            <Plus />
         </div>
         <span className="placeholder-label">
-          {label}
+          {displayText}
         </span>
       </div>
     </div>

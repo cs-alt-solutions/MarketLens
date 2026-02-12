@@ -21,7 +21,7 @@ export const FinancialProvider = ({ children }) => {
   );
 };
 
-// Phase 3: Financial Logic Engine Hook
+/* eslint-disable react-refresh/only-export-components */
 export const useFinancialStats = () => {
   const { transactions } = useContext(FinancialContext);
 
@@ -41,5 +41,5 @@ export const useFinancialStats = () => {
   }, [transactions]);
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useFinancial = () => useContext(FinancialContext);
+/* eslint-enable react-refresh/only-export-components */

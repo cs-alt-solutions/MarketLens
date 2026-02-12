@@ -22,14 +22,14 @@ export const DashboardHome = ({ onNavigate }) => {
     <div className="radar-scroll-area" style={{ position: 'relative' }}>
       <div className="scanline-overlay" />
 
-      <div className="inventory-header" style={{ position: 'relative', zIndex: 2 }}>
+      <div className="inventory-header z-layer-top">
         <div>
           <h2 className="header-title">{TERMINOLOGY.GENERAL.SYSTEMS_LABEL}</h2>
           <span className="header-subtitle">{TERMINOLOGY.WORKSHOP.HUB_SUBTITLE}</span>
         </div>
       </div>
 
-      <div className="inventory-metrics" style={{ position: 'relative', zIndex: 2 }}>
+      <div className="inventory-metrics z-layer-top">
          <StatCard 
             label={TERMINOLOGY.FINANCE.NET} 
             value={<AnimatedNumber value={netProfit} formatter={formatCurrency} />} 
@@ -94,7 +94,7 @@ export const DashboardHome = ({ onNavigate }) => {
         </div>
       </div>
 
-       <div className="mt-20" style={{ position: 'relative', zIndex: 2 }}>
+       <div className="mt-20 z-layer-top">
          <div className="panel-industrial pad-20 flex-between">
             <div className="ticker-container w-full">
                 <div className="ticker-content">

@@ -37,7 +37,7 @@ export const MarketRadar = () => {
              <div className="ticker-wrap">
                 <div className="ticker-move">
                    {[1,2,3,4].map(i => (
-                     <span key={i} className="ticker-item">{TERMINOLOGY.MARKET.SCANNING} | LIVE MARKET DATA ACTIVE</span>
+                     <span key={i} className="ticker-item">{TERMINOLOGY.MARKET.SCANNING} | {TERMINOLOGY.FINANCE.LIVE_STATUS}</span>
                    ))}
                 </div>
              </div>
@@ -48,13 +48,13 @@ export const MarketRadar = () => {
                 <h3 className="label-industrial text-accent">{TERMINOLOGY.MARKET.TARGET}</h3>
                 <form onSubmit={addCompetitor}>
                    <InputGroup 
-                      label="Competitor Name"
+                      label={TERMINOLOGY.MARKET.TARGET_NAME_LABEL}
                       value={newComp.name}
                       onChange={e => setNewComp({...newComp, name: e.target.value})}
-                      placeholder="e.g. NorthFace"
+                      placeholder={TERMINOLOGY.MARKET.TARGET_PLACEHOLDER}
                    />
                    <InputGroup 
-                      label="Their Price"
+                      label={TERMINOLOGY.MARKET.TARGET_PRICE_LABEL}
                       type="number"
                       prefix="$"
                       value={newComp.price}
@@ -68,7 +68,7 @@ export const MarketRadar = () => {
              {competitors.map(c => (
                 <div key={c.id} className="panel-industrial">
                    <div className="h-120 overflow-hidden border-bottom-subtle">
-                      <ImagePlaceholder height="100%" label="PRODUCT IMAGE" />
+                      <ImagePlaceholder height="100%" label={TERMINOLOGY.INVENTORY.PHOTO_LABEL} />
                    </div>
                    <div className="pad-20">
                       <div className="flex-between mb-20">

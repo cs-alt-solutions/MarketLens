@@ -205,7 +205,7 @@ export const InventoryManager = () => {
            <h3 className="label-industrial glow-purple">
              {showIntakeForm ? TERMINOLOGY.INVENTORY.INTAKE : 
               selectedMaterial ? TERMINOLOGY.INVENTORY.ASSET_DETAILS : 
-              "VAULT ACCESS"}
+              TERMINOLOGY.INVENTORY.VAULT_ACCESS}
            </h3>
            {(showIntakeForm || selectedMaterial) && (
                <button onClick={closeSidebarPanel} className="btn-icon" title={TERMINOLOGY.GENERAL.CLOSE}>
@@ -225,7 +225,7 @@ export const InventoryManager = () => {
                   </div>
                   {isExistingItem ? (
                     <div className="lab-form-group">
-                      <label className="label-industrial">SELECT ASSET</label>
+                      <label className="label-industrial">{TERMINOLOGY.INVENTORY.SELECT_ASSET}</label>
                       <select className="input-industrial" value={selectedExistingId} onChange={handleExistingSelect}>
                         <option value="">-- Select Material --</option>
                         {materials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -234,7 +234,7 @@ export const InventoryManager = () => {
                   ) : (
                     <>
                       <div className="lab-form-group">
-                        <label className="label-industrial">MATERIAL NAME</label>
+                        <label className="label-industrial">{TERMINOLOGY.INVENTORY.MATERIAL_NAME}</label>
                         <input 
                            className="input-industrial" 
                            value={formData.name} 
@@ -249,7 +249,7 @@ export const InventoryManager = () => {
                         </datalist>
                       </div>
                       <div className="lab-form-group">
-                        <label className="label-industrial">CATEGORY</label>
+                        <label className="label-industrial">{TERMINOLOGY.GENERAL.CATEGORY}</label>
                         <select className="input-industrial" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
                           {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
@@ -258,11 +258,11 @@ export const InventoryManager = () => {
                   )}
                   <div className="lab-form-row">
                     <div className="lab-form-group">
-                      <label className="label-industrial">ADD QTY</label>
+                      <label className="label-industrial">{TERMINOLOGY.INVENTORY.ADD_QTY}</label>
                       <input type="number" step="0.01" className="input-industrial" value={formData.qty} onChange={e => setFormData({...formData, qty: e.target.value})} />
                     </div>
                     <div className="lab-form-group">
-                      <label className="label-industrial">TOTAL COST</label>
+                      <label className="label-industrial">{TERMINOLOGY.INVENTORY.TOTAL_COST}</label>
                       <input type="number" step="0.01" className="input-industrial" value={formData.totalCost} onChange={e => setFormData({...formData, totalCost: e.target.value})} />
                     </div>
                   </div>
@@ -275,7 +275,7 @@ export const InventoryManager = () => {
             </div>
           ) : selectedMaterial ? (
             <div className="sidebar-panel animate-fade-in">
-              <ImagePlaceholder height="180px" label="ITEM PHOTO" />
+              <ImagePlaceholder height="180px" label={TERMINOLOGY.INVENTORY.PHOTO_LABEL} />
               <div className="sidebar-inner">
                 <h3 className="detail-title">{selectedMaterial.name}</h3>
                 <div className="detail-brand">{TERMINOLOGY.GENERAL.BRAND}: {selectedMaterial.brand || 'N/A'}</div>

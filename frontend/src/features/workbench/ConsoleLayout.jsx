@@ -1,9 +1,13 @@
+/* src/features/workbench/ConsoleLayout.jsx */
 import React, { useState } from 'react';
 import './ConsoleLayout.css'; 
 import { Menu, ChevronLeft } from '../../components/Icons';
 import { TERMINOLOGY, NAV_LINKS } from '../../utils/glossary';
-
-// ... (Sub-components removed for brevity as they are now in their own files)
+import { DashboardHome } from './DashboardHome';
+import { Workshop } from './Workshop';
+import { InventoryManager } from './InventoryManager';
+import { ProfitMatrix } from './ProfitMatrix';
+import { MarketRadar } from './MarketRadar';
 
 export const ConsoleLayout = () => {
   const [activeView, setActiveView] = useState('dashboard'); 
@@ -11,8 +15,21 @@ export const ConsoleLayout = () => {
 
   const handleNavigate = (view) => setActiveView(view);
 
+  // View Router Logic
+  const renderContent = () => {
+    switch (activeView) {
+      case 'dashboard': return <DashboardHome onNavigate={handleNavigate} />;
+      case 'workshop': return <Workshop />;
+      case 'inventory': return <InventoryManager />;
+      case 'matrix': return <ProfitMatrix />;
+      case 'radar': return <MarketRadar />;
+      default: return <DashboardHome onNavigate={handleNavigate} />;
+    }
+  };
+
   return (
     <div className="console-container">
+      {/* SIDEBAR */}
       <div className={`console-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <div className="app-title">
@@ -24,21 +41,38 @@ export const ConsoleLayout = () => {
         </div>
         
         <div className="nav-group">
-          {NAV_LINKS.map(({ id, label, Icon: IconComponent, category }) => (
-            <div 
-              key={id}
-              className={`nav-link ${activeView === id ? 'active' : ''}`}
-              onClick={() => handleNavigate(id)}
-            >
-              <IconComponent />
-              <span className="nav-text">
-                {category ? TERMINOLOGY[category][label] : TERMINOLOGY.GENERAL[label]}
-              </span>
-            </div>
-          ))}
+          {NAV_LINKS.map((navItem) => {
+             // Explicitly grab the Icon component from the config object
+             const IconComponent = navItem.Icon;
+             
+             return (
+              <div 
+                key={navItem.id}
+                className={`nav-link ${activeView === navItem.id ? 'active' : ''}`}
+                onClick={() => handleNavigate(navItem.id)}
+              >
+                <IconComponent />
+                <span className="nav-text">
+                  {navItem.category ? TERMINOLOGY[navItem.category][navItem.label] : TERMINOLOGY.GENERAL[navItem.label]}
+                </span>
+              </div>
+             );
+          })}
+        </div>
+
+        <div className="sidebar-compliance-footer">
+          <p className="compliance-text">
+             CONFIDENTIAL<br />
+             AUTH: C.SULENSKI<br />
+             {TERMINOLOGY.GENERAL.VERSION}
+          </p>
         </div>
       </div>
-      {/* ... (Main Content mapping same as before) */}
+
+      {/* MAIN CONTENT AREA */}
+      <div className="console-main">
+        {renderContent()}
+      </div>
     </div>
   );
 };

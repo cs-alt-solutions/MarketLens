@@ -15,7 +15,7 @@ export const InputGroup = ({
   return (
     <div className="lab-form-group">
       {label && <label className="label-industrial">{label}</label>}
-      <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+      <div className="input-group-wrapper">
         {prefix && (
           <span className="input-prefix">{prefix}</span>
         )}

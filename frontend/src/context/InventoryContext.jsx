@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MOCK_PROJECTS, INITIAL_MATERIALS, INITIAL_INSIGHTS } from '../data/mockData';
 import { convertToStockUnit } from '../utils/units';
 
@@ -8,6 +8,24 @@ export const InventoryProvider = ({ children }) => {
   const [projects, setProjects] = useState(MOCK_PROJECTS.map(p => ({ ...p, stockQty: 0, retailPrice: 0 })));
   const [materials, setMaterials] = useState(INITIAL_MATERIALS);
   const [marketInsights, setMarketInsights] = useState(INITIAL_INSIGHTS);
+  
+  // Migrated from WorkbenchContext
+  const [lastEtsyPulse, setLastEtsyPulse] = useState(localStorage.getItem('lastEtsyPulse') || null);
+
+  useEffect(() => {
+    const triggerKeepAlivePulse = () => {
+      const thirtyDays = 30 * 24 * 60 * 60 * 1000; 
+      const now = Date.now();
+      const lastPulseTime = lastEtsyPulse ? new Date(lastEtsyPulse).getTime() : 0;
+
+      if (now - lastPulseTime > thirtyDays) {
+        const today = new Date().toISOString();
+        localStorage.setItem('lastEtsyPulse', today);
+        setLastEtsyPulse(today);
+      }
+    };
+    triggerKeepAlivePulse();
+  }, [lastEtsyPulse]);
 
   // ACTIONS: PROJECTS
   const addProject = (title) => {
@@ -100,7 +118,8 @@ export const InventoryProvider = ({ children }) => {
       projects, addProject, updateProject, deleteProject,
       materials, addAsset, updateAsset, restockAsset,
       marketInsights, setMarketInsights,
-      manufactureProduct
+      manufactureProduct,
+      lastEtsyPulse
     }}>
       {children}
     </InventoryContext.Provider>

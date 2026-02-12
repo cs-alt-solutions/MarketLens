@@ -1,6 +1,7 @@
 import React from 'react';
 import { PhotoIcon } from './Icons';
 import { formatCurrency } from '../utils/formatters';
+import { TERMINOLOGY } from '../utils/glossary';
 import './AssetCard.css';
 
 export const AssetCard = ({ item, onClick, isSelected }) => {
@@ -9,16 +10,16 @@ export const AssetCard = ({ item, onClick, isSelected }) => {
   
   let statusColor = 'var(--neon-teal)';
   let statusGlow = 'rgba(45, 212, 191, 0.1)';
-  let statusText = 'STOCKED';
+  let statusText = TERMINOLOGY.STATUS.STOCKED;
   
   if (isOut) {
      statusColor = 'var(--neon-red)';
      statusGlow = 'rgba(239, 68, 68, 0.1)';
-     statusText = 'EMPTY';
+     statusText = TERMINOLOGY.STATUS.EMPTY;
   } else if (isLow) {
      statusColor = 'var(--neon-orange)';
      statusGlow = 'rgba(251, 146, 60, 0.1)';
-     statusText = 'LOW';
+     statusText = TERMINOLOGY.STATUS.LOW;
   }
 
   const barWidth = Math.min((item.qty / 100) * 100, 100);

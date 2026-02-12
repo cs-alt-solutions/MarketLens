@@ -1,0 +1,13 @@
+/* src/components/BootScreen.css */
+.boot-container {
+    height: 100vh; width: 100vw; background: var(--bg-app);
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    font-family: var(--font-mono); color: var(--neon-cyan);
+}
+.boot-terminal { width: 300px; text-align: left; }
+.boot-line { margin-bottom: 5px; text-shadow: 0 0 5px var(--neon-cyan); }
+.cursor-blink { 
+    display: inline-block; width: 10px; height: 15px; background: var(--neon-cyan);
+    animation: blink 1s step-end infinite; 
+}
+@keyframes blink { 50% { opacity: 0; } }
