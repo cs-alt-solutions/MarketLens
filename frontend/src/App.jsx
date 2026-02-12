@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { ConsoleLayout } from './features/workbench/ConsoleLayout';
 import { InventoryProvider } from './context/InventoryContext';
 import { FinancialProvider } from './context/FinancialContext';
-import { BootScreen } from './components/BootScreen';
+/* PATH RECALIBRATED: Moved to feedback folder */
+import { BootScreen } from './components/feedback/BootScreen'; 
 import './styles/global.css';
 
 function App() {

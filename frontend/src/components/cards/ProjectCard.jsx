@@ -1,10 +1,9 @@
 import React from 'react';
 import './ProjectCard.css';
-import { formatCurrency, formatDate } from '../../../utils/formatters';
-import { TERMINOLOGY } from '../../../utils/glossary';
-/* NEW ATOMIC IMPORTS */
-import { StatusBadge } from '../../ui/StatusBadge';
-import { ProgressBar } from '../../ui/ProgressBar';
+import { formatCurrency, formatDate } from '../../utils/formatters';
+import { TERMINOLOGY } from '../../utils/glossary';
+import { StatusBadge } from '../ui/StatusBadge';
+import { ProgressBar } from '../ui/ProgressBar';
 
 export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, showStatus = true }) => {
   const { title, status, retailPrice, updated_at, stockQty } = project;
@@ -19,7 +18,7 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
 
       <div className={`folder-body card-hover-effect ${status === 'completed' ? 'catalog-mode' : ''}`}>
         
-        {/* REPLACED: Hardcoded status div with StatusBadge */}
+        {/* FIX: showStatus prop now controls visibility */}
         {showStatus && (
           <div className="status-stamp-wrapper">
              <StatusBadge status={status} />
@@ -40,7 +39,6 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
                 {stockQty || 0} {TERMINOLOGY.GENERAL.UNITS}
               </div>
             </div>
-            {/* REPLACED: Inline progress bar with Atomic ProgressBar */}
             <ProgressBar 
                 value={status === 'completed' ? 100 : 45} 
                 colorVar={status === 'active' ? '--neon-teal' : '--neon-purple'}
@@ -58,11 +56,15 @@ export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, show
              </div>
           </div>
           
-          {!readOnly && (
+          {/* FIX: readOnly and onDelete integrated to resolve ESLint warnings */}
+          {!readOnly && onDelete && (
             <div className="flex-end mt-20">
               <button 
                 className="btn-icon-hover" 
-                onClick={(e) => { e.stopPropagation(); onDelete(e); }}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  onDelete(project.id); 
+                }}
                 title={TERMINOLOGY.GENERAL.DELETE}
               >
                 ×

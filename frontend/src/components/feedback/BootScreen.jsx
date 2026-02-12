@@ -1,4 +1,4 @@
-/* src/components/BootScreen.jsx */
+/* src/components/feedback/BootScreen.jsx */
 import React, { useState, useEffect } from 'react';
 import { TERMINOLOGY } from '../../utils/glossary';
 import './BootScreen.css';

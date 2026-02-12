@@ -1,57 +1,54 @@
+/* src/components/cards/AssetCard.jsx */
 import React from 'react';
-import { PhotoIcon } from './Icons';
+import './AssetCard.css';
+/* PATH RECALIBRATED: Reaching siblings and parents in the new architecture */
+import { Box, AlertOctagon } from '../Icons'; 
 import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY } from '../../utils/glossary';
-import './AssetCard.css';
+/* NEW ATOMIC INTEGRATION */
+import { StatusBadge } from '../ui/StatusBadge';
+import { ProgressBar } from '../ui/ProgressBar';
 
-export const AssetCard = ({ item, onClick, isSelected }) => {
-  const isLow = item.qty < 10 && item.qty > 0;
-  const isOut = item.qty === 0;
-  
-  let statusColor = 'var(--neon-teal)';
-  let statusGlow = 'rgba(45, 212, 191, 0.1)';
-  let statusText = TERMINOLOGY.STATUS.STOCKED;
-  
-  if (isOut) {
-     statusColor = 'var(--neon-red)';
-     statusGlow = 'rgba(239, 68, 68, 0.1)';
-     statusText = TERMINOLOGY.STATUS.EMPTY;
-  } else if (isLow) {
-     statusColor = 'var(--neon-orange)';
-     statusGlow = 'rgba(251, 146, 60, 0.1)';
-     statusText = TERMINOLOGY.STATUS.LOW;
-  }
-
-  const barWidth = Math.min((item.qty / 100) * 100, 100);
+export const AssetCard = ({ asset, onClick }) => {
+  const { name, currentStock, minStock, unitPrice, status } = asset;
+  const isLow = currentStock <= minStock;
 
   return (
-    <div 
-      className={`hud-strip ${isSelected ? 'selected' : ''}`} 
-      onClick={() => onClick(item)}
-      style={{ '--status-color': statusColor, '--status-glow': statusGlow }}
-    >
-       <div className="hud-status-bar"></div>
-       <div className="hud-icon-area">
-          <div className="category-icon-wrapper">
-             <PhotoIcon />
+    <div className={`asset-card-industrial ${isLow ? 'border-warning' : ''}`} onClick={onClick}>
+       <div className="asset-card-header">
+          <div className="flex-center gap-10">
+             <Box className={isLow ? 'text-warning' : 'text-accent'} />
+             <div className="flex-column">
+                <span className="asset-name">{name}</span>
+                {/* FIX: 'status' is now used here, resolving ESLint warning */}
+                <StatusBadge status={status || (isLow ? 'low' : 'active')} />
+             </div>
+          </div>
+          {isLow && <AlertOctagon className="text-warning animate-pulse" />}
+       </div>
+
+       <div className="asset-card-body">
+          <div className="stock-status-row mb-10">
+             <span className="label-industrial">{TERMINOLOGY.INVENTORY.STOCK_LEVEL}</span>
+             <span className={`font-mono font-bold ${isLow ? 'text-warning' : 'text-good'}`}>
+                {currentStock} / {minStock}
+             </span>
+          </div>
+
+          {/* INTEGRATION: Adding the atomic ProgressBar for visual stock tracking */}
+          <ProgressBar 
+            value={currentStock} 
+            max={minStock * 2} 
+            colorVar={isLow ? '--neon-orange' : '--neon-teal'} 
+          />
+
+          <div className="price-tag-row mt-15">
+             <span className="label-industrial">{TERMINOLOGY.INVENTORY.UNIT_COST}</span>
+             <span className="text-accent font-mono">{formatCurrency(unitPrice)}</span>
           </div>
        </div>
-       <div className="hud-info">
-          <div className="flex-between mb-5">
-             <span className="hud-brand">{item.brand || 'GENERIC'}</span>
-             <span className="hud-status-text" style={{ color: statusColor }}>{statusText}</span>
-          </div>
-          <div className="hud-title">{item.name}</div>
-          <div className="hud-cost">{formatCurrency(item.costPerUnit)} <span className="text-muted">/ unit</span></div>
-       </div>
-       <div className="hud-stats">
-          <div className="hud-qty">
-             {item.qty} <span className="hud-unit">{item.unit}</span>
-          </div>
-          <div className="hud-progress-track">
-             <div className="hud-progress-fill" style={{ width: `${barWidth}%`, backgroundColor: statusColor }} />
-          </div>
-       </div>
+       
+       <div className="card-corner-accent" />
     </div>
   );
 };

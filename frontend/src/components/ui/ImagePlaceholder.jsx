@@ -1,36 +1,15 @@
-/* src/components/ImagePlaceholder.jsx */
+/* src/components/ui/ImagePlaceholder.jsx */
 import React from 'react';
-import { Plus } from './Icons';
-import { TERMINOLOGY } from '../../utils/glossary';
+/* PATH RECALIBRATED: Icons is one level up */
+import { Image } from '../Icons'; 
 import './ImagePlaceholder.css';
 
-export const ImagePlaceholder = ({ height = '150px', label, onUpload }) => {
-  // Use prop if provided, otherwise fallback to Glossary
-  const displayText = label || TERMINOLOGY.INVENTORY.ADD_PHOTO;
-
+export const ImagePlaceholder = ({ text = "NO IMAGE DATA" }) => {
   return (
-    <div 
-      onClick={onUpload}
-      className="panel-industrial image-placeholder-container"
-      style={{ height }}
-    >
-      <svg 
-        className="placeholder-bg-icon"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"
-      >
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-        <circle cx="8.5" cy="8.5" r="1.5" />
-        <polyline points="21 15 16 10 5 21" />
-      </svg>
-
-      <div className="placeholder-active-layer">
-        <div className="placeholder-plus-wrapper">
-           <Plus />
-        </div>
-        <span className="placeholder-label">
-          {displayText}
-        </span>
-      </div>
+    <div className="image-placeholder-container">
+      <Image className="placeholder-icon" />
+      <span className="placeholder-text font-mono">{text}</span>
+      <div className="corner-accents" />
     </div>
   );
 };
