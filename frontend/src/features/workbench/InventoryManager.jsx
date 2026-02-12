@@ -1,118 +1,13 @@
-/* src/features/workbench/InventoryManager.jsx */
 import React, { useState, useMemo } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import './InventoryManager.css';
 import { Box, History, Plus, Back } from '../../components/Icons'; 
 import { StatCard } from '../../components/StatCard';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
+import { AssetCard } from '../../components/AssetCard';
+import { VaultFolder } from '../../components/VaultFolder';
 import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, CATEGORY_KEYWORDS, COMMON_ASSETS } from '../../utils/glossary';
-
-// --- FIXED: Removed Inline Styles (Rule 1) ---
-const PhotoIcon = () => (
-  <svg 
-    className="icon-std" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-    <circle cx="8.5" cy="8.5" r="1.5" />
-    <polyline points="21 15 16 10 5 21" />
-  </svg>
-);
-
-// --- SUB-COMPONENT: HUD STRIP ---
-const AssetCard = ({ item, onClick, isSelected }) => {
-  const isLow = item.qty < 10 && item.qty > 0;
-  const isOut = item.qty === 0;
-  
-  let statusColor = 'var(--neon-teal)';
-  let statusGlow = 'rgba(45, 212, 191, 0.1)';
-  let statusText = 'STOCKED';
-  
-  if (isOut) {
-     statusColor = 'var(--neon-red)';
-     statusGlow = 'rgba(239, 68, 68, 0.1)';
-     statusText = 'EMPTY';
-  } else if (isLow) {
-     statusColor = 'var(--neon-orange)';
-     statusGlow = 'rgba(251, 146, 60, 0.1)';
-     statusText = 'LOW';
-  }
-
-  const barWidth = Math.min((item.qty / 100) * 100, 100);
-
-  return (
-    <div 
-      className={`hud-strip ${isSelected ? 'selected' : ''}`} 
-      onClick={() => onClick(item)}
-      style={{ '--status-color': statusColor, '--status-glow': statusGlow }}
-    >
-       <div className="hud-status-bar"></div>
-       <div className="hud-icon-area">
-          <div className="category-icon-wrapper">
-             <PhotoIcon />
-          </div>
-       </div>
-       <div className="hud-info">
-          <div className="flex-between mb-5">
-             <span className="hud-brand">{item.brand || 'GENERIC'}</span>
-             <span className="hud-status-text" style={{ color: statusColor }}>{statusText}</span>
-          </div>
-          <div className="hud-title">{item.name}</div>
-          <div className="hud-cost">{formatCurrency(item.costPerUnit)} <span className="text-muted">/ unit</span></div>
-       </div>
-       <div className="hud-stats">
-          <div className="hud-qty">
-             {item.qty} <span className="hud-unit">{item.unit}</span>
-          </div>
-          <div className="hud-progress-track">
-             <div className="hud-progress-fill" style={{ width: `${barWidth}%`, backgroundColor: statusColor }} />
-          </div>
-       </div>
-    </div>
-  );
-};
-
-// --- SUB-COMPONENT: VAULT FOLDER ---
-const VaultFolder = ({ title, count, items, onItemClick, stampText }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  if (items.length === 0) return null;
-
-  return (
-    <div className={`vault-folder-root ${isOpen ? 'is-open' : ''}`}>
-      <div className="vault-main-folder" onClick={() => setIsOpen(!isOpen)}>
-        <div className="folder-tab-top">
-          <span className="folder-id-tag">{TERMINOLOGY.GENERAL.CATEGORY}</span>
-        </div>
-        <div className="folder-cover-body">
-          <div className="folder-stamp-large">{stampText}</div>
-          <div className="folder-info">
-            <h3 className="folder-title">{title}</h3>
-            <span className="folder-count">{count} {TERMINOLOGY.GENERAL.UNITS}</span>
-          </div>
-          <div className={`folder-chevron ${isOpen ? 'up' : ''}`}>▼</div>
-        </div>
-      </div>
-      {isOpen && (
-        <div className="vault-folder-grid animate-fade-in">
-          {items.map(m => (
-            <div key={m.id} className="mini-vault-card" onClick={() => onItemClick(m)}>
-               <div className="mini-card-meta">
-                  <div className="mini-card-title">{m.name}</div>
-                  <div className="mini-card-id">{m.qty} {m.unit}</div>
-               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 const CATEGORIES = ['Raw Material', 'Packaging', 'Shipping', 'Consumables', 'Hardware', 'Electronics', 'Tools'];
 const LOGISTICS_CATS = ['Packaging', 'Shipping'];
@@ -234,7 +129,6 @@ export const InventoryManager = () => {
 
   return (
     <div className="inventory-layout">
-      {/* --- MAIN LOCKER GRID --- */}
       <div className="inventory-scroll-area">
         <div className="inventory-header">
           <div>
@@ -265,7 +159,6 @@ export const InventoryManager = () => {
            <StatCard label="LOW STOCK" value={metrics.lowStockCount} glowColor={metrics.lowStockCount > 0 ? 'orange' : 'teal'} />
         </div>
 
-        {/* --- SECTION 1: WORKSHOP --- */}
         <div className="blueprint-section">
           <div className="section-separator-inventory">
              <span className="separator-label-inv">{TERMINOLOGY.INVENTORY.SECTION_WORKSHOP}</span>
@@ -286,7 +179,6 @@ export const InventoryManager = () => {
           </div>
         </div>
 
-        {/* --- SECTION 2: LOGISTICS --- */}
         <div className="blueprint-section">
           <div className="section-separator-inventory">
              <span className="separator-label-inv logistics">{TERMINOLOGY.INVENTORY.SECTION_LOGISTICS}</span>
@@ -308,7 +200,6 @@ export const InventoryManager = () => {
         </div>
       </div>
 
-      {/* --- SIDEBAR INSPECTOR --- */}
       <div className="sidebar-col">
          <div className="keyword-header flex-between-center">
            <h3 className="label-industrial glow-purple">

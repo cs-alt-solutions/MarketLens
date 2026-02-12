@@ -1,4 +1,6 @@
 /* src/utils/glossary.js */
+import { DashboardIcon, WorkshopIcon, Box, Finance, Radar } from '../components/Icons';
+
 export const TERMINOLOGY = {
   BOOT: {
     KERNEL: "WAKING SYSTEMS...",
@@ -7,7 +9,6 @@ export const TERMINOLOGY = {
     ASSETS: "LOADING ASSETS...",
     GRANTED: "WELCOME BACK."
   },
-  // NEW SECTION: SYSTEM MODES
   MODES: {
     LIVE: "LIVE DATA ACTIVE",
     SIMULATION: "SIMULATION MODE",
@@ -16,7 +17,7 @@ export const TERMINOLOGY = {
     SYNCING: "SYNCING..."
   },
   GENERAL: {
-    APP_NAME: "SHIFT STUDIO", // Added application name
+    APP_NAME: "SHIFT STUDIO",
     VERSION: "v2.0",
     SYSTEMS_LABEL: "DASHBOARD",
     SAVE: "SAVE WORK",
@@ -58,7 +59,7 @@ export const TERMINOLOGY = {
     EXPENSE: "COSTS",
     NET: "TAKE HOME",
     MARGIN_AVG: "AVG MARGIN",
-    LIVE_STATUS: "LIVE DATA ACTIVE" // Kept for backward compat, but prefer MODES
+    LIVE_STATUS: "LIVE DATA ACTIVE"
   },
   WORKSHOP: {
     HUB_HEADER: "THE WORKSHOP",
@@ -118,7 +119,14 @@ export const TERMINOLOGY = {
   }
 };
 
-// --- SMART SEARCH CONFIGURATION ---
+export const NAV_LINKS = [
+  { id: 'dashboard', label: 'SYSTEMS_LABEL', Icon: DashboardIcon },
+  { id: 'workshop', label: 'HUB_HEADER', Icon: WorkshopIcon, category: 'WORKSHOP' },
+  { id: 'inventory', label: 'HEADER', Icon: Box, category: 'INVENTORY' },
+  { id: 'matrix', label: 'HEADER', Icon: Finance, category: 'FINANCE' },
+  { id: 'radar', label: 'HEADER', Icon: Radar, category: 'MARKET' }
+];
+
 export const CATEGORY_KEYWORDS = {
   'Raw Material': ['wax', 'oil', 'fragrance', 'scent', 'soy', 'beeswax', 'dye', 'pigment'],
   'Packaging':    ['jar', 'bottle', 'lid', 'label', 'sticker', 'bag', 'pouch', 'tin'],

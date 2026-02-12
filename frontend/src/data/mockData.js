@@ -1,3 +1,28 @@
+/* src/data/mockData.js */
+
+export const INITIAL_MATERIALS = [
+  { id: 101, name: 'Soy Wax', brand: 'Golden Brands 464', category: 'Raw Material', qty: 45, unit: 'lbs', costPerUnit: 3.50, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-09', history: [] },
+  { id: 102, name: 'Glass Jars', brand: '8oz Amber', category: 'Packaging', qty: 120, unit: 'count', costPerUnit: 1.10, status: 'Active', usageType: 'Project Component', lastUsed: '2025-11-15', history: [] },
+  { id: 103, name: 'Walnut Stain', brand: 'Minwax Dark', category: 'Consumables', qty: 0.5, unit: 'gal', costPerUnit: 24.00, status: 'Dormant', usageType: 'Project Component', lastUsed: '2025-09-01', history: [] },
+  { id: 104, name: 'Brass Rods', brand: '1/4 Inch Solid', category: 'Hardware', qty: 0, unit: 'ft', costPerUnit: 6.00, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-05', history: [] },
+  { id: 105, name: 'Cotton Wicks', brand: 'CD-12', category: 'Hardware', qty: 500, unit: 'count', costPerUnit: 0.05, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-01', history: [] },
+  { id: 106, name: 'Fragrance Oil', brand: 'Santal & Coconut', category: 'Raw Material', qty: 32, unit: 'oz', costPerUnit: 2.20, status: 'Active', usageType: 'Project Component', lastUsed: '2026-02-10', history: [] },
+];
+
+export const INITIAL_INSIGHTS = [
+  { id: 'tm1', name: "Pet Architecture", growth: "+210%", score: 98, desc: "Modern furniture for pets." },
+  { id: 'tm2', name: "Gothic Home Decor", growth: "+125%", score: 85, desc: "Dark aesthetic pieces." },
+];
+
+export const MARKET_TICKER_DATA = [
+    { label: "SOY WAX", trend: "up", value: "$2.15/lb" },
+    { label: "FRAGRANCE OIL", trend: "neutral", value: "$18.50/lb" },
+    { label: "SHIPPING (DOMESTIC)", trend: "down", value: "$4.20/avg" },
+    { label: "BEESWAX", trend: "up", value: "$8.50/lb" },
+    { label: "GLASS JARS (8oz)", trend: "neutral", value: "$0.85/ea" },
+    { label: "WICKING (CD-12)", trend: "down", value: "$0.05/ea" }
+];
+
 export const MOCK_PROJECTS = [
   { 
     id: 'proj-001', 
@@ -46,7 +71,6 @@ export const MOCK_PROJECTS = [
     tags: ['Lighting', 'Decor'],
     missions: []
   },
-  // --- CATALOGED (COMPLETED) ITEMS ---
   { 
     id: 'proj-002', 
     title: 'Walnut Device Stand', 
@@ -87,7 +111,6 @@ export const MOCK_PROJECTS = [
     tags: ['Lighting', 'Metalwork'],
     missions: []
   },
-  // --- HALTED ITEMS ---
   { 
     id: 'proj-005', 
     title: 'Cyber-Resin Coaster', 

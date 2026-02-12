@@ -2,30 +2,8 @@ import React, { useState } from 'react';
 import './MarketRadar.css';
 import { InputGroup } from '../../components/InputGroup';
 import { ImagePlaceholder } from '../../components/ImagePlaceholder';
+import { Dial } from '../../components/Dial';
 import { TERMINOLOGY } from '../../utils/glossary';
-
-const Dial = ({ value, label, colorVar }) => {
-  const radius = 35;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
-
-  return (
-    <div className="dial-wrapper">
-      <div className="dial-svg-container">
-        <svg className="dial-svg">
-          <circle className="dial-bg-circle" cx="40" cy="40" r={radius} />
-          <circle 
-            className="dial-progress-circle" 
-            cx="40" cy="40" r={radius} 
-            style={{ strokeDasharray: circumference, strokeDashoffset: offset, stroke: `var(${colorVar})` }}
-          />
-        </svg>
-        <div className="dial-value-text">{value}%</div>
-      </div>
-      <span className="label-industrial no-margin">{label}</span>
-    </div>
-  );
-};
 
 export const MarketRadar = () => {
   const [competitors, setCompetitors] = useState([
@@ -59,7 +37,7 @@ export const MarketRadar = () => {
              <div className="ticker-wrap">
                 <div className="ticker-move">
                    {[1,2,3,4].map(i => (
-                     <span key={i} className="ticker-item">{TERMINOLOGY.MARKET.SCANNING} | LIVE MARKET DATA ACTIVE | SYNCING PROTOCOLS...</span>
+                     <span key={i} className="ticker-item">{TERMINOLOGY.MARKET.SCANNING} | LIVE MARKET DATA ACTIVE</span>
                    ))}
                 </div>
              </div>
