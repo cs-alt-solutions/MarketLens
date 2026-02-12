@@ -1,21 +1,141 @@
-/* src/features/inventory/InventoryManager.css */
+/* src/features/workbench/InventoryManager.css */
+
+/* --- MAIN LAYOUT --- */
 .inventory-layout {
     display: grid;
-    grid-template-columns: 260px 1fr; /* Fixed sidebar, fluid main content */
-    gap: 20px;
+    /* FIX: Swapped columns. Main content (1fr) first, Sidebar (350px) second */
+    grid-template-columns: 1fr 350px; 
+    gap: 0; /* Removing gap, using padding inside columns for cleaner borders */
     height: 100%;
     overflow: hidden;
 }
 
-.inventory-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+/* --- LEFT COLUMN: SCROLL AREA --- */
+.inventory-scroll-area {
     overflow-y: auto;
+    padding: 20px 40px;
+    height: 100%;
+    /* Create separation from the sidebar */
+    border-right: 1px solid var(--border-subtle); 
 }
 
-.inventory-main {
+.inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+
+.filter-group {
+    display: flex;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 2px;
+    padding: 2px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1px;
+}
+
+.filter-btn:hover { color: var(--text-main); }
+.filter-btn.active {
+    background: var(--border-subtle);
+    color: var(--neon-cyan);
+    font-weight: 700;
+}
+
+/* --- SEPARATORS --- */
+.section-separator-inventory {
+    display: flex;
+    align-items: center;
+    margin: 40px 0 20px 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 5px;
+}
+
+.separator-label-inv {
+    margin-right: 10px;
+    color: var(--neon-purple);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.separator-label-inv.logistics { color: var(--neon-blue); }
+
+.separator-line-inv { flex: 1; }
+
+.separator-count-inv {
+    margin-left: 10px;
+    background: var(--bg-row-even);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+}
+
+/* --- ASSET GRID --- */
+.locker-grid {
+    display: grid;
+    /* FIX: Responsive grid for asset cards */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    padding-bottom: 40px;
+}
+
+/* --- RIGHT COLUMN: SIDEBAR --- */
+.sidebar-col {
     display: flex;
     flex-direction: column;
-    overflow: hidden; 
+    height: 100%;
+    background: var(--bg-app);
+}
+
+.keyword-header {
+    height: 60px; /* Match global header height */
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.keyword-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* --- DETAIL PANEL (Inside Sidebar) --- */
+.sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-inner { padding-top: 20px; }
+
+.detail-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 10px 0 5px 0;
+    line-height: 1.1;
+}
+
+.detail-brand {
+    font-family: var(--font-mono);
+    color: var(--neon-cyan);
+    font-size: 0.8rem;
+    margin-bottom: 20px;
 }
