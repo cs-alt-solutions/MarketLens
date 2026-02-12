@@ -39,13 +39,12 @@ export const AssetCard = ({ asset, onClick, isSelected }) => {
        <div className="hud-stats">
           <div className="hud-qty">{qty}</div>
           <div className="hud-unit">{unit}</div>
-          <div className="hud-progress-track">
-             <ProgressBar 
-                value={qty} 
-                max={50} 
-                colorVar={isOut ? '--neon-red' : isLow ? '--neon-orange' : '--neon-teal'} 
-             />
-          </div>
+          {/* Rule 3: Removed redundant wrapper div causing double-border glitches */}
+          <ProgressBar 
+              value={qty} 
+              max={50} 
+              colorVar={isOut ? '--neon-red' : isLow ? '--neon-orange' : '--neon-teal'} 
+          />
        </div>
        
        {isOut && (

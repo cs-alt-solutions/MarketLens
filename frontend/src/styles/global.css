@@ -100,6 +100,14 @@ body {
 .text-warning { color: var(--status-warning) !important; }
 .text-alert { color: var(--status-alert) !important; }
 .text-accent { color: var(--neon-cyan) !important; }
+
+/* Explicit Color Classes for StatCards and Dials */
+.text-teal { color: var(--neon-teal) !important; }
+.text-orange { color: var(--neon-orange) !important; }
+.text-purple { color: var(--neon-purple) !important; }
+.text-blue { color: var(--neon-blue) !important; }
+.text-red { color: var(--neon-red) !important; }
+
 .font-mono { font-family: var(--font-mono); }
 .font-bold { font-weight: 700; }
 .font-small { font-size: 0.75rem; }

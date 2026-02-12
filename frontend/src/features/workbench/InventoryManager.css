@@ -10,7 +10,11 @@
   padding: 30px 40px;
 }
 
-.inventory-scroll-area { overflow-y: auto; padding-right: 10px; height: 100%; }
+.inventory-scroll-area { 
+  overflow-y: auto; 
+  padding-right: 10px; 
+  height: 100%; 
+}
 
 /* --- METRICS GRID --- */
 .inventory-metrics {
@@ -21,132 +25,19 @@
 }
 
 /* --- LOCKER GRID --- */
-.blueprint-section { position: relative; margin-top: 40px; padding-bottom: 10px; }
+.blueprint-section { 
+  position: relative; 
+  margin-top: 40px; 
+  padding-bottom: 10px; 
+}
 
-/* UPDATED: Reduced min-width to 300px to encourage 3 columns */
 .locker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 15px;
 }
 
-/* --- HUD STRIP (New Design) --- */
-/* UPDATED: Height reduced to 80px */
-.hud-strip {
-  display: flex;
-  align-items: center;
-  height: 80px; 
-  background: var(--bg-panel);
-  border: 1px solid var(--border-subtle);
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.hud-strip:hover {
-  border-color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.03);
-  transform: translateX(4px);
-}
-.hud-strip.selected {
-  border-color: var(--status-color);
-  background: var(--status-glow);
-}
-
-/* 1. Status Bar */
-.hud-status-bar {
-  width: 4px;
-  height: 100%;
-  background-color: var(--status-color);
-  box-shadow: 0 0 10px var(--status-color);
-}
-
-/* 2. Icon Area */
-/* UPDATED: Width reduced to 70px */
-.hud-icon-area {
-  width: 70px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.3);
-  border-right: 1px solid var(--border-subtle);
-}
-
-.category-icon-wrapper {
-  color: var(--text-muted);
-  opacity: 0.5;
-  transform: scale(1.2); /* Slightly scaled down from 1.5 */
-}
-.hud-strip:hover .category-icon-wrapper {
-  color: var(--status-color);
-  opacity: 1;
-}
-
-/* 3. Info Area */
-.hud-info {
-  flex: 1;
-  padding: 10px 15px; /* Slightly reduced top/bottom padding */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
-
-.hud-brand {
-  font-size: 0.6rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.hud-status-text {
-  font-size: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-/* UPDATED: Font size reduced */
-.hud-title {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 2px 0;
-}
-.hud-cost { font-family: var(--font-mono); font-size: 0.7rem; color: var(--neon-cyan); }
-
-/* 4. Stats Area */
-/* UPDATED: Width reduced to 90px */
-.hud-stats {
-  width: 90px;
-  padding: 10px 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  border-left: 1px solid var(--border-subtle);
-  background: rgba(0,0,0,0.2);
-  height: 100%;
-}
-
-/* UPDATED: Font size reduced */
-.hud-qty { font-size: 1.2rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
-.hud-unit { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
-
-.hud-progress-track {
-  width: 100%;
-  height: 4px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.hud-progress-fill { height: 100%; transition: width 0.5s ease; }
-
-/* --- NEW: SECTION SEPARATORS (MAIN GRID) --- */
+/* --- SECTION SEPARATORS --- */
 .section-separator-inventory {
    margin: 30px 0 15px 0;
    border-bottom: 1px solid var(--border-subtle);
@@ -169,9 +60,22 @@
 .separator-label-inv.logistics { color: var(--neon-orange); }
 
 /* --- SIDEBAR & UTILS --- */
-.sidebar-col { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-.keyword-header { padding: 15px; border-bottom: 1px solid var(--border-subtle); background: var(--bg-panel-header); }
-.keyword-list { padding: 0; overflow-y: auto; flex: 1; }
+.sidebar-col { 
+  display: flex; 
+  flex-direction: column; 
+  height: 100%; 
+  overflow: hidden; 
+}
+.keyword-header { 
+  padding: 15px; 
+  border-bottom: 1px solid var(--border-subtle); 
+  background: var(--bg-panel-header); 
+}
+.keyword-list { 
+  padding: 0; 
+  overflow-y: auto; 
+  flex: 1; 
+}
 
 .sidebar-panel {
   background: rgba(255,255,255,0.02);
@@ -192,7 +96,6 @@
 .mini-history-table th { text-align: left; color: var(--text-muted); padding-bottom: 5px; border-bottom: 1px solid var(--border-subtle); }
 .mini-history-table td { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-muted); }
 
-/* --- VAULT FOLDER STYLES --- */
 .folder-stack-v2 { 
   padding: 15px; 
   display: flex; 
@@ -200,7 +103,7 @@
   gap: 15px; 
 }
 
-/* NEW: Sidebar Section Headers */
+/* Sidebar Section Headers */
 .sidebar-section-header {
   font-family: var(--font-mono);
   font-size: 0.65rem;
@@ -218,28 +121,4 @@
   color: var(--neon-orange);
   border-bottom-color: rgba(251, 146, 60, 0.2); 
   margin-top: 25px; 
-}
-
-.vault-main-folder { cursor: pointer; transition: transform 0.2s ease; }
-.vault-main-folder:hover { transform: translateX(-5px); }
-.folder-tab-top { width: 100px; height: 20px; background: var(--bg-panel-header); border: 1px solid var(--border-subtle); border-bottom: none; border-radius: 4px 10px 0 0; display: flex; align-items: center; padding-left: 10px; }
-.folder-id-tag { font-size: 0.55rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
-.folder-cover-body { background: var(--bg-panel); border: 1px solid var(--border-subtle); height: 100px; position: relative; overflow: hidden; display: flex; align-items: center; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-.folder-info { z-index: 5; }
-.folder-title { margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; }
-.folder-count { font-size: 0.75rem; color: var(--neon-cyan); font-family: var(--font-mono); }
-.folder-stamp-large { position: absolute; font-family: var(--font-mono); font-weight: 900; font-size: 1.8rem; color: var(--neon-purple); opacity: 0.15; transform: rotate(-10deg); border: 3px solid var(--neon-purple); padding: 2px 10px; right: 15px; pointer-events: none; }
-.vault-folder-root.is-open .folder-cover-body { border-bottom: 2px solid var(--neon-purple); }
-.vault-folder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-subtle); border-top: none; }
-.mini-vault-card { background: var(--bg-panel); border: 1px solid var(--border-subtle); cursor: pointer; transition: all 0.2s; }
-.mini-vault-card:hover { border-color: var(--neon-cyan); background: rgba(34, 211, 238, 0.05); }
-.mini-card-meta { padding: 8px; }
-.mini-card-title { font-size: 0.7rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mini-card-id { font-size: 0.6rem; font-family: var(--font-mono); color: var(--text-muted); }
-.folder-chevron { margin-left: auto; font-size: 0.7rem; color: var(--text-muted); transition: transform 0.3s; }
-.folder-chevron.up { transform: rotate(180deg); color: var(--neon-teal); }
-
-.icon-std {
-  width: 24px;
-  height: 24px;
 }

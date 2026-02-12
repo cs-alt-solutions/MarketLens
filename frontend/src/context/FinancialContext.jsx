@@ -1,5 +1,7 @@
 /* src/context/FinancialContext.jsx */
 import React, { createContext, useContext, useState, useMemo } from 'react';
+import { useInventory } from './InventoryContext';
+import { convertToStockUnit } from '../utils/units';
 
 const FinancialContext = createContext();
 
@@ -22,6 +24,37 @@ export const FinancialProvider = ({ children }) => {
 };
 
 /* eslint-disable react-refresh/only-export-components */
+export const useProjectEconomics = (project) => {
+  const { materials } = useInventory();
+  
+  return useMemo(() => {
+    if (!project) return { materialCost: 0, platformFees: 0, totalCost: 0, netProfit: 0, marginPercent: 0 };
+
+    // 1. Calculate Raw Material Cost
+    const materialCost = (project.recipe || []).reduce((total, item) => {
+      const mat = materials.find(m => m.id === item.matId);
+      if (!mat) return total;
+      const qtyInStockUnit = convertToStockUnit(item.reqPerUnit, item.unit, mat.unit);
+      return total + (qtyInStockUnit * mat.costPerUnit);
+    }, 0);
+
+    // 2. Calculate Platform Fees
+    const retail = project.retailPrice || 0;
+    const econ = project.economics || { platformFeePercent: 6.5, platformFixedFee: 0.20 };
+    const platformFees = retail > 0 
+      ? (retail * (econ.platformFeePercent / 100)) + econ.platformFixedFee 
+      : 0;
+
+    // 3. Final Aggregation
+    const shipping = parseFloat(project.economics?.shippingCost) || 0;
+    const totalCost = materialCost + platformFees + shipping;
+    const netProfit = retail - totalCost;
+    const marginPercent = retail > 0 ? (netProfit / retail) * 100 : 0;
+
+    return { materialCost, platformFees, totalCost, netProfit, marginPercent };
+  }, [project, materials]);
+};
+
 export const useFinancialStats = () => {
   const { transactions } = useContext(FinancialContext);
 

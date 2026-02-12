@@ -1,10 +1,10 @@
 /* src/features/workbench/components/ProjectBlueprint.jsx */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import './ProjectBlueprint.css';
 import { useInventory } from '../../../context/InventoryContext';
+import { useProjectEconomics } from '../../../context/FinancialContext';
 import { TERMINOLOGY } from '../../../utils/glossary';
 import { formatCurrency } from '../../../utils/formatters';
-import { convertToStockUnit } from '../../../utils/units';
 import { Save, Box, WorkshopIcon, Radar, Finance } from '../../../components/Icons';
 
 export const ProjectBlueprint = ({ project, onClose }) => {
@@ -18,32 +18,14 @@ export const ProjectBlueprint = ({ project, onClose }) => {
     economics: project.economics || { shippingCost: 0, platformFeePercent: 6.5, platformFixedFee: 0.20 }
   });
   
+  // Rule 3: Math moved to specialized hook
+  const { materialCost, platformFees, netProfit, marginPercent } = useProjectEconomics(localProject);
+
   const [batchSize, setBatchSize] = useState(1);
   const [consoleLogs, setConsoleLogs] = useState([]);
   const [isDirty, setIsDirty] = useState(false);
   const [selectedMatId, setSelectedMatId] = useState('');
   const [reqQty, setReqQty] = useState('');
-
-  const materialCost = useMemo(() => {
-    if (!localProject.recipe || localProject.recipe.length === 0) return 0;
-    return localProject.recipe.reduce((total, item) => {
-      const mat = materials.find(m => m.id === item.matId);
-      if (!mat) return total;
-      const qtyInStockUnit = convertToStockUnit(item.reqPerUnit, item.unit, mat.unit);
-      return total + (qtyInStockUnit * mat.costPerUnit);
-    }, 0);
-  }, [localProject.recipe, materials]);
-
-  const platformFees = useMemo(() => {
-     const retail = localProject.retailPrice || 0;
-     const { platformFeePercent, platformFixedFee } = localProject.economics;
-     if (retail === 0) return 0;
-     return (retail * (platformFeePercent / 100)) + platformFixedFee;
-  }, [localProject.retailPrice, localProject.economics]);
-
-  const totalCost = materialCost + platformFees + (parseFloat(localProject.economics.shippingCost) || 0);
-  const netProfit = (localProject.retailPrice || 0) - totalCost;
-  const marginPercent = localProject.retailPrice > 0 ? (netProfit / localProject.retailPrice) * 100 : 0;
 
   const handleUpdate = (field, value, subField = null) => {
       setIsDirty(true);
