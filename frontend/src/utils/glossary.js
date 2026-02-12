@@ -12,26 +12,25 @@ export const TERMINOLOGY = {
   },
   GENERAL: {
     APP_NAME: "SHIFT STUDIO",
-    VERSION: "v2.0",
-    SYSTEMS_LABEL: "COMMAND CENTER",
+    VERSION: "v2.2",
+    SYSTEMS_LABEL: "DASHBOARD",
     SAVE: "SAVE WORK",
     CLOSE: "EXIT",
     ID_LABEL: "REF-ID",
     UNITS: "UNITS",
     CATEGORY: "CATEGORY",
     ADD: "ADD ASSET",
-    ADD_SMALL: "ADD",
     BRAND: "BRAND",
     DELETE: "DELETE",
     CANCEL: "CANCEL",
     TYPE_SEARCH: "Start typing to search...",
-    NO_DATA: "No data available in this sector.",
+    NO_DATA: "No data available.",
     ANALYZE: "RUN ANALYSIS",
     UNKNOWN: "UNKNOWN"
   },
   DASHBOARD: {
     TELEMETRY: "SYSTEM TELEMETRY",
-    LIVE_FEED: "PRODUCTION STREAM",
+    LIVE_FEED: "PRODUCTION STATUS",
     MARKET_PULSE: "PREDICTIVE RADAR",
     UPTIME: "SYSTEM UPTIME",
     SYNC: "ETSY SYNC STATUS",
@@ -46,7 +45,11 @@ export const TERMINOLOGY = {
     OUT_OF_STOCK: "OUT OF STOCK",
     STOCKED: "STOCKED",
     LOW: "LOW",
-    DORMANT: "DORMANT"
+    DORMANT: "DORMANT",
+    // NEW STATUSES
+    HALTED: "PRODUCTION HALTED",
+    READY_TO_BUILD: "READY TO BUILD",
+    MISSING_INFO: "INCOMPLETE DATA"
   },
   FINANCE: {
     HEADER: "PROFIT MATRIX",
@@ -73,7 +76,12 @@ export const TERMINOLOGY = {
     BOM_HEADER: "BILL OF MATERIALS",
     REF_VISUAL: "SCHEMATIC VIEW",
     TARGET_RETAIL: "TARGET RETAIL",
-    LAST_EDIT: "LAST PULSE"
+    LAST_EDIT: "LAST PULSE",
+    // NEW LABELS
+    TAB_FLEET: "ACTIVE FLEET",
+    TAB_LAB: "THE LAB (R&D)",
+    MISSING: "MISSING:",
+    CAN_BUILD: "CAN BUILD:"
   },
   INVENTORY: {
     HEADER: "RESOURCE DEPOT",
@@ -139,7 +147,6 @@ export const TERMINOLOGY = {
     DEMAND: "DEMAND",
     SATURATION: "SATURATION"
   },
-  // --- NEW LOGISTICS PROTOCOLS ---
   LOGISTICS: {
     TAB: "LOGISTICS",
     CAPACITY: "MAX FULFILLMENT",
@@ -152,7 +159,19 @@ export const TERMINOLOGY = {
   }
 };
 
-// ... Rest of exports (NAV_LINKS, CATEGORY_KEYWORDS, COMMON_ASSETS, MARKET_TICKER_DATA) ...
+export const APP_CONFIG = {
+  PROJECT: {
+    DEFAULT_STATUS: 'draft',
+    STOCK_THRESHOLD: 10,
+    INITIAL_DEMAND: TERMINOLOGY.GENERAL.UNKNOWN,
+    INITIAL_COMPETITION: TERMINOLOGY.GENERAL.UNKNOWN
+  },
+  INVENTORY: {
+    LOGISTICS: ['Packaging', 'Shipping'],
+    WORKSHOP: ['Raw Material', 'Consumables', 'Hardware', 'Electronics', 'Tools']
+  }
+};
+
 export const NAV_LINKS = [
   { id: 'dashboard', label: 'SYSTEMS_LABEL', Icon: DashboardIcon },
   { id: 'workshop', label: 'HUB_HEADER', Icon: WorkshopIcon, category: 'WORKSHOP' },

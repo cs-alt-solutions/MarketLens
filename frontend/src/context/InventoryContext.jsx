@@ -10,6 +10,7 @@ export const InventoryProvider = ({ children }) => {
   const [projects, setProjects] = useState(MOCK_PROJECTS.map(p => ({ ...p, stockQty: 0, retailPrice: 0 })));
   const [materials, setMaterials] = useState(INITIAL_MATERIALS);
   const [marketInsights, setMarketInsights] = useState(INITIAL_INSIGHTS);
+  
   const [lastEtsyPulse, setLastEtsyPulse] = useState(localStorage.getItem('lastEtsyPulse') || null);
 
   useEffect(() => {
@@ -27,10 +28,12 @@ export const InventoryProvider = ({ children }) => {
     triggerKeepAlivePulse();
   }, [lastEtsyPulse]);
 
+  // --- CENTRALIZED LOGIC: FILTERED LISTS ---
   const activeProjects = useMemo(() => projects.filter(p => p.status === 'active'), [projects]);
   const draftProjects = useMemo(() => projects.filter(p => p.status === 'draft'), [projects]);
   const completedProjects = useMemo(() => projects.filter(p => p.status === 'completed'), [projects]);
 
+  // ACTIONS: PROJECTS
   const addProject = (overrides = {}) => {
     const newProj = {
       id: crypto.randomUUID(),
@@ -57,6 +60,7 @@ export const InventoryProvider = ({ children }) => {
     setProjects(prev => prev.filter(p => p.id !== id));
   };
 
+  // ACTIONS: INVENTORY
   const addAsset = (asset) => setMaterials(prev => [asset, ...prev]);
   const updateAsset = (id, updates) => setMaterials(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
   
@@ -79,6 +83,7 @@ export const InventoryProvider = ({ children }) => {
     }));
   };
 
+  // ACTIONS: MANUFACTURING
   const manufactureProduct = (projectId, recipe, batchSize = 1) => {
     let sufficientStock = true;
     let missingItem = '';

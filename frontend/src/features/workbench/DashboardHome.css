@@ -1,64 +1,20 @@
 /* src/features/workbench/DashboardHome.css */
+/* ... (Keep existing Layout, HUD, and Ticker styles) ... */
 
-/* ... (Keep existing layout styles from previous turn) ... */
-
-/* --- NEW: LOGISTICS SIMULATION STYLES --- */
-
-.tab-btn.active.teal { 
-    border-bottom-color: var(--neon-teal); 
-    color: var(--neon-teal); 
-    background: rgba(45, 212, 191, 0.05); 
+/* --- NEW WORKSHOP CARD STYLES --- */
+.tab-btn.active.purple { 
+    border-bottom-color: var(--neon-purple); 
+    color: var(--neon-purple); 
+    background: rgba(167, 139, 250, 0.05); 
 }
 
-.logistics-sim-view {
-    display: flex;
-    flex-direction: column;
-}
+.bg-darker { background: rgba(0,0,0,0.3); }
+.border-subtle { border: 1px solid var(--border-subtle); }
+.opacity-80 { opacity: 0.8; }
+.warning-text { color: var(--neon-orange); font-size: 0.7rem; margin-right: 5px; }
 
-.sim-header {
-    background: linear-gradient(to bottom, rgba(34, 211, 238, 0.05), transparent);
+.dashboard-deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
 }
-
-.sim-big-number {
-    font-size: 2.5rem;
-    font-weight: 800;
-    line-height: 1;
-    margin: 10px 0;
-    font-family: var(--font-mono);
-}
-
-.sim-bottleneck {
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-    margin-top: 5px;
-    padding: 8px;
-    background: rgba(251, 146, 60, 0.1);
-    border: 1px solid rgba(251, 146, 60, 0.2);
-    border-radius: 2px;
-    display: inline-block;
-}
-
-.logistics-divider {
-    height: 1px;
-    background: var(--border-subtle);
-    width: 100%;
-}
-
-.inventory-table.simple th { background: transparent; padding-left: 0; }
-.inventory-table.simple td { padding-left: 0; }
-
-/* ... (Keep existing footer/ticker/util styles) ... */
-
-/* --- RESTORED LAYOUT ESSENTIALS (Ensures no regression) --- */
-.dashboard-container {
-    display: flex; flex-direction: column; height: 100%; overflow: hidden;
-    background: radial-gradient(circle at center, #131316 0%, #000 100%);
-}
-.dashboard-content-scroll { flex: 1; overflow-y: auto; padding: 20px 40px; }
-.hud-top-bar { height: 60px; flex-shrink: 0; display: flex; align-items: center; border-bottom: 1px solid var(--border-subtle); background: rgba(9, 9, 11, 0.95); padding: 0 30px; }
-.dashboard-footer { height: 45px; flex-shrink: 0; display: flex; align-items: center; border-top: 1px solid var(--border-subtle); background: var(--bg-panel-header); }
-.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-@media (min-width: 1200px) {
-    .dashboard-grid { grid-template-columns: 3fr 1fr; align-items: start; }
-}
-.full-height-panel { height: 100%; min-height: 300px; max-height: 600px; }

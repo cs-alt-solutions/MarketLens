@@ -1,0 +1,29 @@
+/* src/components/charts/BarChart.css */
+.bar-chart-container {
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+}
+
+.bar-chart-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.bar-rect {
+    transition: height 0.5s ease-out;
+    opacity: 0.8;
+}
+
+.bar-rect:hover {
+    opacity: 1;
+    filter: brightness(1.2);
+}
+
+.bar-label {
+    fill: var(--text-muted);
+    font-size: 4px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+}
