@@ -19,7 +19,7 @@ export const DashboardHome = ({ onNavigate }) => {
   const outOfStockItems = materials.filter(m => m.qty === 0);
 
   return (
-    <div className="radar-scroll-area" style={{ position: 'relative' }}>
+    <div className="radar-scroll-area">
       <div className="scanline-overlay" />
 
       <div className="inventory-header z-layer-top">
