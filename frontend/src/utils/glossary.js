@@ -7,6 +7,14 @@ export const TERMINOLOGY = {
     ASSETS: "LOADING ASSETS...",
     GRANTED: "WELCOME BACK."
   },
+  // NEW SECTION: SYSTEM MODES
+  MODES: {
+    LIVE: "LIVE DATA ACTIVE",
+    SIMULATION: "SIMULATION MODE",
+    OFFLINE: "SYSTEM OFFLINE",
+    DEMO: "DEMO ENVIRONMENT",
+    SYNCING: "SYNCING..."
+  },
   GENERAL: {
     SYSTEMS_LABEL: "DASHBOARD",
     SAVE: "SAVE WORK",
@@ -48,7 +56,7 @@ export const TERMINOLOGY = {
     EXPENSE: "COSTS",
     NET: "TAKE HOME",
     MARGIN_AVG: "AVG MARGIN",
-    LIVE_STATUS: "Live Data Active"
+    LIVE_STATUS: "LIVE DATA ACTIVE" // Kept for backward compat, but prefer MODES
   },
   WORKSHOP: {
     HUB_HEADER: "THE WORKSHOP",
@@ -119,9 +127,7 @@ export const CATEGORY_KEYWORDS = {
   'Electronics':  ['led', 'battery', 'switch', 'sensor', 'chip', 'board']
 };
 
-// --- NEW: SUGGESTED ASSET NAMES ---
 export const COMMON_ASSETS = [
-    // Raw Materials
     "Golden Brands 464 Soy Wax",
     "Igi 6006 Paraffin Blend",
     "Beeswax Pellets (White)",
@@ -132,22 +138,16 @@ export const COMMON_ASSETS = [
     "Fragrance Oil: White Sage",
     "Liquid Dye: Black",
     "Liquid Dye: Red",
-
-    // Hardware
     "CD-12 Cotton Wicks",
     "ECO-10 Cotton Wicks",
     "Wooden Wicks (Crackling)",
     "Wick Stickers",
     "Warning Labels",
-
-    // Packaging
     "8oz Amber Glass Jar",
     "9oz Straight Sided Jar (Clear)",
     "4oz Gold Tin",
     "Black Metal Lid (Threaded)",
     "Bamboo Lid (Suction)",
-
-    // Shipping
     "4x4x4 Shipping Box",
     "6x6x6 Shipping Box",
     "Bubble Mailer (6x10)",

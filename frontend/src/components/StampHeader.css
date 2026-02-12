@@ -1,0 +1,59 @@
+/* src/components/StampHeader.css */
+
+.stamp-header-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.stamp-header-body {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border: 3px double currentColor;
+  border-radius: 2px;
+  background: var(--bg-panel);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- THE HOLY TRINITY OF STATUS COLORS --- */
+/* Matches .status-stamp.active */
+.stamp-header-body.active {
+  transform: rotate(-2deg); /* Slight tilt for that "stamped" look */
+  color: var(--neon-teal);
+  border-color: var(--neon-teal);
+  text-shadow: 0 0 8px rgba(45, 212, 191, 0.4);
+}
+
+/* Matches .status-stamp.draft */
+.stamp-header-body.draft {
+  transform: rotate(2deg);
+  color: var(--neon-blue);
+  border-color: var(--neon-blue);
+  border-style: solid; /* Drafts are usually solid borders in your CSS */
+}
+
+/* Matches .status-stamp.completed / cataloged */
+.stamp-header-body.completed {
+  transform: rotate(0deg);
+  color: var(--neon-purple);
+  border-color: var(--neon-purple);
+  opacity: 0.8;
+}
+
+/* The horizontal line that extends from the stamp */
+.stamp-header-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--border-subtle), transparent);
+  margin-top: 5px; /* Align visually with center of text */
+}

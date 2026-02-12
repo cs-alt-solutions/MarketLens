@@ -1,0 +1,169 @@
+/* src/features/workbench/DashboardHome.css */
+
+/* --- LAYOUT --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding-bottom: 40px;
+  position: relative;
+  z-index: 2; /* Sit above scanlines */
+}
+
+.dashboard-col-left { display: flex; flex-direction: column; gap: 20px; }
+.dashboard-col-right { display: flex; flex-direction: column; }
+.dashboard-alert-table { width: 100%; }
+
+/* --- 1. THE "ALIVE" ANIMATIONS --- */
+
+/* SLOW BREATH (For Status) */
+@keyframes breathe {
+  0% { opacity: 0.6; text-shadow: 0 0 5px rgba(255, 165, 0, 0.2); }
+  50% { opacity: 1; text-shadow: 0 0 15px rgba(255, 165, 0, 0.8); }
+  100% { opacity: 0.6; text-shadow: 0 0 5px rgba(255, 165, 0, 0.2); }
+}
+.pulse-warning {
+  animation: breathe 3s infinite ease-in-out;
+}
+
+/* RAPID ALERT (For Critical Items) */
+@keyframes flash-alert {
+  0% { color: var(--neon-red); text-shadow: none; }
+  50% { color: #fff; text-shadow: 0 0 10px var(--neon-red); }
+  100% { color: var(--neon-red); text-shadow: none; }
+}
+.pulse-critical {
+  animation: flash-alert 1s infinite step-start;
+  font-weight: 900;
+}
+
+/* --- 2. THE TICKER TAPE (Scrolling Market Data) --- */
+.ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: ticker-scroll 20s linear infinite;
+  padding-left: 100%; /* Start off-screen */
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+
+.ticker-item {
+  display: inline-block;
+  padding: 0 30px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.ticker-value { color: var(--neon-cyan); margin-left: 5px; }
+.ticker-trend-up { color: var(--neon-teal); }
+.ticker-trend-down { color: var(--neon-red); }
+
+
+/* --- 3. BACKGROUND SCANLINES (The "Screen" Effect) --- */
+.scanline-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.2)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+/* src/features/workbench/DashboardHome.css */
+
+/* ... (Previous Styles) ... */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding-bottom: 40px;
+  position: relative;
+  z-index: 2; 
+}
+
+.dashboard-col-left { display: flex; flex-direction: column; gap: 20px; }
+.dashboard-col-right { display: flex; flex-direction: column; }
+.dashboard-alert-table { width: 100%; }
+
+/* --- ANIMATIONS --- */
+
+@keyframes breathe {
+  0% { opacity: 0.6; text-shadow: 0 0 5px rgba(255, 165, 0, 0.2); }
+  50% { opacity: 1; text-shadow: 0 0 15px rgba(255, 165, 0, 0.8); }
+  100% { opacity: 0.6; text-shadow: 0 0 5px rgba(255, 165, 0, 0.2); }
+}
+.pulse-warning { animation: breathe 3s infinite ease-in-out; }
+
+@keyframes flash-alert {
+  0% { color: var(--neon-red); text-shadow: none; }
+  50% { color: #fff; text-shadow: 0 0 10px var(--neon-red); }
+  100% { color: var(--neon-red); text-shadow: none; }
+}
+.pulse-critical { animation: flash-alert 1s infinite step-start; font-weight: 900; }
+
+/* --- TICKER --- */
+.ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+.ticker-content { display: inline-block; animation: ticker-scroll 20s linear infinite; padding-left: 100%; }
+@keyframes ticker-scroll { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+.ticker-item { display: inline-block; padding: 0 30px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+.ticker-value { color: var(--neon-cyan); margin-left: 5px; }
+.ticker-trend-up { color: var(--neon-teal); }
+.ticker-trend-down { color: var(--neon-red); }
+
+/* --- NEW: TYPING HEADER EFFECT --- */
+.typing-header-container {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--neon-cyan);
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem; /* Matches separator-label size */
+  letter-spacing: 1px;
+}
+
+/* The Blinking Cursor */
+.typing-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background-color: var(--neon-cyan);
+  margin-left: 4px;
+  animation: blink-cursor 1s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* --- SCANLINES --- */
+.scanline-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
