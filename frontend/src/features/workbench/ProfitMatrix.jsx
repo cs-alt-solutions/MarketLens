@@ -1,13 +1,14 @@
-/* src/features/workbench/ProfitMatrix.jsx */
+/* src/features/workbench/ProfitMatrix.jsx - REFACTORED */
 import React, { useState } from 'react';
 import { useFinancialStats, useFinancial } from '../../context/FinancialContext';
 import { useInventory } from '../../context/InventoryContext';
 import { StatCard } from '../../components/cards/StatCard';
 import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
 import { RevenueChart } from '../../components/charts/RevenueChart';
+import { SaleModal } from './components/SaleModal'; // NEW COMPONENT
 import { TERMINOLOGY } from '../../utils/glossary';
 import { formatCurrency, formatDate } from '../../utils/formatters';
-import { Plus, Finance } from '../../components/Icons';
+import { Finance } from '../../components/Icons';
 import './ProfitMatrix.css';
 
 export const ProfitMatrix = () => {
@@ -16,46 +17,31 @@ export const ProfitMatrix = () => {
   const { activeProjects, updateProject } = useInventory();
   
   const [showSaleModal, setShowSaleModal] = useState(false);
-  const [saleData, setSaleData] = useState({ projectId: '', qty: 1 });
   const [isProcessing, setIsProcessing] = useState(false);
 
   const sellableProjects = activeProjects.filter(p => p.stockQty > 0);
-  const selectedProject = sellableProjects.find(p => p.id.toString() === saleData.projectId.toString());
-  const expectedRevenue = selectedProject ? (selectedProject.retailPrice * saleData.qty) : 0;
 
-  const handleLogSale = async (e) => {
-      e.preventDefault();
-      if (!selectedProject || saleData.qty < 1) return;
-      
-      setIsProcessing(true);
-      try {
-          const txnResult = await addTransaction({
-              description: `Sold ${saleData.qty}x ${selectedProject.title}`,
-              amount: expectedRevenue,
-              type: 'SALE'
-          });
+  const handleLogSale = async (project, qty, revenue) => {
+    setIsProcessing(true);
+    try {
+      await addTransaction({
+        description: `Sold ${qty}x ${project.title}`,
+        amount: revenue,
+        type: 'SALE'
+      });
 
-          if (!txnResult) {
-              alert("Database Error: Transaction rejected.");
-              return;
-          }
+      await updateProject({
+        id: project.id,
+        stockQty: Math.max(0, project.stockQty - qty),
+        soldQty: (project.soldQty || 0) + parseInt(qty)
+      });
 
-          const newStock = Math.max(0, selectedProject.stockQty - saleData.qty);
-          const newSold = (selectedProject.soldQty || 0) + parseInt(saleData.qty);
-          
-          await updateProject({
-              id: selectedProject.id,
-              stockQty: newStock,
-              soldQty: newSold
-          });
-
-          setShowSaleModal(false);
-          setSaleData({ projectId: '', qty: 1 });
-      } catch (error) {
-          console.error("Critical failure logging sale:", error);
-      } finally {
-          setIsProcessing(false);
-      }
+      setShowSaleModal(false);
+    } catch (error) {
+      console.error("Critical failure logging sale:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -66,7 +52,7 @@ export const ProfitMatrix = () => {
            <span className="header-subtitle">{TERMINOLOGY.FINANCE.SUBTITLE}</span>
         </div>
         <button className="btn-primary flex-center gap-10" onClick={() => setShowSaleModal(true)}>
-            <Finance /> LOG SALE
+            <Finance /> {TERMINOLOGY.FINANCE.LOG_SALE}
         </button>
       </div>
 
@@ -81,11 +67,15 @@ export const ProfitMatrix = () => {
       </div>
 
       <div className="panel-industrial mt-20">
-         <div className="panel-header"><span className="label-industrial">MASTER LEDGER</span></div>
+         <div className="panel-header"><span className="label-industrial">{TERMINOLOGY.FINANCE.LEDGER_HEADER}</span></div>
          <div className="panel-content no-pad">
             <table className="inventory-table">
                <thead>
-                  <tr><th>DATE</th><th>DESCRIPTION</th><th className="text-right">AMOUNT</th></tr>
+                  <tr>
+                    <th>{TERMINOLOGY.FINANCE.TRANSACTION_DATE}</th>
+                    <th>{TERMINOLOGY.GENERAL.BRAND}</th>
+                    <th className="text-right">{TERMINOLOGY.FINANCE.AMOUNT}</th>
+                  </tr>
                </thead>
                <tbody>
                   {transactions.map(t => (
@@ -103,36 +93,12 @@ export const ProfitMatrix = () => {
       </div>
 
       {showSaleModal && (
-        <div className="modal-overlay">
-            <div className="modal-window animate-fade-in" style={{ width: '400px', height: 'auto' }}>
-                <div className="panel-header flex-between">
-                    <span className="font-bold font-large">RECORD SALE</span>
-                </div>
-                <div className="panel-content pad-20 bg-app">
-                    <form onSubmit={handleLogSale}>
-                        <div className="lab-form-group mb-20">
-                            <label className="label-industrial">SELECT PRODUCT</label>
-                            <select className="input-industrial" value={saleData.projectId} onChange={e => setSaleData({...saleData, projectId: e.target.value})} required>
-                                <option value="">-- Choose item --</option>
-                                {sellableProjects.map(p => <option key={p.id} value={p.id}>{p.title} ({p.stockQty} in stock)</option>)}
-                            </select>
-                        </div>
-                        <div className="lab-form-group mb-20">
-                            <label className="label-industrial">QUANTITY SOLD</label>
-                            <input type="number" className="input-industrial text-large font-bold text-center" value={saleData.qty} onChange={e => setSaleData({...saleData, qty: e.target.value})} min="1" required />
-                        </div>
-                        <div className="flex-between bg-row-odd p-15 border-radius-2 border-subtle mb-20">
-                            <span className="label-industrial no-margin text-muted">REVENUE</span>
-                            <span className="text-good font-bold text-large">{formatCurrency(expectedRevenue)}</span>
-                        </div>
-                        <div className="flex-between gap-10">
-                            <button type="button" className="btn-ghost w-full" onClick={() => setShowSaleModal(false)}>CANCEL</button>
-                            <button type="submit" className="btn-primary w-full" disabled={isProcessing || !selectedProject}>CONFIRM SALE</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <SaleModal 
+          projects={sellableProjects}
+          onSave={handleLogSale}
+          onClose={() => setShowSaleModal(false)}
+          isProcessing={isProcessing}
+        />
       )}
     </div>
   );

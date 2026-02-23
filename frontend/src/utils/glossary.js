@@ -25,7 +25,11 @@ export const TERMINOLOGY = {
     TYPE_SEARCH: "Start typing to search...",
     NO_DATA: "No data available yet.",
     ANALYZE: "VIEW DETAILS",
-    UNKNOWN: "UNKNOWN"
+    UNKNOWN: "UNKNOWN",
+    SELECT_PRODUCT: "SELECT PRODUCT",
+    BATCH_SIZE: "BATCH SIZE",
+    RUN_PRODUCTION: "LOG PRODUCTION",
+    CONFIRM: "CONFIRM"
   },
   DASHBOARD: {
     TELEMETRY: "AT A GLANCE",
@@ -63,7 +67,13 @@ export const TERMINOLOGY = {
     DATE: "DATE",
     DESC: "DESCRIPTION",
     AMOUNT: "AMOUNT",
-    EMPTY_LEDGER: "No transactions recorded yet."
+    EMPTY_LEDGER: "No transactions recorded yet.",
+    LOG_SALE: "LOG SALE",
+    RECORD_SALE: "RECORD SALE",
+    QTY_SOLD: "QUANTITY SOLD",
+    EXPECTED_REVENUE: "EXPECTED REVENUE",
+    TRANSACTION_DATE: "DATE",
+    LEDGER_HEADER: "MASTER LEDGER"
   },
   WORKSHOP: {
     HUB_HEADER: "MY PROJECTS",
@@ -78,7 +88,13 @@ export const TERMINOLOGY = {
     TAB_FLEET: "ACTIVE LINEUP",
     TAB_LAB: "DRAFTS & IDEAS",
     MISSING: "TO DO:",
-    CAN_BUILD: "CAN MAKE:"
+    CAN_BUILD: "CAN MAKE:",
+    ASSEMBLY_GUIDE: "ASSEMBLY GUIDE (SOP)",
+    STEP_PLACEHOLDER: "Step description...",
+    LABEL_SIZE: "LABEL SIZE",
+    HEX_COLOR: "HEX COLOR",
+    PRIMARY_FONT: "PRIMARY FONT",
+    MAKER_NOTES: "MAKER NOTES"
   },
   INVENTORY: {
     HEADER: "SUPPLIES & INVENTORY",
