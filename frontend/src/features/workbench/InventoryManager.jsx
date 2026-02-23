@@ -25,7 +25,7 @@ export const InventoryManager = () => {
       const val = (m.qty || 0) * m.costPerUnit;
       if (m.status !== 'Discontinued') totalValue += val;
       if (m.status === 'Active') {
-        if (m.qty === 0) outOfStockCount++;
+        if (m.qty <= 0) outOfStockCount++;
         else if (m.qty < 10) lowStockCount++;
       }
     });
@@ -155,6 +155,26 @@ export const InventoryManager = () => {
                 <div className="history-section mt-20">
                     <div className="label-industrial text-teal border-bottom-subtle mb-10 pb-5">
                        <History /> {TERMINOLOGY.INVENTORY.HISTORY_LOG}
+                    </div>
+                    
+                    <div className="history-list flex-col gap-10 mt-10">
+                        {selectedMaterial.history && selectedMaterial.history.length > 0 ? (
+                            selectedMaterial.history.map((log, idx) => (
+                                <div key={idx} className="flex-between p-10 bg-row-odd border-radius-2 border-subtle">
+                                    <div className="flex-col gap-5">
+                                        <span className="label-industrial no-margin">{new Date(log.date).toLocaleDateString()}</span>
+                                        <span className="font-bold font-small text-main">
+                                            {log.type === 'USAGE' ? log.note : (log.type === 'RESTOCK' ? 'Restocked Supply' : 'Initial Intake')}
+                                        </span>
+                                    </div>
+                                    <div className={`font-bold ${log.qty > 0 ? 'text-good' : 'text-warning'}`}>
+                                        {log.qty > 0 ? '+' : ''}{log.qty} <span className="font-small">{selectedMaterial.unit}</span>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-muted italic font-small">No transaction history.</div>
+                        )}
                     </div>
                 </div>
 

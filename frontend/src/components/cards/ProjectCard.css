@@ -163,3 +163,29 @@
   color: var(--neon-red); 
   transform: scale(1.1); 
 }
+/* --- CLEANUP UTILITIES --- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: var(--bg-row-odd);
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+}
+
+.metric-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.border-top-dashed {
+    border-top: 1px dashed var(--border-subtle);
+}

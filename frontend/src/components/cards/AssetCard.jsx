@@ -1,62 +1,43 @@
 /* src/components/cards/AssetCard.jsx */
 import React from 'react';
 import './AssetCard.css';
-import { Box } from '../Icons'; 
 import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY } from '../../utils/glossary';
-import { ProgressBar } from '../ui/ProgressBar';
-import { useInventory } from '../../context/InventoryContext';
 
 export const AssetCard = ({ asset, onClick, isSelected }) => {
-  const { STOCK_THRESHOLD } = useInventory();
-  const { name, qty, costPerUnit, status, brand, unit } = asset;
+  const { name, category, qty, unit, costPerUnit } = asset;
   
-  const isLow = qty > 0 && qty < STOCK_THRESHOLD;
-  const isOut = qty === 0;
-  const isDormant = status === 'Dormant';
+  // Determine stock status for border/glow coloring
+  let statusClass = 'status-good';
+  if (qty === 0) statusClass = 'status-alert';
+  else if (qty < 10) statusClass = 'status-warning';
 
   return (
     <div 
-      className={`hud-strip ${isLow ? 'border-warning' : isOut ? 'border-alert' : ''} ${isDormant ? 'status-dormant' : ''} ${isSelected ? 'selected' : ''}`} 
-      onClick={onClick}
+        className={`asset-card ${isSelected ? 'selected' : ''} ${statusClass}`}
+        onClick={onClick}
     >
-       <div 
-          className="hud-status-bar" 
-          style={{ backgroundColor: isOut ? 'var(--neon-red)' : isLow ? 'var(--neon-orange)' : 'var(--neon-teal)' }} 
-       />
-       
-       <div className="hud-icon-area">
-          <div className="category-icon-wrapper">
-             <Box />
-          </div>
-       </div>
-
-       <div className="hud-info">
-          <span className="hud-brand">{brand || 'N/A'}</span>
-          <h3 className="hud-title">{name}</h3>
-          <div className="hud-cost">{formatCurrency(costPerUnit)} / {unit}</div>
-       </div>
-
-       <div className="hud-stats">
-          <div className="hud-qty">{qty}</div>
-          <div className="hud-unit">{unit}</div>
-          <ProgressBar 
-              value={qty} 
-              max={50} 
-              colorVar={isOut ? '--neon-red' : isLow ? '--neon-orange' : '--neon-teal'} 
-          />
-       </div>
-       
-       {isOut && (
-          <div className="status-stamp active alert-stamp">
-              {TERMINOLOGY.STATUS.OUT_OF_STOCK}
-          </div>
-       )}
-       {isDormant && !isOut && (
-          <div className="status-stamp active dormant-stamp">
-              {TERMINOLOGY.STATUS.ON_HOLD}
-          </div>
-       )}
+      <div className="asset-header">
+         <span className="label-industrial">{category}</span>
+         {qty <= 0 && <span className="text-alert font-small font-bold">{TERMINOLOGY.STATUS.OUT_OF_STOCK}</span>}
+      </div>
+      
+      <h3 className="asset-title">{name}</h3>
+      
+      <div className="asset-metrics">
+         <div className="metric-col">
+            <span className="label-industrial">{TERMINOLOGY.BLUEPRINT.STOCK}</span>
+            <div className={`metric-value ${qty > 0 ? 'text-accent' : 'text-alert'}`}>
+                {qty} <span className="font-small text-muted">{unit}</span>
+            </div>
+         </div>
+         <div className="metric-col text-right">
+            <span className="label-industrial">{TERMINOLOGY.INVENTORY.UNIT_PRICE}</span>
+            <div className="metric-value text-good">
+                {formatCurrency(costPerUnit)}
+            </div>
+         </div>
+      </div>
     </div>
   );
 };

@@ -224,3 +224,27 @@ body {
     background-color: var(--status-dormant);
 }
 .status-indicator-dot.active { background-color: var(--neon-teal); box-shadow: 0 0 5px var(--neon-teal); }
+
+/* --- FORM INPUTS --- */
+.input-industrial {
+  background: var(--bg-row-odd);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.input-industrial:focus {
+  border-color: var(--neon-teal);
+  background: rgba(45, 212, 191, 0.05);
+}
+
+textarea.input-industrial {
+  resize: vertical;
+  min-height: 80px;
+}

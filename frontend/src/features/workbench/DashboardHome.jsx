@@ -5,6 +5,7 @@ import { useFinancialStats } from '../../context/FinancialContext';
 import { StatCard } from '../../components/cards/StatCard';
 import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
 import { BarChart } from '../../components/charts/BarChart';
+import { ProjectBlueprint } from './components/ProjectBlueprint'; // <-- NEW IMPORT
 import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, MARKET_TICKER_DATA } from '../../utils/glossary'; 
 import { Alert, History, Box, Finance, WorkshopIcon, Radar } from '../../components/Icons';
@@ -12,7 +13,6 @@ import './DashboardHome.css';
 import { convertToStockUnit } from '../../utils/units';
 
 export const DashboardHome = ({ onNavigate }) => {
-  // FIX 1: Provide default empty arrays and pull the loading state
   const { 
     activeProjects = [], 
     draftProjects = [], 
@@ -29,6 +29,7 @@ export const DashboardHome = ({ onNavigate }) => {
   
   const [workshopTab, setWorkshopTab] = useState('FLEET'); 
   const [invTab, setInvTab] = useState('LOGISTICS'); 
+  const [selectedProject, setSelectedProject] = useState(null); // <-- NEW STATE FOR MODAL
 
   // --- ENGINE 1: CROSS-REFERENCE & PRODUCTION HEALTH ---
   const fleetAnalysis = useMemo(() => {
@@ -86,7 +87,7 @@ export const DashboardHome = ({ onNavigate }) => {
     const STAGNANT_THRESHOLD_DAYS = 30;
 
     const inv = materials.reduce((acc, m) => {
-      if (m.qty === 0) acc.out.push(m);
+      if (m.qty <= 0) acc.out.push(m);
       else if (m.qty < 10) acc.low.push(m);
       else acc.good.push(m);
 
@@ -101,7 +102,7 @@ export const DashboardHome = ({ onNavigate }) => {
       return acc;
     }, { out: [], low: [], good: [], stagnant: [] });
 
-    const shippingItems = materials.filter(m => m.category === 'Shipping');
+    const shippingItems = materials.filter(m => m.category === 'Shipping' || m.category === 'Packaging');
     let maxShipments = 9999;
     let limitingFactor = 'None';
     
@@ -129,11 +130,10 @@ export const DashboardHome = ({ onNavigate }) => {
 
   const productionChartData = fleetAnalysis.map(p => ({ label: p.title.substring(0,6), value: p.stockQty }));
 
-  // FIX 2: Our Loading Gatekeeper
   if (inventoryLoading || financeLoading) {
     return (
-      <div className="dashboard-container pad-20 text-center">
-         <div className="text-accent font-mono mt-20">INITIALIZING STUDIO TELEMETRY...</div>
+      <div className="dashboard-container pad-20 text-center flex-center h-full">
+         <div className="text-accent font-mono mt-20">{TERMINOLOGY.BOOT.KERNEL}</div>
       </div>
     );
   }
@@ -203,23 +203,33 @@ export const DashboardHome = ({ onNavigate }) => {
                         </div>
 
                         {fleetAnalysis.map(p => (
-                            <div key={p.id} className="panel-industrial pad-20 clickable hover-glow" onClick={() => onNavigate('workshop')}>
-                                <div className="flex-between mb-10">
-                                    <span className="font-bold">{p.title}</span>
-                                    <span className={`font-mono font-small ${p.health === 'CRITICAL' ? 'text-alert' : 'text-good'}`}>
-                                        {p.stockQty} {TERMINOLOGY.GENERAL.UNITS}
-                                    </span>
+                            <div key={p.id} className="panel-industrial pad-20 clickable hover-glow" onClick={() => setSelectedProject(p)}>
+                                <div className="font-bold mb-15" style={{ fontSize: '1.1rem' }}>{p.title}</div>
+                                
+                                <div className="flex-between bg-row-odd p-10 border-radius-2 border-subtle font-mono">
+                                    <div className="flex-col">
+                                        <span className="text-muted mb-5 font-small">IN STOCK</span>
+                                        <span className={`font-bold text-large ${p.health === 'CRITICAL' ? 'text-alert' : 'text-main'}`}>
+                                            {p.stockQty || 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex-col text-center border-left-subtle border-right-subtle px-15" style={{ padding: '0 20px', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+                                        <span className="text-muted mb-5 font-small">SOLD</span>
+                                        <span className="text-good font-bold text-large">
+                                            {p.soldQty || 0}
+                                        </span>
+                                    </div>
+                                    <div className="flex-col text-right">
+                                        <span className="text-muted mb-5 font-small">{TERMINOLOGY.WORKSHOP.CAN_BUILD}</span>
+                                        <span className={`font-bold text-large ${p.productionStatus === 'HALTED' ? 'text-alert' : 'text-accent'}`}>
+                                            {p.productionStatus === 'HALTED' ? '0' : `+${p.maxBuildable}`}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="logistics-divider mb-10" />
-                                <div className="flex-between font-small">
-                                    <span className="text-muted">{TERMINOLOGY.WORKSHOP.CAN_BUILD}</span>
-                                    <span className={p.productionStatus === 'HALTED' ? 'text-alert font-bold' : 'text-accent'}>
-                                        {p.productionStatus === 'HALTED' ? '0 (HALTED)' : `+${p.maxBuildable}`}
-                                    </span>
-                                </div>
+
                                 {p.productionStatus === 'HALTED' && p.limitingMaterial && (
-                                    <div className="mt-10 font-small text-alert">
-                                        ⚠ Low: {p.limitingMaterial}
+                                    <div className="mt-15 font-small text-alert flex-center gap-5 justify-start">
+                                        <Alert /> Bottleneck: Need more {p.limitingMaterial}
                                     </div>
                                 )}
                             </div>
@@ -230,17 +240,17 @@ export const DashboardHome = ({ onNavigate }) => {
                 {workshopTab === 'LAB' && (
                     <div className="dashboard-deck">
                         {draftAnalysis.map(p => (
-                            <div key={p.id} className="panel-industrial pad-20 opacity-80 clickable hover-glow" onClick={() => onNavigate('workshop')}>
+                            <div key={p.id} className="panel-industrial pad-20 opacity-80 clickable hover-glow" onClick={() => setSelectedProject(p)}>
                                 <div className="flex-between mb-5">
                                     <span className="font-bold text-muted">{p.title}</span>
                                     <span className="label-industrial no-margin">{TERMINOLOGY.STATUS.DRAFT}</span>
                                 </div>
-                                <div className="mt-10 p-10 bg-darker border-subtle">
+                                <div className="mt-10 p-10 bg-darker border-subtle border-radius-2">
                                     <div className="font-small text-warning mb-5">{TERMINOLOGY.WORKSHOP.MISSING}</div>
-                                    <div className="flex-wrap gap-5">
+                                    <div className="flex-wrap gap-5 flex-center justify-start">
                                         {p.missing.length > 0 ? p.missing.map(m => (
                                             <span key={m} className="status-indicator-dot warning-text">{m}</span>
-                                        )) : <span className="text-good">Ready to Launch!</span>}
+                                        )) : <span className="text-good font-small">Ready for Production!</span>}
                                     </div>
                                 </div>
                             </div>
@@ -277,9 +287,10 @@ export const DashboardHome = ({ onNavigate }) => {
                                         {Math.floor(logisticsIntel.maxShipments)} <span className="text-muted font-small">PACKAGES</span>
                                     </div>
                                     {logisticsIntel.maxShipments < 50 && (
-                                        <div className="sim-bottleneck">
-                                            <span className="text-warning">⚠ {TERMINOLOGY.LOGISTICS.BOTTLENECK}:</span>
-                                            <span className="font-bold ml-5">{logisticsIntel.limitingFactor}</span>
+                                        <div className="sim-bottleneck mt-10">
+                                            <span className="text-warning font-small flex-center gap-5 justify-start">
+                                                <Alert /> {TERMINOLOGY.LOGISTICS.BOTTLENECK}: {logisticsIntel.limitingFactor}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
@@ -289,7 +300,7 @@ export const DashboardHome = ({ onNavigate }) => {
                                     {logisticsIntel.shippingItems.map(m => (
                                         <div key={m.id} className="flex-between mb-5 font-small">
                                             <span>{m.name}</span>
-                                            <span className={m.qty < 20 ? 'text-alert' : 'text-good'}>{m.qty}</span>
+                                            <span className={m.qty < 20 ? 'text-alert font-bold' : 'text-good font-bold'}>{m.qty}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -308,7 +319,7 @@ export const DashboardHome = ({ onNavigate }) => {
                                         ))}
                                     </tbody>
                                 </table>
-                            ) : <div className="good-state pad-20 font-mono text-center text-good">NOMINAL</div>
+                            ) : <div className="good-state pad-20 font-mono text-center text-good">ALL SUPPLIES NOMINAL</div>
                         )}
                     </div>
                 </div>
@@ -333,6 +344,15 @@ export const DashboardHome = ({ onNavigate }) => {
             </div>
          </div>
       </div>
+
+      {/* --- THE MODAL OVERLAY --- */}
+      {selectedProject && (
+        <ProjectBlueprint 
+          project={selectedProject} 
+          onClose={() => setSelectedProject(null)} 
+        />
+      )}
+
     </div>
   );
 };

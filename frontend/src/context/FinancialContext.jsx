@@ -1,5 +1,6 @@
 /* src/context/FinancialContext.jsx */
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect, useCallback } from 'react';
+import { supabase } from '../supabaseClient';
 import { useInventory } from './InventoryContext';
 import { convertToStockUnit } from '../utils/units';
 
@@ -7,15 +8,53 @@ const FinancialContext = createContext();
 
 export const FinancialProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const addTransaction = (txn) => {
-    const newTxn = { id: Date.now(), date: new Date().toISOString().split('T')[0], ...txn };
-    setTransactions(prev => [newTxn, ...prev]);
+  const fetchTransactions = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setTransactions(data || []);
+    } catch (err) {
+      console.error("Supabase Error fetching transactions:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
+  const addTransaction = async (txn) => {
+    const newTxn = { 
+        date: new Date().toISOString(), 
+        ...txn 
+    };
+    
+    const { data, error } = await supabase
+        .from('transactions')
+        .insert([newTxn])
+        .select();
+        
+    if (error) {
+        console.error("Supabase Error adding transaction:", error);
+        return null;
+    }
+    if (data) {
+        setTransactions(prev => [data[0], ...prev]);
+        return data[0];
+    }
   };
 
   return (
     <FinancialContext.Provider value={{
-      transactions, addTransaction
+      transactions, addTransaction, fetchTransactions, loading
     }}>
       {children}
     </FinancialContext.Provider>
