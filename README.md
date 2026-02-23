@@ -1,4 +1,4 @@
-# MarketLens
+# Shift Studio
 **Project Owner:** Alternative Solutions
 **Status:** Alpha / Setup
 
