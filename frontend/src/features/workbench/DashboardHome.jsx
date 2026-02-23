@@ -1,16 +1,33 @@
 /* src/features/workbench/DashboardHome.jsx */
 import React, { useState, useMemo } from 'react';
+import './DashboardHome.css';
+
+// Context & Utils
 import { useInventory } from '../../context/InventoryContext';
 import { useFinancialStats } from '../../context/FinancialContext';
-import { StatCard } from '../../components/cards/StatCard';
-import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
-import { BarChart } from '../../components/charts/BarChart';
-import { ProjectBlueprint } from './components/ProjectBlueprint'; // <-- NEW IMPORT
 import { formatCurrency } from '../../utils/formatters';
-import { TERMINOLOGY, MARKET_TICKER_DATA } from '../../utils/glossary'; 
-import { Alert, History, Box, Finance, WorkshopIcon, Radar } from '../../components/Icons';
-import './DashboardHome.css'; 
 import { convertToStockUnit } from '../../utils/units';
+import { TERMINOLOGY, MARKET_TICKER_DATA } from '../../utils/glossary';
+
+// Components
+import { StatCard } from '../../components/cards/StatCard';
+import { BarChart } from '../../components/charts/BarChart';
+import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
+import { MarketTicker } from '../../components/MarketTicker'; 
+import { ProjectBlueprint } from './components/ProjectBlueprint';
+
+// Icons
+import { 
+  Alert, 
+  Package, 
+  DollarSign, 
+  TrendingUp, 
+  WorkshopIcon, 
+  Finance, 
+  History,
+  Box,
+  Radar
+} from '../../components/Icons';
 
 export const DashboardHome = ({ onNavigate }) => {
   const { 
@@ -29,7 +46,7 @@ export const DashboardHome = ({ onNavigate }) => {
   
   const [workshopTab, setWorkshopTab] = useState('FLEET'); 
   const [invTab, setInvTab] = useState('LOGISTICS'); 
-  const [selectedProject, setSelectedProject] = useState(null); // <-- NEW STATE FOR MODAL
+  const [selectedProject, setSelectedProject] = useState(null);
 
   // --- ENGINE 1: CROSS-REFERENCE & PRODUCTION HEALTH ---
   const fleetAnalysis = useMemo(() => {
@@ -49,9 +66,7 @@ export const DashboardHome = ({ onNavigate }) => {
                     }
                 }
             });
-        } else {
-            maxBuildable = 0; 
-        }
+        } else { maxBuildable = 0; }
         
         let health = 'GOOD';
         if (p.stockQty === 0) health = 'CRITICAL';
@@ -70,37 +85,27 @@ export const DashboardHome = ({ onNavigate }) => {
     });
   }, [activeProjects, materials]);
 
-  // --- ENGINE 2: DRAFT DIAGNOSTICS ---
-  const draftAnalysis = useMemo(() => {
-      return draftProjects.map(p => {
-          const missing = [];
-          if (!p.retailPrice) missing.push("Price");
-          if (!p.tags || p.tags.length === 0) missing.push("Tags");
-          if (!p.recipe || p.recipe.length === 0) missing.push("Recipe");
-          return { ...p, missing };
-      });
-  }, [draftProjects]);
+  // --- ENGINE 2: LIVE TICKER DATA ---
+  const liveTickerData = useMemo(() => {
+    // Combine top materials from inventory with global market trends
+    const materialTrends = materials.slice(0, 3).map(m => ({
+      label: m.name,
+      value: `${formatCurrency(m.unitPrice)}/${m.unit}`,
+      trend: 'neutral'
+    }));
+    
+    return [...materialTrends, ...MARKET_TICKER_DATA];
+  }, [materials]);
 
-  // --- ENGINE 3: LOGISTICS ---
+  // --- ENGINE 3: LOGISTICS INTEL ---
   const { inventoryIntel, logisticsIntel } = useMemo(() => {
     const today = new Date();
-    const STAGNANT_THRESHOLD_DAYS = 30;
-
     const inv = materials.reduce((acc, m) => {
       if (m.qty <= 0) acc.out.push(m);
       else if (m.qty < 10) acc.low.push(m);
       else acc.good.push(m);
-
-      if (m.lastUsed) {
-        const lastDate = new Date(m.lastUsed);
-        const diffTime = Math.abs(today - lastDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays > STAGNANT_THRESHOLD_DAYS && m.qty > 0) {
-          acc.stagnant.push({ ...m, daysInactive: diffDays });
-        }
-      }
       return acc;
-    }, { out: [], low: [], good: [], stagnant: [] });
+    }, { out: [], low: [], good: [] });
 
     const shippingItems = materials.filter(m => m.category === 'Shipping' || m.category === 'Packaging');
     let maxShipments = 9999;
@@ -120,11 +125,10 @@ export const DashboardHome = ({ onNavigate }) => {
             limitingFactor = items.length > 0 ? items[0].name : type.name;
         }
     });
-    if (shippingItems.length === 0) { maxShipments = 0; limitingFactor = "No Data"; }
 
     return { 
         inventoryIntel: inv, 
-        logisticsIntel: { maxShipments, limitingFactor, shippingItems } 
+        logisticsIntel: { maxShipments: shippingItems.length === 0 ? 0 : maxShipments, limitingFactor, shippingItems } 
     };
   }, [materials]);
 
@@ -140,9 +144,7 @@ export const DashboardHome = ({ onNavigate }) => {
 
   return (
     <div className="dashboard-container">
-      <div className="scanline-overlay" />
-
-      {/* --- SECTOR A: HUD --- */}
+      {/* --- HUD TOP BAR --- */}
       <div className="hud-top-bar z-layer-top">
         <div className="hud-metric-group">
             <div className="hud-label text-muted">{TERMINOLOGY.FINANCE.REVENUE}</div>
@@ -166,7 +168,8 @@ export const DashboardHome = ({ onNavigate }) => {
         </div>
         <div className="hud-spacer" />
         <div className="hud-status">
-            <span className="status-indicator-dot active"></span> {TERMINOLOGY.DASHBOARD.TELEMETRY}: ONLINE
+            <span className="status-indicator-dot active"></span> 
+            {TERMINOLOGY.DASHBOARD.TELEMETRY}: ONLINE
         </div>
       </div>
 
@@ -186,7 +189,7 @@ export const DashboardHome = ({ onNavigate }) => {
                         className={`tab-btn ${workshopTab === 'LAB' ? 'active dormant' : ''}`}
                         onClick={() => setWorkshopTab('LAB')}
                     >
-                        <Box /> {TERMINOLOGY.WORKSHOP.TAB_LAB} ({draftAnalysis.length})
+                        <Box /> {TERMINOLOGY.WORKSHOP.TAB_LAB} ({draftProjects.length})
                     </button>
                 </div>
                 
@@ -204,7 +207,7 @@ export const DashboardHome = ({ onNavigate }) => {
 
                         {fleetAnalysis.map(p => (
                             <div key={p.id} className="panel-industrial pad-20 clickable hover-glow" onClick={() => setSelectedProject(p)}>
-                                <div className="font-bold mb-15" style={{ fontSize: '1.1rem' }}>{p.title}</div>
+                                <div className="project-title-link mb-15">{p.title}</div>
                                 
                                 <div className="flex-between bg-row-odd p-10 border-radius-2 border-subtle font-mono">
                                     <div className="flex-col">
@@ -213,7 +216,7 @@ export const DashboardHome = ({ onNavigate }) => {
                                             {p.stockQty || 0}
                                         </span>
                                     </div>
-                                    <div className="flex-col text-center border-left-subtle border-right-subtle px-15" style={{ padding: '0 20px', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+                                    <div className="flex-col text-center px-15 border-left-subtle border-right-subtle">
                                         <span className="text-muted mb-5 font-small">SOLD</span>
                                         <span className="text-good font-bold text-large">
                                             {p.soldQty || 0}
@@ -239,7 +242,7 @@ export const DashboardHome = ({ onNavigate }) => {
 
                 {workshopTab === 'LAB' && (
                     <div className="dashboard-deck">
-                        {draftAnalysis.map(p => (
+                        {draftProjects.map(p => (
                             <div key={p.id} className="panel-industrial pad-20 opacity-80 clickable hover-glow" onClick={() => setSelectedProject(p)}>
                                 <div className="flex-between mb-5">
                                     <span className="font-bold text-muted">{p.title}</span>
@@ -255,7 +258,6 @@ export const DashboardHome = ({ onNavigate }) => {
                                 </div>
                             </div>
                         ))}
-                         {draftAnalysis.length === 0 && <div className="text-muted italic pad-20">No active drafts.</div>}
                     </div>
                 )}
             </div>
@@ -306,53 +308,24 @@ export const DashboardHome = ({ onNavigate }) => {
                                 </div>
                             </div>
                         )}
-
-                        {invTab === 'CRITICAL' && (
-                            inventoryIntel.out.length > 0 ? (
-                                <table className="inventory-table dashboard-alert-table">
-                                    <tbody>
-                                        {inventoryIntel.out.map(m => (
-                                            <tr key={m.id} className="inventory-row status-alert clickable" onClick={() => onNavigate('inventory')}>
-                                                <td className="td-cell font-bold text-alert">{m.name}</td>
-                                                <td className="td-cell text-right">0 {m.unit}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : <div className="good-state pad-20 font-mono text-center text-good">ALL SUPPLIES NOMINAL</div>
-                        )}
                     </div>
                 </div>
             </div>
           </div>
       </div>
 
-       <div className="dashboard-footer z-layer-top">
-         <div className="ticker-panel">
-            <div className="ticker-label"><Finance /> MARKET DATA //</div>
-            <div className="ticker-wrap">
-                <div className="ticker-move">
-                    {[...MARKET_TICKER_DATA, ...MARKET_TICKER_DATA].map((item, idx) => (
-                        <div key={idx} className="ticker-item">
-                            <span className="label-industrial no-margin text-muted">{item.label}</span> 
-                            <span className={`ticker-value ticker-trend-${item.trend} font-mono ml-10`}>
-                                {item.value}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-         </div>
+      {/* --- FOOTER: WIRED MARKET TICKER --- */}
+      <div className="dashboard-footer z-layer-top">
+         <MarketTicker items={liveTickerData} />
       </div>
 
-      {/* --- THE MODAL OVERLAY --- */}
+      {/* --- MODALS --- */}
       {selectedProject && (
         <ProjectBlueprint 
           project={selectedProject} 
           onClose={() => setSelectedProject(null)} 
         />
       )}
-
     </div>
   );
 };

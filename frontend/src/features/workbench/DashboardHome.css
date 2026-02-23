@@ -121,3 +121,31 @@
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-50%, 0, 0); }
 }
+/* src/features/workbench/DashboardHome.css */
+
+/* Rule 2: Single Source of Truth - Using global CSS variables */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr; /* Adjusted for better content flow */
+    gap: 24px;
+    padding: 20px;
+}
+
+/* Fix for "small text" - enforcing readable standards */
+.hud-value {
+    font-size: 1.5rem; /* Increased from 1.2rem */
+    font-weight: 800;
+    color: var(--neon-teal);
+}
+
+.panel-industrial {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    padding: 20px;
+    border-radius: 4px;
+}
+
+/* Ensure the ticker doesn't overlap content */
+.dashboard-content-scroll {
+    padding-bottom: 100px; 
+}
