@@ -93,3 +93,11 @@
 .text-main {
   color: var(--text-main);
 }
+.ticker-move {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: ticker-animation 40s linear infinite; /* Constant high-energy feed */
+  padding-left: 20px;
+}
+

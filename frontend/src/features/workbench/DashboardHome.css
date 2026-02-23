@@ -11,6 +11,7 @@
     flex: 1; 
     overflow-y: auto;
     padding: 20px 40px 80px 40px; 
+    scrollbar-width: thin; /* Maintain clean scroll look */
 }
 
 .hud-top-bar {
@@ -58,9 +59,15 @@
 .dashboard-deck {
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px; /* FIX: Fixed stacking with consistent gap */
+    gap: 24px; /* Maintain consistent spacing between cards */
 }
 
+.panel-industrial.clickable:hover {
+    transform: translateY(-4px); /* Interactive elevation */
+    z-index: 10; /* Elevate above surrounding elements */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border-color: var(--neon-cyan);
+}
 .logistics-sim-view { display: flex; flex-direction: column; }
 .sim-header { background: linear-gradient(to bottom, rgba(var(--neon-cyan-rgb), 0.05), transparent); }
 .sim-big-number {
