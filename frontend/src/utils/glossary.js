@@ -72,6 +72,20 @@ export const TERMINOLOGY = {
     TRANSACTION_DATE: "DATE",
     LEDGER_HEADER: "MASTER LEDGER"
   },
+  FINANCIAL: {
+    NEW_TRANSACTION: "New Transaction",
+    EDIT_TRANSACTION: "Edit Transaction",
+    DESCRIPTION: "Description",
+    AMOUNT: "Amount",
+    TYPE: "Type",
+    INCOME: "Income",
+    EXPENSE: "Expense",
+    SAVE: "Save",
+    UPDATE: "Update",
+    CANCEL: "Cancel",
+    DESC_PLACEHOLDER: "e.g. Sale, Supply Run",
+    AMOUNT_PLACEHOLDER: "0.00"
+  },
   WORKSHOP: {
     HUB_HEADER: "MY PROJECTS",
     HUB_SUBTITLE: "Manage your active products and new ideas",
