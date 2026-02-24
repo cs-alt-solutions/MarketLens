@@ -8,13 +8,15 @@ import { RevenueChart } from '../../components/charts/RevenueChart';
 import { SaleModal } from './components/SaleModal'; 
 import { TransactionHistory } from './components/TransactionHistory';
 import { TransactionForm } from './components/TransactionForm';
+import { RecurringPanel } from './components/RecurringPanel'; // <-- NEW
 import { TERMINOLOGY } from '../../utils/glossary';
 import { formatCurrency } from '../../utils/formatters';
 import { Finance, Plus } from '../../components/Icons';
 import './ProfitMatrix.css';
 
 export const ProfitMatrix = () => {
-  const { totalRev, totalCost, margin, transactions } = useFinancialStats();
+  // Upgraded engine pulling in our new recurring metrics
+  const { totalRev, totalCost, margin, transactions, recurringCosts, monthlyBurn } = useFinancialStats();
   const { addTransaction, updateTransaction, deleteTransaction } = useFinancial(); 
   const { activeProjects, updateProject } = useInventory();
   
@@ -99,11 +101,16 @@ export const ProfitMatrix = () => {
          <StatCard label={TERMINOLOGY.FINANCE.REVENUE} value={<AnimatedNumber value={totalRev} formatter={formatCurrency} />} glowColor="teal" />
          <StatCard label={TERMINOLOGY.FINANCE.EXPENSE} value={<AnimatedNumber value={totalCost} formatter={formatCurrency} />} glowColor="orange" />
          <StatCard label={TERMINOLOGY.FINANCE.MARGIN_AVG} value={`${margin.toFixed(1)}%`} glowColor="purple" />
+         {/* NEW: Monthly Burn Rate HUD */}
+         <StatCard label={TERMINOLOGY.FINANCIAL.MONTHLY_BURN} value={<AnimatedNumber value={monthlyBurn} formatter={formatCurrency} />} glowColor="red" />
       </div>
 
       <div className="panel-industrial pad-20">
          <RevenueChart />
       </div>
+
+      {/* NEW: The Fixed Costs / Subscription Manager */}
+      <RecurringPanel costs={recurringCosts} />
 
       <div className="panel-industrial mt-20 p-20">
           <TransactionHistory 

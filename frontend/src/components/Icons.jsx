@@ -74,21 +74,18 @@ export const DialIcon = ({ radius, circumference, offset, colorVar }) => (
     </svg>
 );
 
-export const RevenueChartIcon = ({ points }) => (
+export const RevenueChartIcon = ({ lines = [] }) => (
     <svg className="revenue-chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <defs>
-            <linearGradient id="revenue-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="var(--neon-teal)" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="var(--neon-teal)" stopOpacity="0" />
-            </linearGradient>
-        </defs>
-        <path d={`M0,100 ${points} 100,100`} fill="url(#revenue-grad)" />
-        <polyline 
-            className="chart-line-animate"
-            points={points} 
-            fill="none" 
-            stroke="var(--neon-teal)" 
-            strokeWidth="2" 
-        />
+        {lines.map((line, i) => (
+            <polyline 
+                key={i}
+                className="chart-line-animate"
+                points={line.points} 
+                fill="none" 
+                stroke={line.color} 
+                strokeWidth="2" 
+                vectorEffect="non-scaling-stroke"
+            />
+        ))}
     </svg>
 );

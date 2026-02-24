@@ -1,40 +1,42 @@
+/* src/features/workbench/components/TransactionHistory.css */
+
 .transaction-history-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
+/* The Viewport Window */
+.table-responsive {
+    max-height: 400px; /* Caps the height to force a scrollbar */
+    overflow-y: auto;  /* Activates the vertical scroll wheel */
+    border: 1px solid var(--border-subtle, #333); 
+    border-radius: 4px;
 }
 
-.history-controls {
-  display: flex;
-  gap: var(--spacing-sm);
+/* The Sticky Header */
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--bg-panel, #1a1a1a); /* Prevents rows from showing through the header */
+    border-bottom: 2px solid var(--border-subtle, #333);
 }
 
-.action-cells {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-xs);
+/* --- Custom Industrial Scrollbar --- */
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
 }
 
-.badge-income {
-  background-color: var(--color-success-light);
-  color: var(--color-success-dark);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: var(--font-size-sm);
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-.badge-expense {
-  background-color: var(--color-danger-light);
-  color: var(--color-danger-dark);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: var(--font-size-sm);
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: var(--border-subtle, #444);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted, #666);
 }
