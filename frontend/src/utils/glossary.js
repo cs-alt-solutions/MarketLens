@@ -261,9 +261,9 @@ export const MARKET_TICKER_DATA = [
 export const DASHBOARD_STRINGS = {
   telemetryTitle: "SYSTEM TELEMETRY",
   quickActions: "QUICK COMMANDS",
-  bottleneckRadar: "BOTTLENECK RADAR",
-  dailyBriefing: "DAILY TARGETS",
-  draftRunway: "DRAFT PIPELINE",
+  bottleneckRadar: "PRODUCTION ALERTS",
+  dailyBriefing: "ACTIVE MISSIONS",
+  draftRunway: "R&D PIPELINE",
   profitMonitor: "PROFIT VELOCITY",
   actionIntake: "QUICK INTAKE",
   actionLogSale: "LOG SALE",

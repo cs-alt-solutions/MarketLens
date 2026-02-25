@@ -1,24 +1,22 @@
 import React from 'react';
-import { DASHBOARD_STRINGS } from '../../data/glossary';
 
 export default function TelemetryHUD({ sales, expenses, profit }) {
-  // In a real scenario, deltas are calculated from historical data
   return (
-    <div className="hud-container">
-      <div className="hud-card">
-        <div className="hud-label">Total Sales</div>
-        <div className="hud-value">{sales}</div>
-        <div className="hud-delta-positive">↑ 12% vs Last Wk</div>
+    <div className="flex-between gap-20">
+      <div className="panel-industrial flex-col pad-20 w-full glow-teal">
+        <span className="label-industrial text-muted">Total Sales</span>
+        <span className="hud-value text-teal mt-10">{sales}</span>
+        <span className="text-good font-small mt-10 font-mono">↑ 12% vs Last Wk</span>
       </div>
-      <div className="hud-card">
-        <div className="hud-label">Total Expenses</div>
-        <div className="hud-value">{expenses}</div>
-        <div className="hud-delta-negative">↓ 3% vs Last Wk</div>
+      <div className="panel-industrial flex-col pad-20 w-full glow-orange">
+        <span className="label-industrial text-muted">Total Expenses</span>
+        <span className="hud-value text-orange mt-10">{expenses}</span>
+        <span className="text-alert font-small mt-10 font-mono">↓ 3% vs Last Wk</span>
       </div>
-      <div className="hud-card">
-        <div className="hud-label">Net Profit</div>
-        <div className="hud-value">{profit}</div>
-        <div className="hud-delta-positive">↑ 15% vs Last Wk</div>
+      <div className="panel-industrial flex-col pad-20 w-full glow-purple">
+        <span className="label-industrial text-muted">Net Profit</span>
+        <span className="hud-value text-purple mt-10">{profit}</span>
+        <span className="text-good font-small mt-10 font-mono">↑ 15% vs Last Wk</span>
       </div>
     </div>
   );

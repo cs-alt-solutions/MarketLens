@@ -87,17 +87,6 @@
     z-index: 50; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); flex-shrink: 0;
 }
 
-.ticker-panel { display: flex; align-items: center; width: 100%; height: 100%; }
-
-.ticker-move {
-    display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite;
-}
-/* REMOVED: No more animation pausing on hover */
-
-@keyframes ticker {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
-}
 
 /* FIX: Align draft missing badges */
 .align-start { align-items: flex-start; }

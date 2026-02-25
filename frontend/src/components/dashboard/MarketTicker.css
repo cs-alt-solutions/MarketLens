@@ -51,19 +51,21 @@
    the high-energy "Live" feel.
 */
 
+/* Update this block in your MarketTicker.css */
+/* Inside src/components/dashboard/MarketTicker.css */
+.ticker-move {
+  display: flex; /* This is crucial! */
+  align-items: center;
+  white-space: nowrap;
+  animation: ticker-animation 40s linear infinite;
+  padding-left: 20px;
+}
+
 .ticker-item {
   display: inline-flex;
   align-items: center;
-  padding-right: 60px; /* Large gap between items for clarity */
-}
-
-.ticker-item .text-muted {
-  letter-spacing: 1px;
-}
-
-.ticker-item .font-mono {
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
+  padding-right: 60px; 
+  flex-shrink: 0; /* Prevents squishing */
 }
 
 /* Seamless Loop Animation */

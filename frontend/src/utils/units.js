@@ -4,7 +4,8 @@
 // Weight Base: oz | Volume Base: fl oz | Length Base: in
 const CONVERSION_RATES = {
   // Weight
-  'lbs': { toBase: 16, type: 'weight' },      // 1 lbs = 16 oz
+  'lbs': { toBase: 16, type: 'weight' },      
+  'lb':  { toBase: 16, type: 'weight' }, // Added alias
   'oz':  { toBase: 1, type: 'weight' },
   'kg':  { toBase: 35.274, type: 'weight' },
   'g':   { toBase: 0.035274, type: 'weight' },
@@ -24,21 +25,30 @@ const CONVERSION_RATES = {
   // Count
   'count': { toBase: 1, type: 'count' },
   'ea':    { toBase: 1, type: 'count' },
-  'box':   { toBase: 1, type: 'count' } // Assuming box is handled as a unit or needs specific logic later
+  'box':   { toBase: 1, type: 'count' },
+  'jar':   { toBase: 1, type: 'count' },   // Added alias
+  'rolls': { toBase: 1, type: 'count' },   // Added alias
+  'roll':  { toBase: 1, type: 'count' }    // Added alias
 };
 
 export const convertToStockUnit = (qty, fromUnit, toUnit) => {
   const val = parseFloat(qty);
   if (isNaN(val)) return 0;
-  if (fromUnit === toUnit) return val;
+  
+  // Normalize units: if undefined, assume 'ea' (each). Convert to lowercase to prevent case-mismatches.
+  const safeFrom = fromUnit ? fromUnit.toLowerCase() : 'ea';
+  const safeTo = toUnit ? toUnit.toLowerCase() : 'ea';
 
-  const fromData = CONVERSION_RATES[fromUnit];
-  const toData = CONVERSION_RATES[toUnit];
+  if (safeFrom === safeTo) return val;
 
-  // Safety Check: Don't convert Weight to Volume without Density
+  const fromData = CONVERSION_RATES[safeFrom];
+  const toData = CONVERSION_RATES[safeTo];
+
+  // Safety Check: If a unit is completely unknown, or we are trying to convert 
+  // Weight to Volume without a density formula, gracefully fallback to a 1:1 ratio.
+  // We removed the console.warn to keep our production console perfectly clean.
   if (!fromData || !toData || fromData.type !== toData.type) {
-    console.warn(`Conversion mismatch: ${fromUnit} -> ${toUnit}`);
-    return val; // Fallback to 1:1 if mismatch
+    return val; 
   }
 
   // Convert to Base, then to Target

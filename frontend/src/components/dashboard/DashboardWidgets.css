@@ -1,0 +1,68 @@
+/* src/components/dashboard/DashboardWidgets.css */
+
+/* --- R&D PIPELINE VISUALIZER --- */
+.pipeline-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 10px 0;
+}
+
+.pipeline-node {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.pipeline-node.active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+  background: rgba(34, 211, 238, 0.05);
+}
+
+.pipeline-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border-subtle);
+  margin: 0 -5px;
+  z-index: 1;
+}
+
+.pipeline-line.active {
+  background: var(--neon-cyan);
+  box-shadow: 0 0 5px var(--neon-cyan);
+}
+
+/* --- ACTIVE MISSIONS (QUEST LOG) --- */
+.quest-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-right: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.quest-card:hover {
+  transform: translateX(5px);
+  box-shadow: -5px 5px 15px rgba(0,0,0,0.5);
+}
+
+.border-left-teal { border-left: 3px solid var(--neon-teal); }
+.border-left-orange { border-left: 3px solid var(--neon-orange); }
+
+/* --- PRODUCTION ALERTS --- */
+.bg-alert-faint { background: rgba(239, 68, 68, 0.05); }
+.border-alert { border: 1px solid var(--neon-red); }
+.text-blink { animation: textBlink 1.5s infinite; }
+
+@keyframes textBlink {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px var(--neon-red); }
+  50% { opacity: 0.5; text-shadow: none; }
+}
