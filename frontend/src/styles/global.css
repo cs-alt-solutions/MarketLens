@@ -379,3 +379,94 @@ select.input-industrial option {
 .py-10 { padding-top: 10px; padding-bottom: 10px; }
 .py-15 { padding-top: 15px; padding-bottom: 15px; }
 .py-20 { padding-top: 20px; padding-bottom: 20px; }
+/* Dashboard Layout */
+.dashboard-cockpit {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left side for action, right for insights */
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Telemetry HUD */
+.hud-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hud-card {
+  background-color: var(--color-surface); /* Assuming you have these vars set */
+  padding: 20px;
+  border-radius: 8px;
+  border-top: 3px solid var(--color-cyan);
+  flex: 1;
+}
+
+.hud-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+}
+
+.hud-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-cyan);
+  margin: 8px 0;
+}
+
+.hud-delta-positive { color: var(--color-success); font-size: 0.85rem; font-weight: bold; }
+.hud-delta-negative { color: var(--color-danger); font-size: 0.85rem; font-weight: bold; }
+
+/* Dashboard Panels */
+.dashboard-panel {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+}
+
+.panel-urgent {
+  border-left: 4px solid var(--color-warning);
+}
+
+.panel-header {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Lists & Items */
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: var(--color-background);
+  border-radius: 4px;
+}
+
+.text-warning { color: var(--color-warning); }
+.text-cyan { color: var(--color-cyan); }

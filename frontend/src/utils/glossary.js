@@ -258,3 +258,20 @@ export const MARKET_TICKER_DATA = [
   { id: 4, symbol: 'SHIPPING BOXES', trend: 'up', value: '$0.85/ea', change: '+4.1%' },
   { id: 5, symbol: 'FRAGRANCE OIL', trend: 'up', value: '$22.00/16oz', change: '+2.4%' }
 ];
+export const DASHBOARD_STRINGS = {
+  telemetryTitle: "SYSTEM TELEMETRY",
+  quickActions: "QUICK COMMANDS",
+  bottleneckRadar: "BOTTLENECK RADAR",
+  dailyBriefing: "DAILY TARGETS",
+  draftRunway: "DRAFT PIPELINE",
+  profitMonitor: "PROFIT VELOCITY",
+  actionIntake: "QUICK INTAKE",
+  actionLogSale: "LOG SALE",
+  actionNewProject: "NEW PROJECT",
+  statusBlocked: "PRODUCTION BLOCKED",
+  statusOnTrack: "ON TRACK",
+  runwayIdea: "IDEA",
+  runwaySOP: "SOP BUILT",
+  runwayPriced: "PRICED",
+  runwayReady: "READY FOR LAUNCH"
+};
