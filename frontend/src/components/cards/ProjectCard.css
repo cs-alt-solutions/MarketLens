@@ -113,3 +113,10 @@
 .border-top-dashed {
     border-top: 1px dashed var(--border-subtle);
 }
+/* --- STATUS STAMP POSITIONING --- */
+.status-stamp-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}

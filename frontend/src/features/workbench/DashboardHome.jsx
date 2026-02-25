@@ -4,10 +4,10 @@ import './DashboardHome.css';
 
 // Context & Utils
 import { useInventory } from '../../context/InventoryContext';
-import { useFinancialStats } from '../../context/FinancialContext';
-import { useStudioIntelligence } from './hooks/useStudioIntelligence'; // Refined Architecture
+import { useFinancialStats, useFinancial } from '../../context/FinancialContext'; // Added useFinancial
+import { useStudioIntelligence } from './hooks/useStudioIntelligence'; 
 import { formatCurrency } from '../../utils/formatters';
-import { TERMINOLOGY, MARKET_TICKER_DATA } from '../../utils/glossary';
+import { TERMINOLOGY, MARKET_TICKER_DATA, APP_CONFIG } from '../../utils/glossary';
 
 // Components
 import { StatCard } from '../../components/cards/StatCard';
@@ -15,13 +15,17 @@ import { BarChart } from '../../components/charts/BarChart';
 import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
 import { MarketTicker } from '../../components/MarketTicker'; 
 import { ProjectBlueprint } from './components/ProjectBlueprint';
+import { IntakeForm } from './components/IntakeForm'; // NEW IMPORT
+import { SaleModal } from './components/SaleModal';   // NEW IMPORT
 
-// Icons - Cleaned up unused imports to resolve linting warnings
+// Icons
 import { 
   Alert, 
   WorkshopIcon, 
   Box, 
-  Radar 
+  Radar,
+  Plus,
+  Finance // Added for Log Sale
 } from '../../components/Icons';
 
 export const DashboardHome = () => {
@@ -29,6 +33,8 @@ export const DashboardHome = () => {
     activeProjects = [], 
     draftProjects = [], 
     materials = [], 
+    addProject,
+    updateProject,
     loading: inventoryLoading 
   } = useInventory() || {};
 
@@ -39,24 +45,69 @@ export const DashboardHome = () => {
     loading: financeLoading
   } = useFinancialStats() || {};
   
-  // Logic Extraction: Moving heavy calculations to our specialized hook
+  const { addTransaction } = useFinancial(); // Hooking up the financial engine
+
   const { fleetAnalysis, inventoryIntel, logisticsIntel } = useStudioIntelligence(activeProjects, draftProjects, materials);
 
   const [workshopTab, setWorkshopTab] = useState('FLEET'); 
   const [invTab, setInvTab] = useState('LOGISTICS'); 
   const [selectedProject, setSelectedProject] = useState(null);
+  
+  // NEW COMMAND STATE
+  const [showIntakeModal, setShowIntakeModal] = useState(false);
+  const [showSaleModal, setShowSaleModal] = useState(false);
+  const [isProcessingSale, setIsProcessingSale] = useState(false);
 
-  // Engine 2: Live Ticker Data - Updated to follow the "Clean Slashes" protocol
   const liveTickerData = useMemo(() => {
     const materialTrends = materials.slice(0, 3).map(m => ({
       label: m.name,
-      value: `${formatCurrency(m.costPerUnit)} PER ${m.unit.toUpperCase()}`,
+      value: `${formatCurrency(m.costPerUnit)} / UNIT`,
       trend: 'neutral'
     }));
     return [...materialTrends, ...MARKET_TICKER_DATA];
   }, [materials]);
 
   const productionChartData = fleetAnalysis.map(p => ({ label: p.title.substring(0,6), value: p.stockQty }));
+  const sellableProjects = activeProjects.filter(p => p.stockQty > 0);
+
+  // --- WIRED ACTIONS ---
+  const handleNewProject = async () => {
+      const newDraft = {
+          title: "UNTITLED BUILD",
+          status: APP_CONFIG.PROJECT.DEFAULT_STATUS,
+          stockQty: 0,
+          soldQty: 0,
+          recipe: [],
+          instructions: []
+      };
+      const created = await addProject(newDraft);
+      if (created) setSelectedProject(created);
+  };
+
+  const handleLogSale = async (project, qty, revenue) => {
+    setIsProcessingSale(true);
+    try {
+      // 1. Log the money
+      await addTransaction({
+        description: `Sold ${qty}x ${project.title}`,
+        amount: revenue,
+        type: 'SALE'
+      });
+
+      // 2. Deduct the stock
+      await updateProject({
+        id: project.id,
+        stockQty: Math.max(0, project.stockQty - qty),
+        soldQty: (project.soldQty || 0) + parseInt(qty)
+      });
+
+      setShowSaleModal(false);
+    } catch (error) {
+      console.error("Critical failure logging sale:", error);
+    } finally {
+      setIsProcessingSale(false);
+    }
+  };
 
   if (inventoryLoading || financeLoading) {
     return (
@@ -98,6 +149,20 @@ export const DashboardHome = () => {
       </div>
 
       <div className="dashboard-content-scroll">
+          
+          {/* FULLY WIRED COMMAND BAR */}
+          <div className="command-bar z-layer-top relative">
+              <button className="btn-command" onClick={handleNewProject}>
+                  <Plus /> {TERMINOLOGY.WORKSHOP.NEW_PROJECT}
+              </button>
+              <button className="btn-command" onClick={() => setShowIntakeModal(true)}>
+                  <Box /> QUICK INTAKE
+              </button>
+              <button className="btn-command" onClick={() => setShowSaleModal(true)}>
+                  <Finance /> {TERMINOLOGY.FINANCE.LOG_SALE}
+              </button>
+          </div>
+
           <div className="dashboard-grid z-layer-top relative">
             <div className="dashboard-col-main">
                 <div className="panel-tabs mb-15">
@@ -123,7 +188,10 @@ export const DashboardHome = () => {
 
                         {fleetAnalysis.map(p => (
                             <div key={p.id} className="panel-industrial pad-20 clickable hover-glow" onClick={() => setSelectedProject(p)}>
-                                <div className="project-title-link mb-15">{p.title}</div>
+                                <div className="flex-between mb-15">
+                                    <div className="project-title-link mb-0">{p.title}</div>
+                                    <span className="card-prompt uppercase">[ VIEW SPECS ]</span>
+                                </div>
                                 <div className="flex-between bg-row-odd p-10 border-radius-2 border-subtle font-mono">
                                     <div className="flex-col">
                                         <span className="text-muted mb-5 font-small">IN STOCK</span>
@@ -154,7 +222,7 @@ export const DashboardHome = () => {
                             <div key={p.id} className="panel-industrial pad-20 opacity-80 clickable hover-glow" onClick={() => setSelectedProject(p)}>
                                 <div className="flex-between mb-5">
                                     <span className="font-bold text-muted">{p.title}</span>
-                                    <span className="label-industrial no-margin">{TERMINOLOGY.STATUS.DRAFT}</span>
+                                    <span className="card-prompt text-warning">[ FINISH SETUP ]</span>
                                 </div>
                                 <div className="mt-10 p-10 bg-darker border-subtle border-radius-2">
                                     <div className="flex-between align-start">
@@ -176,7 +244,7 @@ export const DashboardHome = () => {
                 <div className="panel-industrial full-height-panel">
                     <div className="panel-tabs">
                         <button className={`tab-btn ${invTab === 'LOGISTICS' ? 'active teal' : ''}`} onClick={() => setInvTab('LOGISTICS')}><Radar /> {TERMINOLOGY.LOGISTICS.TAB}</button>
-                        <button className={`tab-btn ${invTab === 'CRITICAL' ? 'active alert' : ''}`} onClick={() => setInvTab('CRITICAL')}><Alert /> OUT ({inventoryIntel.out.length})</button>
+                        <button className={`tab-btn ${invTab === 'CRITICAL' ? 'active alert' : ''}`} onClick={() => setInvTab('CRITICAL')}><Alert /> OUT ({inventoryIntel?.out?.length || 0})</button>
                     </div>
 
                     <div className="panel-content no-pad overflow-y-auto">
@@ -200,6 +268,34 @@ export const DashboardHome = () => {
                                 </div>
                             </div>
                         )}
+
+                        {invTab === 'CRITICAL' && (
+                            <div className="pad-20 animate-fade-in">
+                                <div className="label-industrial mb-15 text-muted">SUPPLY CHAIN ALERTS</div>
+                                {inventoryIntel?.out?.length > 0 ? (
+                                    <div className="flex-col gap-10">
+                                        {inventoryIntel.out.map(m => (
+                                            <div key={m.id} className="flex-between p-15 bg-row-odd border-subtle border-radius-2 border-left-alert">
+                                                <div className="flex-col">
+                                                    <span className="font-bold text-main">{m.name}</span>
+                                                    <span className="text-muted font-mono font-tiny mt-5 uppercase">
+                                                        {m.category}
+                                                    </span>
+                                                </div>
+                                                <div className="flex-col text-right">
+                                                    <span className="text-alert font-bold font-mono text-large">0</span>
+                                                    <span className="text-muted font-tiny uppercase">IN STOCK</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center p-20 text-muted italic border-dashed border-subtle border-radius-2 mt-10">
+                                        All systems green. No critical material shortages.
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -210,7 +306,30 @@ export const DashboardHome = () => {
          <MarketTicker items={liveTickerData} />
       </div>
 
+      {/* --- ALL MODALS (WIRED EXECUTIONS) --- */}
       {selectedProject && <ProjectBlueprint project={selectedProject} onClose={() => setSelectedProject(null)} />}
+      
+      {showIntakeModal && (
+          <div className="modal-overlay">
+              <div className="modal-window modal-medium animate-fade-in p-20" style={{ background: 'var(--bg-panel)' }}>
+                  <div className="flex-between mb-20 border-bottom-subtle pb-10">
+                      <h3 className="label-industrial m-0">{TERMINOLOGY.INVENTORY.INTAKE}</h3>
+                      <button className="btn-icon-hover-clean font-large font-bold" onClick={() => setShowIntakeModal(false)}>×</button>
+                  </div>
+                  <IntakeForm onClose={() => setShowIntakeModal(false)} />
+              </div>
+          </div>
+      )}
+
+      {showSaleModal && (
+        <SaleModal 
+          projects={sellableProjects}
+          onSave={handleLogSale}
+          onClose={() => setShowSaleModal(false)}
+          isProcessing={isProcessingSale}
+        />
+      )}
+
     </div>
   );
 };

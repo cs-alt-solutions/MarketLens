@@ -328,3 +328,54 @@ select.input-industrial option {
 .stat-card-glow:hover {
   transform: translateY(-2px);
 }
+/* --- UNIVERSAL ANIMATIONS & MODALS --- */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(9, 9, 11, 0.85); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+
+.modal-window {
+    background: var(--bg-panel); border: 1px solid var(--border-subtle);
+    border-radius: 8px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    display: flex; flex-direction: column; overflow: hidden;
+}
+
+.modal-medium { width: 500px; max-width: 90vw; }
+
+.btn-icon-hover-clean {
+  background: transparent !important; border: none !important;
+  color: var(--text-muted); font-size: 1.5rem; cursor: pointer;
+  line-height: 0.5; padding: 0; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; outline: none;
+}
+
+.btn-icon-hover-clean:hover { 
+  color: var(--neon-red); transform: scale(1.1); 
+  filter: drop-shadow(0 0 5px var(--neon-red));
+}
+/* --- UNIFIED PADDING & MARGIN UTILITIES --- */
+/* This prevents content from hitting the edges of our panels */
+.p-10, .pad-10 { padding: 10px; }
+.p-15, .pad-15 { padding: 15px; }
+.p-20, .pad-20 { padding: 20px; }
+
+/* Horizontal (Left/Right) Padding */
+.px-10 { padding-left: 10px; padding-right: 10px; }
+.px-15 { padding-left: 15px; padding-right: 15px; }
+.px-20 { padding-left: 20px; padding-right: 20px; }
+
+/* Vertical (Top/Bottom) Padding */
+.py-10 { padding-top: 10px; padding-bottom: 10px; }
+.py-15 { padding-top: 15px; padding-bottom: 15px; }
+.py-20 { padding-top: 20px; padding-bottom: 20px; }

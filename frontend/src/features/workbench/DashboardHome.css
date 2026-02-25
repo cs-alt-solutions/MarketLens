@@ -104,3 +104,58 @@
 .max-w-150 { max-width: 150px; }
 .font-tiny { font-size: 0.6rem; letter-spacing: 0.5px; }
 .warning-text { color: var(--neon-orange); border: 1px solid var(--neon-orange); padding: 2px 4px; border-radius: 2px; }
+/* Add to the bottom of src/features/workbench/DashboardHome.css */
+
+/* --- COMMAND BAR --- */
+.command-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-command {
+    flex: 1;
+    background: var(--bg-panel-header);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    padding: 15px 20px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-command:hover {
+    background: rgba(45, 212, 191, 0.1); /* Teal glow */
+    border-color: var(--neon-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* --- ALERT CARDS --- */
+.border-left-alert {
+    border-left: 3px solid var(--neon-red);
+}
+
+.border-left-warning {
+    border-left: 3px solid var(--neon-orange);
+}
+
+/* --- INTERACTIVE PROMPTS --- */
+.card-prompt {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.panel-industrial.clickable:hover .card-prompt {
+    color: var(--neon-teal);
+}

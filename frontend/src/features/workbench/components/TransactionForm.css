@@ -1,24 +1,13 @@
+/* src/features/workbench/components/TransactionForm.css */
 .transaction-form-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  display: flex; flex-direction: column; gap: 20px;
 }
-
 .transaction-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  display: flex; flex-direction: column; gap: 20px;
 }
-
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  display: flex; flex-direction: column; gap: 10px;
 }
-
 .form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;
 }

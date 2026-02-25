@@ -153,8 +153,8 @@
 
 .btn-danger {
     background: transparent;
-    border: 1px solid #ff3366; 
-    color: #ff3366;
+    border: 1px solid var(--neon-red); 
+    color: var(--neon-red);
     padding: 12px;
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -163,5 +163,5 @@
     border-radius: 2px;
 }
 .btn-danger:hover {
-    background: rgba(255, 51, 102, 0.1);
+    background: rgba(var(--neon-red-rgb), 0.1);
 }

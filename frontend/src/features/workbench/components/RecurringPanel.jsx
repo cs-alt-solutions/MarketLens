@@ -27,7 +27,7 @@ export const RecurringPanel = ({ costs = [] }) => {
 
       {showForm && (
         <form onSubmit={handleSubmit} className="mb-20 p-15 border-dashed recurring-form-grid">
-          <input type="text" className="input-industrial full-width" placeholder="Software, Rent, etc." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
+          <input type="text" className="input-industrial w-full" placeholder="Software, Rent, etc." value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
           <input type="number" className="input-industrial" placeholder="0.00" step="0.01" value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} required />
           <select className="input-industrial" value={formData.cycle} onChange={e => setFormData({...formData, cycle: e.target.value})}>
             <option value="MONTHLY">{TERMINOLOGY.FINANCIAL.MONTHLY || "Monthly"}</option>
