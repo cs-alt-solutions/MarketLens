@@ -9,17 +9,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
+    padding: 20px; /* Reduced from 40px to allow wider window */
 }
 
 .beta-hub-window {
-    width: 100%;
-    max-width: 1000px;
+    width: 95%; /* Expand to fill most of the screen */
+    max-width: 1400px; /* UPGRADED: Massive increase from 1000px */
     height: 90vh;
     background: var(--bg-panel);
-    border: 1px solid var(--neon-orange);
-    border-radius: 4px;
-    box-shadow: 0 0 50px rgba(251, 146, 60, 0.15);
+    border: 1px solid var(--neon-purple);
+    box-shadow: 0 0 50px rgba(167, 139, 250, 0.15);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -69,7 +68,7 @@
 .evolution-fill {
     height: 100%;
     background: var(--neon-orange);
-    width: 34%; /* Hardcoded for now, will map to XP later */
+    width: 34%; 
     box-shadow: 0 0 10px var(--neon-orange);
     transition: width 1s ease-in-out;
 }
@@ -107,15 +106,28 @@
     color: var(--text-main);
 }
 
-.hub-tab.active {
-    border-left-color: var(--neon-orange);
-    color: var(--neon-orange);
-    background: rgba(251, 146, 60, 0.05);
+/* Multi-Color Tab States */
+.hub-tab.tab-manifesto.active {
+    border-left-color: var(--neon-teal);
+    color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.05);
+}
+
+.hub-tab.tab-lab.active {
+    border-left-color: var(--neon-blue);
+    color: var(--neon-blue);
+    background: rgba(96, 165, 250, 0.05);
+}
+
+.hub-tab.tab-vault.active {
+    border-left-color: var(--neon-purple);
+    color: var(--neon-purple);
+    background: rgba(167, 139, 250, 0.05);
 }
 
 .hub-main-panel {
     flex: 1;
-    padding: 40px;
+    padding: 30px; /* Reduced from 40px to give the Lab more width */
     overflow-y: auto;
 }
 
@@ -133,7 +145,7 @@
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-muted);
-    max-width: 600px;
+    max-width: 700px;
 }
 
 .manifesto-body p {

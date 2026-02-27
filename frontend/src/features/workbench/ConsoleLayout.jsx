@@ -9,20 +9,18 @@ import { InventoryManager } from './InventoryManager';
 import { ProfitMatrix } from './ProfitMatrix';
 import { MarketRadar } from './MarketRadar';
 
-// Import our cross-product Beta Engine packages
+// NEW: Import the Trigger component alongside the others
 import { GlitchBot } from '../../packages/beta-engine/GlitchBot';
 import { BetaHub } from '../../packages/beta-engine/BetaHub';
+import { BetaTrigger } from '../../packages/beta-engine/BetaTrigger';
 
 export const ConsoleLayout = () => {
   const [activeView, setActiveView] = useState('dashboard'); 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
-  // NEW: State to control the Beta Hub overlay
   const [showBetaHub, setShowBetaHub] = useState(false);
 
   const handleNavigate = (view) => setActiveView(view);
 
-  // View Router Logic
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard': return <DashboardHome onNavigate={handleNavigate} />;
@@ -68,7 +66,6 @@ export const ConsoleLayout = () => {
 
       {/* --- MAIN CONTENT AREA --- */}
       <div className="console-main">
-        
         <div className="console-content-scroll">
           {renderContent()}
         </div>
@@ -97,14 +94,8 @@ export const ConsoleLayout = () => {
           </div>
 
           <div className="top-bar-actions flex-center gap-15 pl-20 border-left-subtle">
-            {/* NEW: The Beta Tag is now a clickable button to open the Hub */}
-            <button 
-              className="beta-tag text-orange font-mono font-tiny text-blink bg-row-odd px-10 py-5 border-radius-2 border-subtle clickable glow-orange-hover"
-              style={{ border: '1px solid var(--neon-orange)', cursor: 'pointer' }}
-              onClick={() => setShowBetaHub(true)}
-            >
-              ● BETA_ACTIVE // OPEN HUB
-            </button>
+            {/* NEW: We just drop the package component in here */}
+            <BetaTrigger onClick={() => setShowBetaHub(true)} />
           </div>
         </div>
       </div>

@@ -1,0 +1,17 @@
+/* src/packages/beta-engine/BetaTrigger.css */
+
+.beta-hub-trigger {
+    background: transparent;
+    border: 1px solid var(--neon-orange);
+    color: var(--neon-orange);
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.beta-hub-trigger:hover {
+    background: rgba(251, 146, 60, 0.1);
+    box-shadow: 0 0 20px rgba(251, 146, 60, 0.5), 0 0 10px rgba(251, 146, 60, 0.3);
+    transform: translateY(-1px);
+}

@@ -1,161 +1,59 @@
-/* src/packages/beta-engine/GlitchBot.css */
+/* Add to the bottom of src/packages/beta-engine/GlitchBot.css */
 
-.glitchbot-wrapper {
+/* --- BOT INTRO OVERLAY --- */
+.bot-intro-overlay {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 15px;
-}
-
-/* --- THE BOT CORE & BADGE CONTAINER --- */
-.glitchbot-core-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.bot-id-badge {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: var(--neon-teal);
-    background: rgba(45, 212, 191, 0.1);
-    border: 1px solid var(--neon-teal);
-    padding: 2px 8px;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    white-space: nowrap;
-    opacity: 0.8;
-    box-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
-}
-
-/* --- THE BOT ICON --- */
-.glitchbot-core {
-    width: 50px;
-    height: 50px;
-    background: var(--bg-panel-header);
-    border: 2px solid var(--neon-teal);
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+    inset: 0;
+    background: rgba(9, 9, 11, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
+    padding: 20px;
 }
 
-/* The "Glitch" Animation on Hover */
-.glitchbot-core:hover {
-    box-shadow: 0 0 25px rgba(45, 212, 191, 0.5);
-    animation: jitter 0.3s infinite;
-}
-
-@keyframes jitter {
-    0% { transform: translate(0, 0); border-color: var(--neon-teal); }
-    25% { transform: translate(1px, -1px); border-color: var(--neon-orange); }
-    50% { transform: translate(-1px, 1px); border-color: var(--neon-teal); }
-    75% { transform: translate(1px, 1px); border-color: var(--neon-purple); }
-    100% { transform: translate(0, 0); border-color: var(--neon-teal); }
-}
-
-.bot-eyes {
-    display: flex;
-    gap: 8px;
-}
-
-.bot-eye {
-    width: 8px;
-    height: 12px;
-    background: var(--neon-teal);
-    border-radius: 2px;
-    animation: blink 4s infinite;
-}
-
-@keyframes blink {
-    0%, 96%, 98%, 100% { height: 12px; transform: translateY(0); }
-    97% { height: 2px; transform: translateY(5px); }
-}
-
-/* --- THE ARMS --- */
-.bot-arm {
-    width: 12px;
-    height: 4px;
-    background: var(--neon-teal);
-    position: absolute;
-    border-radius: 2px;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: -1;
-}
-
-.bot-arm.left {
-    left: -8px;
-    top: 25px;
-}
-
-.bot-arm.right {
-    right: -8px;
-    top: 25px;
-}
-
-/* The Glitch Arm Animation */
-.glitchbot-core:hover .bot-arm.left {
-    transform: translateY(-10px) rotate(-30deg);
-    background: var(--neon-orange);
-}
-
-.glitchbot-core:hover .bot-arm.right {
-    transform: translateY(-10px) rotate(30deg);
-    background: var(--neon-purple);
-}
-
-/* --- THE FEEDBACK MATRIX (POP-UP) --- */
-.glitchbot-dialogue {
+.bot-intro-window {
     background: var(--bg-panel);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--neon-teal);
     border-radius: 6px;
-    padding: 15px;
-    width: 280px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    transform-origin: bottom right;
-    animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.dialogue-text {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: var(--text-main);
-    border-bottom: 1px dashed var(--border-subtle);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
-
-.reaction-btn {
+    box-shadow: 0 0 40px rgba(45, 212, 191, 0.2);
     width: 100%;
-    text-align: left;
-    background: var(--bg-row-odd);
-    border: 1px solid transparent;
-    color: var(--text-main);
-    padding: 10px 15px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
 }
 
-.reaction-btn.oof:hover { border-color: var(--neon-orange); background: rgba(251, 146, 60, 0.1); }
-.reaction-btn.eyesore:hover { border-color: var(--neon-red); background: rgba(239, 68, 68, 0.1); }
-.reaction-btn.lightbulb:hover { border-color: var(--neon-teal); background: rgba(45, 212, 191, 0.1); }
+.bot-intro-hero {
+    margin-bottom: 30px;
+}
+
+/* --- SCALING MODIFIERS --- */
+.scale-large .glitchbot-core {
+    width: 100px;
+    height: 100px;
+    border-width: 3px;
+    border-radius: 12px;
+}
+
+.scale-large .bot-eye {
+    width: 16px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.scale-large .bot-arm {
+    width: 24px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.scale-large .bot-arm.left { left: -16px; top: 50px; }
+.scale-large .bot-arm.right { right: -16px; top: 50px; }
+
+.scale-large .bot-id-badge {
+    font-size: 0.9rem;
+    padding: 4px 12px;
+}

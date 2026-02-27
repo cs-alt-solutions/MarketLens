@@ -24,11 +24,19 @@ src/packages/beta-engine/
 │
 ├── README.md           // This architectural blueprint
 ├── dictionary.js       // The Single Source of Truth for all text/data
-├── GlitchBot.jsx       // The interactive, floating UI companion
+├── GlitchBot.jsx       // The state manager for the bot
 ├── GlitchBot.css       // Styling and glitch/jitter animations
 ├── BetaHub.jsx         // The "War Room" overlay shell
 ├── BetaHub.css         // Styling and evolution bar logic
-└── tabs/               // Modular tab content components
+├── BetaTrigger.jsx     // The encapsulated launch button
+├── BetaTrigger.css     // Trigger glow animations
+│
+├── components/         // Internal Bot Modules
+│   ├── BotCore.jsx     // Visual SVG/Div rendering
+│   ├── BotIntro.jsx    // Full-screen onboarding hook
+│   └── DialogueMenu.jsx// Feedback matrix popup
+│
+└── tabs/               // Modular Hub content 
     ├── ManifestoTab.jsx
     ├── LabTab.jsx
     └── VaultTab.jsx

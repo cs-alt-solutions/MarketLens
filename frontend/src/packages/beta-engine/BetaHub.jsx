@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import './BetaHub.css';
 import { GLITCHBOT_DICT } from './dictionary';
 
-// NEW: Importing our modular tab components
 import { ManifestoTab } from './tabs/ManifestoTab';
 import { LabTab } from './tabs/LabTab';
 import { VaultTab } from './tabs/VaultTab';
+
+// NEW: We bring the Bot inside the Hub!
+import { GlitchBot } from './GlitchBot';
 
 export const BetaHub = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('MANIFESTO');
@@ -24,7 +26,6 @@ export const BetaHub = ({ onClose }) => {
     <div className="beta-hub-overlay">
       <div className="beta-hub-window">
         
-        {/* HEADER & EVOLUTION BAR */}
         <div className="hub-header">
           <div className="font-mono font-bold text-orange">
             {GLITCHBOT_DICT.HUB.TITLE}
@@ -45,32 +46,33 @@ export const BetaHub = ({ onClose }) => {
           </button>
         </div>
 
-        {/* MAIN INTERFACE */}
         <div className="hub-content">
           
-          {/* SIDEBAR TABS */}
           <div className="hub-sidebar">
             <button 
-              className={`hub-tab ${activeTab === 'MANIFESTO' ? 'active' : ''}`}
+              className={`hub-tab tab-manifesto ${activeTab === 'MANIFESTO' ? 'active' : ''}`}
               onClick={() => setActiveTab('MANIFESTO')}
             >
               // {GLITCHBOT_DICT.HUB.TABS.MANIFESTO}
             </button>
             <button 
-              className={`hub-tab ${activeTab === 'LAB' ? 'active' : ''}`}
+              className={`hub-tab tab-lab ${activeTab === 'LAB' ? 'active' : ''}`}
               onClick={() => setActiveTab('LAB')}
             >
               // {GLITCHBOT_DICT.HUB.TABS.LAB}
             </button>
             <button 
-              className={`hub-tab ${activeTab === 'VAULT' ? 'active' : ''}`}
+              className={`hub-tab tab-vault ${activeTab === 'VAULT' ? 'active' : ''}`}
               onClick={() => setActiveTab('VAULT')}
             >
               // {GLITCHBOT_DICT.HUB.TABS.VAULT}
             </button>
+
+            {/* NEW: GlitchBot's Docking Station! */}
+            <GlitchBot mode="docked" currentContext={`HUB: ${activeTab}`} />
+
           </div>
 
-          {/* CONTENT PANEL */}
           <div className="hub-main-panel">
             {renderContent()}
           </div>
