@@ -1,5 +1,5 @@
 /* src/features/workbench/DashboardHome.jsx */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import './DashboardHome.css';
 
 // Context & Utils
@@ -10,7 +10,6 @@ import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, MARKET_TICKER_DATA, APP_CONFIG } from '../../utils/glossary';
 
 // Modals & UI Components
-import { MarketTicker } from '../../components/dashboard/MarketTicker'; 
 import { ProjectBlueprint } from './components/ProjectBlueprint';
 import { IntakeForm } from './components/IntakeForm'; 
 import { SaleModal } from './components/SaleModal';   
@@ -52,15 +51,6 @@ export const DashboardHome = () => {
   const [showIntakeModal, setShowIntakeModal] = useState(false);
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [isProcessingSale, setIsProcessingSale] = useState(false);
-
-  const liveTickerData = useMemo(() => {
-    const materialTrends = materials.slice(0, 3).map(m => ({
-      label: m.name,
-      value: `${formatCurrency(m.costPerUnit)} / UNIT`,
-      trend: 'neutral'
-    }));
-    return [...materialTrends, ...MARKET_TICKER_DATA];
-  }, [materials]);
 
   const sellableProjects = activeProjects.filter(p => p.stockQty > 0);
 
@@ -151,9 +141,7 @@ export const DashboardHome = () => {
         </div>
       </div>
 
-      <div className="dashboard-footer z-layer-top">
-         <MarketTicker items={liveTickerData} />
-      </div>
+      
 
       {selectedProject && <ProjectBlueprint project={selectedProject} onClose={() => setSelectedProject(null)} />}
       

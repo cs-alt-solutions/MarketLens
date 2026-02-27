@@ -71,20 +71,27 @@ export const ConsoleLayout = () => {
         <div className="global-bottom-bar bg-panel flex-between align-center px-20 border-top-subtle">
           
           {/* Left: The Scrolling Market Ticker */}
-          <div className="ticker-container flex-1 overflow-hidden flex-center justify-start gap-20">
-            <span className="text-teal font-mono font-tiny letter-spacing-1">MARKET_PULSE //</span>
-            <div className="ticker-scroll flex-center gap-30">
-              {MARKET_TICKER_DATA.map((item) => (
-                <div key={item.id} className="ticker-item flex-center gap-5 font-mono font-small">
-                  <span className="text-muted">{item.symbol}</span>
-                  <span className="text-main">{item.value}</span>
-                  <span className={item.trend === 'up' ? 'text-good' : item.trend === 'down' ? 'text-alert' : 'text-muted'}>
-                    {item.change}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+<div className="ticker-container flex-1 overflow-hidden flex-center justify-start">
+  
+  {/* NEW SOLID LABEL: This stays fixed while the ticker moves behind it */}
+  <div className="ticker-fixed-label bg-panel-header px-20 font-mono font-tiny text-teal border-right-subtle h-full flex-center z-layer-top">
+    STREET_PRICES //
+  </div>
+
+  <div className="ticker-scroll-window flex-1 overflow-hidden relative">
+    <div className="ticker-scroll flex-center gap-30">
+      {MARKET_TICKER_DATA.map((item) => (
+        <div key={item.id} className="ticker-item flex-center gap-5 font-mono font-small">
+          <span className="text-muted">{item.symbol}</span>
+          <span className="text-main">{item.value}</span>
+          <span className={item.trend === 'up' ? 'text-good' : item.trend === 'down' ? 'text-alert' : 'text-muted'}>
+            {item.change}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
 
           {/* Right: Feedback Button & Beta Status */}
           <div className="top-bar-actions flex-center gap-15 pl-20 border-left-subtle">

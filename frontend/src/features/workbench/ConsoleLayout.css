@@ -154,9 +154,54 @@
     flex-shrink: 0;
 }
 
-/* To this: */
+/* src/features/workbench/ConsoleLayout.css */
+
+/* Update or add these specific rules */
+
 .global-bottom-bar {
-    height: 50px;
+    height: 40px; /* Standardize height */
     background: var(--bg-panel);
-    flex-shrink: 0;
+    display: flex;
+    border-top: 1px solid var(--border-subtle);
+    overflow: hidden;
+}
+.ticker-fixed-label {
+    white-space: nowrap;
+    letter-spacing: 2px;
+    font-weight: 800;
+    /* Create a slight shadow to make it look like the ticker is passing under it */
+    box-shadow: 10px 0 15px rgba(0, 0, 0, 0.4); 
+    z-index: 10;
+}
+.ticker-scroll-window {
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    display: flex;
+    align-items: center;
+}
+.ticker-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.ticker-scroll {
+    display: flex;
+    animation: ticker-slide 40s linear infinite; /* Adjusted speed for readability */
+    padding-left: 20px;
+}
+
+@keyframes ticker-slide {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+/* Ensure the actions don't get squeezed */
+.top-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-left: 20px;
+    border-left: 1px solid var(--border-subtle);
+    height: 100%;
 }
