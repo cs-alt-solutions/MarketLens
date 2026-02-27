@@ -1,4 +1,215 @@
-/* Add to the bottom of src/packages/beta-engine/GlitchBot.css */
+/* src/packages/beta-engine/GlitchBot.css */
+
+/* --- BASE WRAPPER --- */
+.glitchbot-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+}
+
+/* --- FLOATING MODE (Default App View) --- */
+.glitchbot-wrapper.mode-floating {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    align-items: flex-end;
+}
+
+.glitchbot-wrapper.mode-floating .glitchbot-dialogue {
+    transform-origin: bottom right;
+    animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* --- DOCKED MODE (Beta Hub View) --- */
+.glitchbot-wrapper.mode-docked {
+    position: relative;
+    align-items: center;
+    margin-top: auto; 
+    padding-bottom: 30px;
+}
+
+.glitchbot-wrapper.mode-docked .glitchbot-dialogue {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 15px;
+    transform-origin: bottom center;
+    animation: popUpCenter 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popUpCenter {
+    0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- THE BOT CORE & BADGE CONTAINER --- */
+.glitchbot-core-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.bot-id-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid var(--neon-teal);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
+}
+
+/* --- THE BOT ICON (THE PHYSICAL DRAWING) --- */
+.glitchbot-core {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-panel-header);
+    border: 2px solid var(--neon-teal);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.interactive .glitchbot-core:hover {
+    box-shadow: 0 0 25px rgba(45, 212, 191, 0.5);
+    animation: jitter 0.3s infinite;
+}
+
+@keyframes jitter {
+    0% { transform: translate(0, 0); border-color: var(--neon-teal); }
+    25% { transform: translate(1px, -1px); border-color: var(--neon-orange); }
+    50% { transform: translate(-1px, 1px); border-color: var(--neon-teal); }
+    75% { transform: translate(1px, 1px); border-color: var(--neon-purple); }
+    100% { transform: translate(0, 0); border-color: var(--neon-teal); }
+}
+
+/* --- EYES --- */
+.bot-eyes {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    top: 12px; /* Pushed eyes up a tiny bit to give the face more room */
+}
+
+.bot-eye {
+    width: 8px;
+    height: 12px;
+    background: var(--neon-teal);
+    border-radius: 2px;
+    animation: blink 4s infinite;
+}
+
+@keyframes blink {
+    0%, 96%, 98%, 100% { height: 12px; transform: translateY(0); }
+    97% { height: 2px; transform: translateY(5px); }
+}
+
+/* --- MOUTH (The Smirk Engine) --- */
+.bot-mouth {
+    width: 20px;
+    height: 4px;
+    background: var(--neon-teal);
+    position: absolute;
+    bottom: 8px; /* FIX: Pushed down significantly to sit on the chin */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 10px 10px; 
+    transition: all 0.2s ease;
+    animation: mouth-twitch 5s infinite; 
+}
+
+@keyframes mouth-twitch {
+    0%, 90%, 93%, 100% { transform: translateX(-50%) rotate(0deg); }
+    91%, 92% { transform: translateX(-50%) rotate(-10deg) translateY(-1px); } 
+}
+
+.interactive .glitchbot-core:hover .bot-mouth {
+    border-radius: 1px 1px 20px 20px; 
+    transform: translateX(-50%) translateY(2px);
+    background: var(--neon-teal); 
+}
+
+/* --- ARMS --- */
+.bot-arm {
+    width: 12px;
+    height: 4px;
+    background: var(--neon-teal);
+    position: absolute;
+    border-radius: 2px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: -1;
+}
+
+.bot-arm.left { left: -8px; top: 25px; }
+.bot-arm.right { right: -8px; top: 25px; }
+
+.interactive .glitchbot-core:hover .bot-arm.left {
+    transform: translateY(-10px) rotate(-30deg);
+    background: var(--neon-orange);
+}
+
+.interactive .glitchbot-core:hover .bot-arm.right {
+    transform: translateY(-10px) rotate(30deg);
+    background: var(--neon-purple);
+}
+
+/* --- THE FEEDBACK MATRIX (POP-UP) --- */
+.glitchbot-dialogue {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 15px;
+    width: 280px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    z-index: 1010;
+}
+
+.dialogue-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-main);
+    border-bottom: 1px dashed var(--border-subtle);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.reaction-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--bg-row-odd);
+    border: 1px solid transparent;
+    color: var(--text-main);
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reaction-btn.oof:hover { border-color: var(--neon-orange); background: rgba(251, 146, 60, 0.1); }
+.reaction-btn.eyesore:hover { border-color: var(--neon-red); background: rgba(239, 68, 68, 0.1); }
+.reaction-btn.lightbulb:hover { border-color: var(--neon-teal); background: rgba(45, 212, 191, 0.1); }
 
 /* --- BOT INTRO OVERLAY --- */
 .bot-intro-overlay {
@@ -30,7 +241,7 @@
     margin-bottom: 30px;
 }
 
-/* --- SCALING MODIFIERS --- */
+/* --- SCALING MODIFIERS (For the massive Intro version) --- */
 .scale-large .glitchbot-core {
     width: 100px;
     height: 100px;
@@ -38,10 +249,20 @@
     border-radius: 12px;
 }
 
+.scale-large .bot-eyes { top: 24px; }
+
 .scale-large .bot-eye {
     width: 16px;
     height: 24px;
     border-radius: 4px;
+}
+
+/* Scaled up mouth */
+.scale-large .bot-mouth {
+    width: 40px;
+    height: 8px;
+    border-radius: 0 0 20px 20px;
+    bottom: 16px; /* FIX: Pushed down significantly to sit on the chin */
 }
 
 .scale-large .bot-arm {
@@ -56,4 +277,85 @@
 .scale-large .bot-id-badge {
     font-size: 0.9rem;
     padding: 4px 12px;
+}
+/* Add to the bottom of src/packages/beta-engine/GlitchBot.css */
+
+/* --- FEEDBACK FORM STYLES --- */
+.glitchbot-dialogue.form-mode {
+    width: 320px; /* Slightly wider for typing */
+}
+
+.feedback-textarea {
+    width: 100%;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    color: var(--text-main);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    resize: none;
+    margin-bottom: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.feedback-textarea:focus {
+    border-color: var(--neon-teal);
+    box-shadow: inset 0 0 10px rgba(45, 212, 191, 0.1);
+}
+
+.feedback-textarea::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    padding: 6px 10px;
+    transition: color 0.2s;
+}
+
+.btn-cancel:hover {
+    color: var(--text-main);
+}
+
+.btn-submit {
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid var(--neon-teal);
+    color: var(--neon-teal);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 15px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: var(--neon-teal);
+    color: #000;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+}
+
+.btn-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: var(--border-subtle);
+    color: var(--text-muted);
+    background: transparent;
 }

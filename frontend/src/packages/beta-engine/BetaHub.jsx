@@ -6,8 +6,6 @@ import { GLITCHBOT_DICT } from './dictionary';
 import { ManifestoTab } from './tabs/ManifestoTab';
 import { LabTab } from './tabs/LabTab';
 import { VaultTab } from './tabs/VaultTab';
-
-// NEW: We bring the Bot inside the Hub!
 import { GlitchBot } from './GlitchBot';
 
 export const BetaHub = ({ onClose }) => {
@@ -34,7 +32,8 @@ export const BetaHub = ({ onClose }) => {
           <div className="evolution-container">
             <div className="evolution-label">
               <span>{GLITCHBOT_DICT.HUB.EVOLUTION_PHASE}</span>
-              <span>34% / 100%</span>
+              {/* UPGRADED: RPG XP Tracker */}
+              <span>{GLITCHBOT_DICT.HUB.XP_PROGRESS}</span>
             </div>
             <div className="evolution-track">
               <div className="evolution-fill"></div>
@@ -68,7 +67,6 @@ export const BetaHub = ({ onClose }) => {
               // {GLITCHBOT_DICT.HUB.TABS.VAULT}
             </button>
 
-            {/* NEW: GlitchBot's Docking Station! */}
             <GlitchBot mode="docked" currentContext={`HUB: ${activeTab}`} />
 
           </div>

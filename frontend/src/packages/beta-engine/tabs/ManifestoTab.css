@@ -1,0 +1,163 @@
+/* src/packages/beta-engine/tabs/ManifestoTab.css */
+
+.manifesto-container {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 30px;
+}
+
+/* --- SECTION 1: THE MISSION --- */
+.manifesto-mission {
+    margin-bottom: 40px;
+}
+
+.manifesto-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.manifesto-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 800px;
+}
+
+.manifesto-body p {
+    margin-bottom: 20px;
+}
+
+.manifesto-signature {
+    margin-top: 30px;
+    font-family: var(--font-mono);
+    color: var(--neon-teal);
+    font-size: 0.9rem;
+}
+
+/* --- THE DIVIDER --- */
+.manifesto-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+    margin: 10px 0 40px 0;
+}
+
+/* --- SECTION 2: THE LORE CARD --- */
+.manifesto-lore-card {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--neon-orange);
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    max-width: 900px;
+}
+
+.lore-bot-display {
+    flex-shrink: 0;
+    padding: 20px;
+    background: var(--bg-panel);
+    border-radius: 12px;
+    border: 1px dashed var(--border-subtle);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lore-content {
+    flex: 1;
+}
+
+.lore-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.lore-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 0 0 15px 0;
+    text-shadow: 0 0 15px rgba(251, 146, 60, 0.2);
+}
+
+.lore-body {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-main);
+}
+
+.lore-body p {
+    margin-bottom: 10px;
+}
+/* Add to the bottom of src/packages/beta-engine/tabs/ManifestoTab.css */
+
+/* --- RULES OF ENGAGEMENT --- */
+.manifesto-rules-section {
+    margin-top: 40px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 30px;
+}
+
+.rules-heading {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.rule-card {
+    display: flex;
+    gap: 15px;
+    background: var(--bg-panel-header);
+    padding: 20px;
+    border-radius: 6px;
+    border-left: 2px solid var(--border-subtle);
+    transition: all 0.2s ease;
+}
+
+.rule-card:hover {
+    border-left-color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.05);
+}
+
+.rule-number {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--neon-teal);
+    opacity: 0.5;
+}
+
+.rule-title {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: 1px;
+}
+
+.rule-desc {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}

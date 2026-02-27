@@ -1,0 +1,86 @@
+/* src/packages/beta-engine/components/BotCautionTape.css */
+
+.btn-tape-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.btn-tape-content {
+    position: relative;
+    z-index: 2; 
+}
+
+/* Container centers beneath the button */
+.bot-tape-action {
+    position: absolute;
+    top: 100%; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    margin-top: 15px; /* Spacing below the button */
+    pointer-events: none; /* So it doesn't block UI clicks */
+    z-index: 10;
+}
+
+/* 1. Bot Pops Up */
+.bot-tape-holder {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    /* Pops up from below */
+    animation: bot-pop-up 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards;
+    z-index: 2; /* Keeps him over the edge of the tape */
+}
+
+/* 2. The Tape Rolls Out */
+.bot-caution-tape {
+    height: 28px;
+    width: 0; /* Starts hidden */
+    
+    /* Neon Orange with dark industrial diagonal stripes */
+    background-color: var(--neon-orange);
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 15px,
+      rgba(0, 0, 0, 0.3) 15px,
+      rgba(0, 0, 0, 0.3) 30px
+    );
+    
+    /* Dark, bold text for extreme contrast */
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 5px 15px rgba(251, 146, 60, 0.4);
+    
+    /* Rolls out to the right */
+    animation: roll-tape 0.8s cubic-bezier(0.25, 1, 0.5, 1) 2.0s forwards;
+    transform-origin: left center;
+}
+
+.tape-text {
+    padding-left: 15px; /* Prevents text from crowding the bot */
+}
+
+/* --- KEYFRAMES --- */
+
+@keyframes bot-pop-up {
+    0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes roll-tape {
+    0% { width: 0; padding-right: 0; }
+    100% { width: 260px; padding-right: 15px; } /* Expands enough to show the text */
+}

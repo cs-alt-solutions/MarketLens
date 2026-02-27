@@ -9,12 +9,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px; /* Reduced from 40px to allow wider window */
+    padding: 20px; 
 }
 
 .beta-hub-window {
-    width: 95%; /* Expand to fill most of the screen */
-    max-width: 1400px; /* UPGRADED: Massive increase from 1000px */
+    width: 95%; 
+    max-width: 1400px; 
     height: 90vh;
     background: var(--bg-panel);
     border: 1px solid var(--neon-purple);
@@ -68,7 +68,8 @@
 .evolution-fill {
     height: 100%;
     background: var(--neon-orange);
-    width: 34%; 
+    /* UPGRADED: Represents 340/500 XP mock data */
+    width: 68%; 
     box-shadow: 0 0 10px var(--neon-orange);
     transition: width 1s ease-in-out;
 }
@@ -127,7 +128,7 @@
 
 .hub-main-panel {
     flex: 1;
-    padding: 30px; /* Reduced from 40px to give the Lab more width */
+    padding: 30px; 
     overflow-y: auto;
 }
 

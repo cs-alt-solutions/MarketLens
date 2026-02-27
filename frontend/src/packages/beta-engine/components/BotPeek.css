@@ -1,0 +1,42 @@
+/* src/packages/beta-engine/components/BotPeek.css */
+
+.btn-peek-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* Ensure the wrapped content (the button) stays in front */
+.btn-peek-content {
+    position: relative;
+    z-index: 2; 
+}
+
+/* The Bot hiding behind it */
+.btn-peek-bot {
+    position: absolute;
+    top: 10px; 
+    left: 50%;
+    transform: translateX(-50%) rotate(0deg);
+    z-index: 1; 
+    opacity: 0;
+    pointer-events: none; 
+    /* 1.5s delay built-in */
+    animation: bot-peek-up 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.5s forwards;
+}
+
+@keyframes bot-peek-up {
+    0% { 
+        top: 10px; 
+        opacity: 0; 
+        transform: translateX(-50%) rotate(0deg); 
+    }
+    30% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: -70px; 
+        opacity: 1; 
+        transform: translateX(-50%) rotate(8deg); 
+    }
+}

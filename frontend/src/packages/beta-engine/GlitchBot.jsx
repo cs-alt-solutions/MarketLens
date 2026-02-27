@@ -10,7 +10,6 @@ export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDialogue, setActiveDialogue] = useState(null);
 
-  // Intro only shows up if he is floating (in the main app) and hasn't been acknowledged yet
   const showIntro = !hasSeenIntro && mode === "floating";
 
   const handleToggle = () => {
@@ -18,13 +17,21 @@ export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
     setActiveDialogue(null); 
   };
 
-  const handleFeedback = (type) => {
+  const handleReactionClick = (type) => {
     setActiveDialogue(type);
+  };
+
+  const handleCancel = () => {
+    setActiveDialogue(null);
+  };
+
+  const handleSubmit = (feedbackData) => {
+    // We are temporarily logging this to the console. 
+    // Soon, we will lift this state so it populates the Lab Tab!
+    console.log("🔥 GLITCHBOT CAPTURED FEEDBACK:", feedbackData);
     
-    // Simulate logging to the Beta Database to track XP
-    setTimeout(() => {
-        setIsOpen(false);
-    }, 2000);
+    setIsOpen(false);
+    setActiveDialogue(null);
   };
 
   if (showIntro) {
@@ -37,7 +44,9 @@ export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
         <DialogueMenu 
             currentContext={currentContext} 
             activeDialogue={activeDialogue} 
-            onFeedback={handleFeedback} 
+            onReactionClick={handleReactionClick}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
         />
       )}
       <BotCore onClick={handleToggle} />

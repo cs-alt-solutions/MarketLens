@@ -19,6 +19,9 @@ export const BotCore = ({ onClick, scale = "normal", interactive = true }) => {
               <div className="bot-eye"></div>
           </div>
 
+          {/* NEW: GlitchBot now has a mouth! */}
+          <div className="bot-mouth"></div>
+
           <div className="bot-arm right"></div>
       </div>
     </div>

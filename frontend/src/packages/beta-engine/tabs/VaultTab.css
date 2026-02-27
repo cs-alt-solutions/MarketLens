@@ -1,0 +1,157 @@
+/* src/packages/beta-engine/tabs/VaultTab.css */
+
+.vault-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.vault-section-header {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    padding: 15px 20px;
+    background: var(--bg-panel-header);
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vault-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+    overflow-y: auto;
+}
+
+/* --- THE DOSSIER CARDS --- */
+.vault-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.vault-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--status-dormant);
+    border-radius: 6px 0 0 6px;
+    transition: all 0.3s ease;
+}
+
+.vault-card:hover {
+    transform: translateY(-5px);
+    background: var(--bg-panel);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-color: var(--neon-purple);
+}
+
+.vault-card:hover::before {
+    background: var(--neon-purple);
+    box-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* Specific styling for the 'locked' state */
+.vault-card.status-locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: rgba(239, 68, 68, 0.3); /* Faint red */
+}
+
+.vault-card.status-locked::before {
+    background: var(--neon-red);
+}
+
+.vault-card.status-locked:hover {
+    transform: none;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* --- CARD CONTENT --- */
+.vault-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.vault-module-type {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.1);
+    padding: 3px 8px;
+    border-radius: 2px;
+    border: 1px solid rgba(45, 212, 191, 0.3);
+}
+
+.vault-card.status-locked .vault-module-type {
+    color: var(--neon-red);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.vault-card-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    letter-spacing: 1px;
+    margin: 5px 0 0 0;
+}
+
+.vault-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1; /* Pushes the footer to the bottom */
+}
+
+.vault-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--border-subtle);
+    padding-top: 15px;
+    margin-top: 5px;
+}
+
+.vault-status-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.status-unlocked-text { color: var(--neon-purple); }
+.status-locked-text { color: var(--neon-red); }
+
+.vault-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.vault-card:hover .vault-action-btn {
+    color: var(--neon-purple);
+}
