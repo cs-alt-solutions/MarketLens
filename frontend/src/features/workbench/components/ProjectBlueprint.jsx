@@ -2,7 +2,10 @@
 import React, { useState } from 'react';
 import './ProjectBlueprint.css';
 import { useInventory } from '../../../context/InventoryContext';
-import { useProjectEconomics } from '../../../context/FinancialContext';
+
+// FIX: Pointing to the new dedicated hook file!
+import { useProjectEconomics } from '../hooks/useProjectEconomics';
+
 import { EngineeringPanel } from './EngineeringPanel';
 import { BrandingPanel } from './BrandingPanel';
 import { TERMINOLOGY } from '../../../utils/glossary';
@@ -49,7 +52,6 @@ export const ProjectBlueprint = ({ project, onClose }) => {
   };
 
   // --- THE SAFETY NET ---
-  // This handles closing whether from the background click OR the Cancel button
   const handleSafeClose = () => {
     if (isDirty) {
       const confirmDiscard = window.confirm(
@@ -59,7 +61,7 @@ export const ProjectBlueprint = ({ project, onClose }) => {
         onClose();
       }
     } else {
-      onClose(); // Safe to close immediately
+      onClose(); 
     }
   };
 

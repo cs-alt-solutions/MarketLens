@@ -1,7 +1,7 @@
 /* src/context/FinancialContext.jsx */
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../supabaseClient';
-import { useInventory } from './InventoryContext';
 
 const FinancialContext = createContext();
 
@@ -39,7 +39,7 @@ export const FinancialProvider = ({ children }) => {
   }, [fetchData]);
 
   // --- TRANSACTION ACTIONS ---
-  const addTransaction = async (payload) => {
+  const addTransaction = useCallback(async (payload) => {
     try {
       const { data, error: txError } = await supabase
         .from('transactions')
@@ -48,7 +48,6 @@ export const FinancialProvider = ({ children }) => {
           amount: payload.amount,
           type: payload.type,
           date: payload.date || new Date().toISOString(),
-          // SYNC: Ensure the new Sales Channel column is populated
           salesChannel: payload.salesChannel || 'Direct'
         }])
         .select()
@@ -62,9 +61,9 @@ export const FinancialProvider = ({ children }) => {
       console.error("Finance Engine: Failed to record transaction.", err);
       return null;
     }
-  };
+  }, []);
 
-  const updateTransaction = async (id, updates) => {
+  const updateTransaction = useCallback(async (id, updates) => {
     try {
       const { data, error: txError } = await supabase
         .from('transactions')
@@ -81,9 +80,9 @@ export const FinancialProvider = ({ children }) => {
       console.error("Finance Engine: Update failed.", err);
       return null;
     }
-  };
+  }, []);
 
-  const deleteTransaction = async (id) => {
+  const deleteTransaction = useCallback(async (id) => {
     try {
       const { error: txError } = await supabase.from('transactions').delete().eq('id', id);
       if (txError) throw txError;
@@ -94,10 +93,10 @@ export const FinancialProvider = ({ children }) => {
       console.error("Finance Engine: Deletion failed.", err);
       return false;
     }
-  };
+  }, []);
 
   // --- RECURRING COSTS ACTIONS ---
-  const addRecurringCost = async (payload) => {
+  const addRecurringCost = useCallback(async (payload) => {
     try {
       const { data, error: recError } = await supabase
         .from('recurring_costs')
@@ -113,9 +112,9 @@ export const FinancialProvider = ({ children }) => {
       console.error("Finance Engine: Failed to add recurring cost.", err);
       return null;
     }
-  };
+  }, []);
 
-  const deleteRecurringCost = async (id) => {
+  const deleteRecurringCost = useCallback(async (id) => {
     try {
       const { error: recError } = await supabase.from('recurring_costs').delete().eq('id', id);
       if (recError) throw recError;
@@ -126,7 +125,7 @@ export const FinancialProvider = ({ children }) => {
       console.error("Finance Engine: Failed to remove recurring cost.", err);
       return false;
     }
-  };
+  }, []);
 
   // --- METRICS CALCULATION ---
   const metrics = useMemo(() => {
@@ -139,7 +138,7 @@ export const FinancialProvider = ({ children }) => {
       .reduce((sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0);
     
     const monthlyBurn = recurringCosts.reduce((sum, cost) => {
-      return sum + (cost.cycle === 'yearly' ? parseFloat(cost.amount) / 12 : parseFloat(cost.amount));
+      return sum + (cost.cycle === 'yearly' ? (parseFloat(cost.amount) || 0) / 12 : (parseFloat(cost.amount) || 0));
     }, 0);
 
     const netProfit = totalIncome - totalExpense;
@@ -147,11 +146,15 @@ export const FinancialProvider = ({ children }) => {
     return { totalIncome, totalExpense, netProfit, monthlyBurn };
   }, [transactions, recurringCosts]);
 
-  const value = {
+  const value = useMemo(() => ({
     transactions, recurringCosts, loading, error, metrics,
     addTransaction, updateTransaction, deleteTransaction,
     addRecurringCost, deleteRecurringCost
-  };
+  }), [
+    transactions, recurringCosts, loading, error, metrics,
+    addTransaction, updateTransaction, deleteTransaction,
+    addRecurringCost, deleteRecurringCost
+  ]);
 
   return <FinancialContext.Provider value={value}>{children}</FinancialContext.Provider>;
 };
@@ -171,12 +174,10 @@ export const useFinancialStats = () => {
   const totalCost = metrics.totalExpense || 0;
   const margin = totalRev > 0 ? ((totalRev - totalCost) / totalRev) * 100 : 0;
 
-  // Omni-Channel Parsing Engine
   const channelMetrics = useMemo(() => {
     return transactions
       .filter(tx => tx.type === 'SALE')
       .reduce((acc, tx) => {
-         // Priority: 1. Database column 'salesChannel', 2. Regex tag, 3. Default
          const match = tx.description?.match(/\[(.*?)\]/);
          const channel = tx.salesChannel || (match ? match[1] : 'Direct');
          acc[channel] = (acc[channel] || 0) + (parseFloat(tx.amount) || 0);
@@ -195,23 +196,4 @@ export const useFinancialStats = () => {
       loading,
       channelMetrics
   };
-};
-
-export const useProjectEconomics = (project) => {
-  const { materials } = useInventory();
-  return useMemo(() => {
-    let materialCost = 0;
-    if (project?.recipe?.length > 0) {
-      project.recipe.forEach(item => {
-        const mat = materials.find(m => m.id === item.matId);
-        if (mat) materialCost += (parseFloat(mat.costPerUnit) * parseFloat(item.reqPerUnit));
-      });
-    }
-    const retailPrice = parseFloat(project?.retailPrice) || 0;
-    const platformFees = retailPrice > 0 ? (retailPrice * (6.5 / 100)) + 0.20 : 0;
-    const netProfit = retailPrice - materialCost - platformFees;
-    const marginPercent = retailPrice > 0 ? (netProfit / retailPrice) * 100 : 0;
-    
-    return { materialCost, platformFees, netProfit, marginPercent };
-  }, [project, materials]);
 };
