@@ -1,17 +1,17 @@
-/* src/packages/beta-engine/tabs/ManifestoTab.css */
+/* src/packages/beta-engine/tabs/BlueprintTab.css */
 
-.manifesto-container {
+.blueprint-container {
     display: flex;
     flex-direction: column;
     padding-bottom: 30px;
 }
 
 /* --- SECTION 1: THE MISSION --- */
-.manifesto-mission {
+.blueprint-mission {
     margin-bottom: 40px;
 }
 
-.manifesto-title {
+.blueprint-title {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text-main);
@@ -20,18 +20,18 @@
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-.manifesto-body {
+.blueprint-body {
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-muted);
     max-width: 800px;
 }
 
-.manifesto-body p {
+.blueprint-body p {
     margin-bottom: 20px;
 }
 
-.manifesto-signature {
+.blueprint-signature {
     margin-top: 30px;
     font-family: var(--font-mono);
     color: var(--neon-teal);
@@ -39,7 +39,7 @@
 }
 
 /* --- THE DIVIDER --- */
-.manifesto-divider {
+.blueprint-divider {
     height: 1px;
     width: 100%;
     background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
@@ -47,7 +47,7 @@
 }
 
 /* --- SECTION 2: THE LORE CARD --- */
-.manifesto-lore-card {
+.blueprint-lore-card {
     display: flex;
     align-items: center;
     gap: 40px;
@@ -98,10 +98,10 @@
 .lore-body p {
     margin-bottom: 10px;
 }
-/* Add to the bottom of src/packages/beta-engine/tabs/ManifestoTab.css */
+/* Add to the bottom of src/packages/beta-engine/tabs/BlueprintTab.css */
 
 /* --- RULES OF ENGAGEMENT --- */
-.manifesto-rules-section {
+.blueprint-rules-section {
     margin-top: 40px;
     background: rgba(0,0,0,0.2);
     border: 1px solid var(--border-subtle);

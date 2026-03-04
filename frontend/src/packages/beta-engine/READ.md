@@ -37,6 +37,6 @@ src/packages/beta-engine/
 │   └── DialogueMenu.jsx// Feedback matrix popup
 │
 └── tabs/               // Modular Hub content 
-    ├── ManifestoTab.jsx
+    ├── BlueprintTab.jsx
     ├── LabTab.jsx
     └── VaultTab.jsx
