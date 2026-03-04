@@ -7,21 +7,21 @@ import { useInventory } from '../../context/InventoryContext';
 import { useFinancialStats, useFinancial } from '../../context/FinancialContext'; 
 import { useStudioIntelligence } from './hooks/useStudioIntelligence'; 
 import { formatCurrency } from '../../utils/formatters';
-import { TERMINOLOGY, MARKET_TICKER_DATA, APP_CONFIG } from '../../utils/glossary';
+import { TERMINOLOGY, APP_CONFIG, DASHBOARD_STRINGS } from '../../utils/glossary';
 
 // Modals & UI Components
 import { ProjectBlueprint } from './components/ProjectBlueprint';
 import { IntakeForm } from './components/IntakeForm'; 
 import { SaleModal } from './components/SaleModal';   
 
-// NEW Dashboard Modular Components
+// Dashboard Modular Components
 import TelemetryHUD from '../../components/dashboard/TelemetryHUD';
 import DailyBriefing from '../../components/dashboard/DailyBriefing';
 import DraftRunway from '../../components/dashboard/DraftRunway';
 import ProductionAlerts from '../../components/dashboard/ProductionAlerts';
 
 // Icons
-import { Plus, Box, Finance } from '../../components/Icons';
+import { Plus, Box, Finance, CloseIcon } from '../../components/Icons';
 
 export const DashboardHome = () => {
   const { 
@@ -30,19 +30,18 @@ export const DashboardHome = () => {
     materials = [], 
     addProject,
     updateProject,
-    loading: inventoryLoading 
-  } = useInventory() || {};
+    loading: invLoading 
+  } = useInventory();
 
   const { 
     netProfit = 0, 
     totalRev = 0, 
     totalCost = 0,
-    loading: financeLoading
-  } = useFinancialStats() || {};
+    loading: finLoading
+  } = useFinancialStats();
   
   const { addTransaction } = useFinancial(); 
 
-  // THE FIX: Plugging the brain back in!
   const { fleetAnalysis, inventoryIntel, logisticsIntel } = useStudioIntelligence(activeProjects, draftProjects, materials);
 
   const [selectedProject, setSelectedProject] = useState(null);
@@ -68,13 +67,14 @@ export const DashboardHome = () => {
       if (created) setSelectedProject(created);
   };
 
-  const handleLogSale = async (project, qty, revenue) => {
+  const handleLogSale = async (project, qty, revenue, channel) => {
     setIsProcessingSale(true);
     try {
       await addTransaction({
-        description: `Sold ${qty}x ${project.title}`,
+        description: `Sale: ${project.title} (${qty}x) [${channel}]`, 
         amount: revenue,
-        type: 'SALE'
+        type: 'SALE',
+        date: new Date().toISOString()
       });
       await updateProject({
         id: project.id,
@@ -82,17 +82,18 @@ export const DashboardHome = () => {
         soldQty: (project.soldQty || 0) + parseInt(qty)
       });
       setShowSaleModal(false);
-    } catch (error) {
-      console.error("Critical failure logging sale:", error);
+    } catch (err) {
+      // FIXED: Properly logging the error to resolve ESLint 'no-unused-vars' and 'no-empty'
+      console.error("Dashboard Error: Failed to log transaction.", err);
     } finally {
       setIsProcessingSale(false);
     }
   };
 
-  if (inventoryLoading || financeLoading) {
+  if (invLoading || finLoading) {
     return (
-      <div className="dashboard-container pad-20 text-center flex-center h-full">
-         <div className="text-accent font-mono mt-20">{TERMINOLOGY.BOOT.KERNEL}</div>
+      <div className="dashboard-container flex-center h-full">
+         <div className="text-accent font-mono">{TERMINOLOGY.BOOT.KERNEL}</div>
       </div>
     );
   }
@@ -114,7 +115,7 @@ export const DashboardHome = () => {
                   <Plus /> {TERMINOLOGY.WORKSHOP.NEW_PROJECT}
               </button>
               <button className="btn-command" onClick={() => setShowIntakeModal(true)}>
-                  <Box /> QUICK INTAKE
+                  <Box /> {DASHBOARD_STRINGS.actionIntake}
               </button>
               <button className="btn-command" onClick={() => setShowSaleModal(true)}>
                   <Finance /> {TERMINOLOGY.FINANCE.LOG_SALE}
@@ -124,33 +125,31 @@ export const DashboardHome = () => {
           <div className="dashboard-grid">
             <div className="dashboard-col-main flex-col gap-20">
               <DailyBriefing fleet={fleetAnalysis} inventoryIntel={inventoryIntel} />
-              {/* WIRED: Passing live drafts to the Runway */}
               <DraftRunway drafts={draftProjects} />
             </div>
 
             <div className="dashboard-col-side flex-col gap-20">
-  {/* WIRED: Now passing logisticsIntel to resolve the ESLint error */}
-  <ProductionAlerts 
-    alerts={inventoryIntel?.out || []} 
-    fleet={fleetAnalysis} 
-    logistics={logisticsIntel} 
-  />
+              <ProductionAlerts 
+                alerts={inventoryIntel?.out || []} 
+                fleet={fleetAnalysis} 
+                logistics={logisticsIntel} 
+              />
             </div>
           </div>
 
         </div>
       </div>
 
-      
-
       {selectedProject && <ProjectBlueprint project={selectedProject} onClose={() => setSelectedProject(null)} />}
       
       {showIntakeModal && (
-          <div className="modal-overlay">
-              <div className="modal-window modal-medium animate-fade-in p-20">
-                  <div className="flex-between mb-20 border-bottom-subtle pb-10">
-                      <h3 className="label-industrial m-0">{TERMINOLOGY.INVENTORY.INTAKE}</h3>
-                      <button className="btn-icon-hover-clean font-large font-bold" onClick={() => setShowIntakeModal(false)}>×</button>
+          <div className="modal-overlay" onClick={() => setShowIntakeModal(false)}>
+              <div className="modal-window modal-medium animate-fade-in p-20" onClick={e => e.stopPropagation()}>
+                  <div className="flex-between mb-20 border-bottom-subtle pb-15">
+                      <h3 className="m-0 font-large text-neon-cyan">{DASHBOARD_STRINGS.actionIntake}</h3>
+                      <button className="btn-icon-hover-clean" onClick={() => setShowIntakeModal(false)}>
+                          <CloseIcon />
+                      </button>
                   </div>
                   <IntakeForm onClose={() => setShowIntakeModal(false)} />
               </div>

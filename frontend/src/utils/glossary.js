@@ -1,7 +1,6 @@
 /* src/utils/glossary.js */
 import { DashboardIcon, WorkshopIcon, Box, Finance, Radar } from '../components/Icons';
 
-/* Inside src/utils/glossary.js */
 export const TERMINOLOGY = {
   BOOT: {
     KERNEL: "GATHERING MATERIALS...",
@@ -10,28 +9,20 @@ export const TERMINOLOGY = {
     ASSETS: "PREPARING TOOLS...",
     GRANTED: "READY TO BUILD."
   },
-  // NEW: The Workshop Manifesto
   BETA_AGREEMENT: {
     TITLE: "Welcome to the Workshop",
     SUBTITLE: "Your space to build, test, and master your craft.",
-    
-    // The 3 VIP Cards
     THE_PROBLEM_TITLE: "Ditch the Duct-Tape",
     THE_PROBLEM_TEXT: "No more tracking supplies in one place and profits in another. Say goodbye to the chaos.",
-    
     THE_SOLUTION_TITLE: "Seamless Flow",
     THE_SOLUTION_TEXT: "Everything is connected. When your inventory moves, your profit updates instantly.",
-    
     THE_MISSION_TITLE: "Push the Limits",
     THE_MISSION_TEXT: "You're an early builder. Test the boundaries, find the friction, and help us shape the ultimate tool.",
-    
-    // The Checkbox
     CONFIRMATION: "I'm ready to build. I understand this is an early-access workspace and features are still evolving."
   },
   GENERAL: {
     APP_NAME: "SHIFT STUDIO",
     VERSION: "v1.0-BETA",
-    // NEW: The Mission Statement
     TAGLINE: "Change your mindset. Master your craft.",
     SYSTEMS_LABEL: "DASHBOARD",
     SAVE: "SAVE PROJECT",
@@ -50,9 +41,9 @@ export const TERMINOLOGY = {
     CONFIRM: "CONFIRM"
   },
   DASHBOARD: {
-    TELEMETRY: "STATUS",          // Scrubbed from "SYSTEM ACTIVE" / "TELEMETRY"
+    TELEMETRY: "STATUS",
     LIVE_FEED: "CURRENT INVENTORY",
-    MARKET_PULSE: "MARKET OVERVIEW", // Scrubbed from "MARKET PULSE"
+    MARKET_PULSE: "MARKET OVERVIEW",
     SYNC: "SHOP SYNC",
     LOAD: "DATA LOADED"
   },
@@ -137,13 +128,13 @@ export const TERMINOLOGY = {
     BRAND_SPECS: "BRAND & LABEL SPECS"
   },
   INVENTORY: {
-    HEADER: "SUPPLIES & INVENTORY",
+    HEADER: "INVENTORY & LOGISTICS",
     MANIFEST_LABEL: "ALL MATERIALS",
     NOTIFICATIONS: "ALERTS",
     VALUE_LABEL: "TOTAL INVENTORY VALUE",
     SECTION_WORKSHOP: "MAKING SUPPLIES",
-    SECTION_LOGISTICS: "PACKAGING & SHIPPING",
-    INTAKE: "ADD NEW SUPPLY",
+    SECTION_LOGISTICS: "SHIPPING & FULFILLMENT",
+    INTAKE: "ADD NEW MATERIAL",
     ASSET_DETAILS: "SUPPLY DETAILS",
     VAULT_ACCESS: "BROWSE BY CATEGORY",
     RESTOCK: "RESTOCK EXISTING ITEM",
@@ -155,8 +146,9 @@ export const TERMINOLOGY = {
     HISTORY_LOG: "RESTOCK HISTORY",
     PHOTO_LABEL: "ITEM PHOTO",
     CONSOLE_HEADER: "MANUFACTURING CONSOLE",
-    TAB_ASSETS: "RAW ASSETS",
+    TAB_ASSETS: "MATERIALS",
     TAB_VENDORS: "SUPPLY CHAIN",
+    TAB_LOGISTICS: "LOGISTICS",
     FILTERS: {
       ALL: "ALL",
       ACTIVE: "ACTIVE",
@@ -209,7 +201,7 @@ export const TERMINOLOGY = {
   MARKET: {
     HEADER: "COMPETITION TRACKER",
     SUBTITLE: "Keep an eye on the market",
-    SCANNING: "UPDATING...", // Scrubbed from "SCANNING"
+    SCANNING: "UPDATING...",
     TARGET: "ADD COMPETITOR",
     TARGET_NAME_LABEL: "SHOP / BRAND NAME",
     TARGET_PLACEHOLDER: "Enter brand name...",
@@ -220,9 +212,9 @@ export const TERMINOLOGY = {
     SATURATION: "MARKET SATURATION"
   },
   LOGISTICS: {
-    TAB: "SHIPPING SUPPLIES",
-    CAPACITY: "MAX ORDERS WE CAN SHIP",
-    BOTTLENECK: "WE WILL RUN OUT OF:",
+    TAB: "SHIPPING CAPACITY",
+    CAPACITY: "MAX SHIPPABLE ORDERS",
+    BOTTLENECK: "SUPPLY BOTTLENECK",
     STATUS: {
         READY: "READY TO SHIP",
         HALTED: "NEED SHIPPING SUPPLIES"
@@ -287,13 +279,13 @@ export const MARKET_TICKER_DATA = [
 ];
 
 export const DASHBOARD_STRINGS = {
-  telemetryTitle: "KEY METRICS",          // Scrubbed from "SYSTEM TELEMETRY"
+  telemetryTitle: "KEY METRICS",
   quickActions: "QUICK COMMANDS",
   bottleneckRadar: "PRODUCTION ALERTS",
   dailyBriefing: "ACTION ITEMS",
   draftRunway: "R&D PIPELINE",
   profitMonitor: "PROFIT VELOCITY",
-  actionIntake: "QUICK INTAKE",
+  actionIntake: "ADD MATERIAL",
   actionLogSale: "LOG SALE",
   actionNewProject: "NEW PROJECT",
   statusBlocked: "PRODUCTION BLOCKED",
@@ -302,8 +294,6 @@ export const DASHBOARD_STRINGS = {
   runwaySOP: "SOP BUILT",
   runwayPriced: "PRICED",
   runwayReady: "READY TO LAUNCH",
-  
-  // NEW: Grounded Empty States
   emptyAlerts: "PRODUCTION LINES CLEAR // NO SHORTAGES",
   emptyBriefing: "ALL CAUGHT UP // NO PENDING ACTIONS"
 };

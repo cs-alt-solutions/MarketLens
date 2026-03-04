@@ -1,8 +1,7 @@
-/* src/context/InventoryContext.jsx */
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+/* src/context/InventoryProvider.jsx */
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
-
-const InventoryContext = createContext();
+import { InventoryContext } from './InventoryContext'; // Import from shared file
 
 export const InventoryProvider = ({ children }) => {
   const [materials, setMaterials] = useState([]);
@@ -124,7 +123,7 @@ export const InventoryProvider = ({ children }) => {
       setMaterials(rawMaterials);
       setVendors(rawVendors);
       setActiveProjects(activeProjFilter);
-      setDraftProjects(rawProjects.filter(p => p.status === 'Planning' || p.status === 'Draft' || p.status === 'idea' || !p.status));
+      setDraftProjects(rawProjects.filter(p => p.status === 'Planning' || p.status === 'Draft' || p.status === 'draft' || p.status === 'idea' || !p.status));
 
     } catch (err) {
       console.error("Supabase Error fetching studio telemetry:", err);
@@ -245,5 +244,3 @@ export const InventoryProvider = ({ children }) => {
     </InventoryContext.Provider>
   );
 };
-// eslint-disable-next-line react-refresh/only-export-components
-export const useInventory = () => useContext(InventoryContext);

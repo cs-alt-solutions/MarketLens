@@ -15,7 +15,8 @@ import { Finance, Plus } from '../../components/Icons';
 import './ProfitMatrix.css';
 
 export const ProfitMatrix = () => {
-  const { totalRev, totalCost, margin, transactions, recurringCosts, monthlyBurn } = useFinancialStats();
+  // NEW: We grab channelMetrics from our hook
+  const { totalRev, totalCost, margin, transactions, recurringCosts, monthlyBurn, channelMetrics } = useFinancialStats();
   const { addTransaction, updateTransaction, deleteTransaction } = useFinancial(); 
   const { activeProjects, updateProject } = useInventory();
   
@@ -26,11 +27,12 @@ export const ProfitMatrix = () => {
 
   const sellableProjects = activeProjects.filter(p => p.stockQty > 0);
 
-  const handleLogSale = async (project, qty, revenue) => {
+  // NEW: Added 'channel' parameter
+  const handleLogSale = async (project, qty, revenue, channel) => {
     setIsProcessing(true);
     try {
       await addTransaction({
-        description: `Sold ${qty}x ${project.title}`,
+        description: `Sale: ${project.title} (${qty}x) [${channel}]`, // We inject the channel tag!
         amount: revenue,
         type: 'SALE'
       });
@@ -93,14 +95,24 @@ export const ProfitMatrix = () => {
         </div>
       </div>
 
-      <div className="profit-grid-header mb-20">
+      <div className="profit-grid-header mb-15">
          <StatCard label={TERMINOLOGY.FINANCE.REVENUE} value={<AnimatedNumber value={totalRev} formatter={formatCurrency} />} glowColor="teal" />
          <StatCard label={TERMINOLOGY.FINANCE.EXPENSE} value={<AnimatedNumber value={totalCost} formatter={formatCurrency} />} glowColor="orange" />
          <StatCard label={TERMINOLOGY.FINANCE.MARGIN_AVG} value={`${margin.toFixed(1)}%`} glowColor="purple" />
          <StatCard label={TERMINOLOGY.FINANCIAL.MONTHLY_BURN} value={<AnimatedNumber value={monthlyBurn} formatter={formatCurrency} />} glowColor="red" />
       </div>
 
-      {/* ... top stat cards remain the same ... */}
+      {/* --- NEW: CHANNEL PERFORMANCE TRAY --- */}
+      {channelMetrics && Object.keys(channelMetrics).length > 0 && (
+         <div className="flex gap-15 mb-20 flex-wrap">
+            {Object.entries(channelMetrics).map(([channel, amount]) => (
+                <div key={channel} className="bg-row-odd border-subtle border-radius-2 p-15 flex-1 flex-between min-w-150">
+                    <span className="font-mono font-small text-muted">{channel.toUpperCase()}</span>
+                    <span className="font-bold text-teal">{formatCurrency(amount)}</span>
+                </div>
+            ))}
+         </div>
+      )}
 
       {/* STRICT CHART WRAPPER */}
       <div className="panel-industrial chart-panel-wrapper">
@@ -121,8 +133,6 @@ export const ProfitMatrix = () => {
               <RecurringPanel costs={recurringCosts} />
           </div>
       </div>
-
-      {/* ... modals remain the same ... */}
 
       {showSaleModal && (
         <SaleModal 

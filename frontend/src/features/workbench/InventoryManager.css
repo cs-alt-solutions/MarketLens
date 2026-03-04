@@ -1,6 +1,5 @@
 /* src/features/workbench/InventoryManager.css */
 
-/* --- MAIN LAYOUT --- */
 .inventory-layout {
     display: grid;
     grid-template-columns: 1fr 350px; 
@@ -15,16 +14,36 @@
     padding: 20px 40px;
     height: 100%;
     border-right: 1px solid var(--border-subtle); 
+    display: flex;
+    flex-direction: column;
 }
 
 .inventory-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Changed to start to accommodate tabs */
-    margin-bottom: 30px;
+    align-items: flex-start;
+    margin-bottom: 20px;
 }
 
-/* --- NEW TAB SYSTEM --- */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* New compact stat pill for the header */
+.stat-pill {
+    background: rgba(167, 139, 250, 0.1);
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* --- TABS & SEARCH --- */
 .tab-group {
     display: flex;
     gap: 10px;
@@ -45,7 +64,7 @@
 
 .tab-btn:hover {
     color: var(--text-main);
-    border-color: var(--border-focus);
+    border-color: var(--text-muted);
 }
 
 .tab-btn.active {
@@ -55,11 +74,33 @@
     font-weight: 700;
 }
 
-/* --- SEPARATORS --- */
+.search-container {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    width: 100%;
+    background: var(--bg-row-odd);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.05);
+}
+
+/* --- SEPARATORS & GRID --- */
 .section-separator-inventory {
     display: flex;
     align-items: center;
-    margin: 40px 0 20px 0;
+    margin: 20px 0 15px 0;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -72,12 +113,11 @@
     color: var(--neon-purple);
     font-weight: 700;
     letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-.separator-label-inv.logistics { color: var(--neon-blue); }
 .separator-line-inv { flex: 1; }
 
-/* --- ASSET GRID --- */
 .locker-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -85,7 +125,7 @@
     padding-bottom: 40px;
 }
 
-/* --- RIGHT COLUMN: SIDEBAR --- */
+/* --- RIGHT COLUMN: SIDEBAR DETAILS --- */
 .sidebar-col {
     display: flex;
     flex-direction: column;
@@ -109,7 +149,6 @@
     padding: 20px;
 }
 
-/* --- DETAIL PANEL (Inside Sidebar) --- */
 .sidebar-panel {
     display: flex;
     flex-direction: column;
@@ -124,7 +163,7 @@
     margin: 10px 0 5px 0;
     line-height: 1.1;
 }
-/* Add to the bottom of src/features/workbench/InventoryManager.css */
+
 .vendor-logo-large {
     width: 64px;
     height: 64px;
@@ -135,33 +174,32 @@
 .notes-display {
     white-space: pre-wrap;
 }
-/* --- EDIT STATE BUTTONS --- */
-.btn-secondary {
-    background: transparent;
-    border: 1px solid var(--text-muted);
-    color: var(--text-main);
-    padding: 12px;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
-}
-.btn-secondary:hover {
-    border-color: var(--text-main);
+/* Add to bottom of src/features/workbench/InventoryManager.css */
+
+.controls-section {
+    margin-bottom: 30px;
+    background: var(--bg-row-odd);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
 }
 
-.btn-danger {
-    background: transparent;
-    border: 1px solid var(--neon-red); 
-    color: var(--neon-red);
-    padding: 12px;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 2px;
+.search-input.mb-15 {
+    margin-bottom: 15px;
+    background: var(--bg-app); /* Pop the search bar off the background */
 }
-.btn-danger:hover {
-    background: rgba(var(--neon-red-rgb), 0.1);
+
+.filter-select {
+    padding: 6px 30px 6px 10px !important;
+    font-size: 0.8rem !important;
+    height: auto !important;
+    width: auto !important;
+    min-width: 160px;
+    background-color: var(--bg-app) !important;
+    color: var(--text-main) !important;
+    cursor: pointer;
+}
+
+.flex-start {
+    justify-content: flex-start;
 }

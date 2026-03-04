@@ -7,17 +7,17 @@ const FinancialContext = createContext();
 
 export const FinancialProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
-  const [recurringCosts, setRecurringCosts] = useState([]); // <-- NEW STATE
+  const [recurringCosts, setRecurringCosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --- FETCH BOTH TABLES ---
+  // --- FETCH ENGINE ---
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const [txRes, recRes] = await Promise.all([
-        supabase.from('transactions').select('*').order('created_at', { ascending: false }),
+        supabase.from('transactions').select('*').order('date', { ascending: false }),
         supabase.from('recurring_costs').select('*').order('created_at', { ascending: false })
       ]);
 
@@ -27,52 +27,119 @@ export const FinancialProvider = ({ children }) => {
       setTransactions(txRes.data || []);
       setRecurringCosts(recRes.data || []);
     } catch (err) {
-      console.error('Error fetching financial data:', err);
+      console.error('Critical Finance Fetch Failure:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => { 
+    fetchData(); 
+  }, [fetchData]);
 
-  // --- STANDARD TRANSACTION CRUD (Unchanged) ---
-  const addTransaction = async (payload) => { /* ... existing logic ... */
-    const { data, error } = await supabase.from('transactions').insert([payload]).select().single();
-    if (!error) setTransactions(prev => [data, ...prev]);
-    return data;
-  };
-  const updateTransaction = async (id, updates) => { /* ... existing logic ... */
-    const { data, error } = await supabase.from('transactions').update(updates).eq('id', id).select().single();
-    if (!error) setTransactions(prev => prev.map(tx => tx.id === id ? data : tx));
-    return data;
-  };
-  const deleteTransaction = async (id) => { /* ... existing logic ... */
-    const { error } = await supabase.from('transactions').delete().eq('id', id);
-    if (!error) setTransactions(prev => prev.filter(tx => tx.id !== id));
-    return !error;
+  // --- TRANSACTION ACTIONS ---
+  const addTransaction = async (payload) => {
+    try {
+      const { data, error: txError } = await supabase
+        .from('transactions')
+        .insert([{
+          description: payload.description,
+          amount: payload.amount,
+          type: payload.type,
+          date: payload.date || new Date().toISOString(),
+          // SYNC: Ensure the new Sales Channel column is populated
+          salesChannel: payload.salesChannel || 'Direct'
+        }])
+        .select()
+        .single();
+
+      if (txError) throw txError;
+      
+      setTransactions(prev => [data, ...prev]);
+      return data;
+    } catch (err) {
+      console.error("Finance Engine: Failed to record transaction.", err);
+      return null;
+    }
   };
 
-  // --- NEW: RECURRING COSTS CRUD ---
+  const updateTransaction = async (id, updates) => {
+    try {
+      const { data, error: txError } = await supabase
+        .from('transactions')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (txError) throw txError;
+      
+      setTransactions(prev => prev.map(tx => tx.id === id ? data : tx));
+      return data;
+    } catch (err) {
+      console.error("Finance Engine: Update failed.", err);
+      return null;
+    }
+  };
+
+  const deleteTransaction = async (id) => {
+    try {
+      const { error: txError } = await supabase.from('transactions').delete().eq('id', id);
+      if (txError) throw txError;
+      
+      setTransactions(prev => prev.filter(tx => tx.id !== id));
+      return true;
+    } catch (err) {
+      console.error("Finance Engine: Deletion failed.", err);
+      return false;
+    }
+  };
+
+  // --- RECURRING COSTS ACTIONS ---
   const addRecurringCost = async (payload) => {
-    const { data, error } = await supabase.from('recurring_costs').insert([payload]).select().single();
-    if (!error) setRecurringCosts(prev => [data, ...prev]);
-    return data;
-  };
-  const deleteRecurringCost = async (id) => {
-    const { error } = await supabase.from('recurring_costs').delete().eq('id', id);
-    if (!error) setRecurringCosts(prev => prev.filter(c => c.id !== id));
-    return !error;
+    try {
+      const { data, error: recError } = await supabase
+        .from('recurring_costs')
+        .insert([payload])
+        .select()
+        .single();
+
+      if (recError) throw recError;
+      
+      setRecurringCosts(prev => [data, ...prev]);
+      return data;
+    } catch (err) {
+      console.error("Finance Engine: Failed to add recurring cost.", err);
+      return null;
+    }
   };
 
-  // --- UPGRADED METRICS ENGINE ---
+  const deleteRecurringCost = async (id) => {
+    try {
+      const { error: recError } = await supabase.from('recurring_costs').delete().eq('id', id);
+      if (recError) throw recError;
+      
+      setRecurringCosts(prev => prev.filter(c => c.id !== id));
+      return true;
+    } catch (err) {
+      console.error("Finance Engine: Failed to remove recurring cost.", err);
+      return false;
+    }
+  };
+
+  // --- METRICS CALCULATION ---
   const metrics = useMemo(() => {
-    const totalIncome = transactions.filter(tx => tx.type === 'INCOME' || tx.type === 'SALE').reduce((sum, tx) => sum + (tx.amount || 0), 0);
-    const totalExpense = transactions.filter(tx => tx.type === 'EXPENSE').reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0);
+    const totalIncome = transactions
+      .filter(tx => tx.type === 'INCOME' || tx.type === 'SALE')
+      .reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
+
+    const totalExpense = transactions
+      .filter(tx => tx.type === 'EXPENSE')
+      .reduce((sum, tx) => sum + Math.abs(parseFloat(tx.amount) || 0), 0);
     
-    // Calculate Monthly Burn Rate
     const monthlyBurn = recurringCosts.reduce((sum, cost) => {
-      return sum + (cost.cycle === 'YEARLY' ? parseFloat(cost.amount) / 12 : parseFloat(cost.amount));
+      return sum + (cost.cycle === 'yearly' ? parseFloat(cost.amount) / 12 : parseFloat(cost.amount));
     }, 0);
 
     const netProfit = totalIncome - totalExpense;
@@ -89,39 +156,62 @@ export const FinancialProvider = ({ children }) => {
   return <FinancialContext.Provider value={value}>{children}</FinancialContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
+// --- HOOKS ---
+
 export const useFinancial = () => {
   const ctx = useContext(FinancialContext);
   if (!ctx) throw new Error('useFinancial must be used within FinancialProvider');
   return ctx;
 };
 
-// --- NEWLY DEPLOYED HOOKS ---
-// eslint-disable-next-line react-refresh/only-export-components
 export const useFinancialStats = () => {
   const { transactions, recurringCosts, metrics, loading } = useFinancial();
+  
   const totalRev = metrics.totalIncome || 0;
   const totalCost = metrics.totalExpense || 0;
   const margin = totalRev > 0 ? ((totalRev - totalCost) / totalRev) * 100 : 0;
 
-  return { totalRev, totalCost, margin, transactions, recurringCosts, netProfit: metrics.netProfit || 0, monthlyBurn: metrics.monthlyBurn || 0, loading };
+  // Omni-Channel Parsing Engine
+  const channelMetrics = useMemo(() => {
+    return transactions
+      .filter(tx => tx.type === 'SALE')
+      .reduce((acc, tx) => {
+         // Priority: 1. Database column 'salesChannel', 2. Regex tag, 3. Default
+         const match = tx.description?.match(/\[(.*?)\]/);
+         const channel = tx.salesChannel || (match ? match[1] : 'Direct');
+         acc[channel] = (acc[channel] || 0) + (parseFloat(tx.amount) || 0);
+         return acc;
+      }, {});
+  }, [transactions]);
+
+  return { 
+      totalRev, 
+      totalCost, 
+      margin, 
+      transactions, 
+      recurringCosts, 
+      netProfit: metrics.netProfit || 0, 
+      monthlyBurn: metrics.monthlyBurn || 0, 
+      loading,
+      channelMetrics
+  };
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useProjectEconomics = (project) => { /* ... existing useProjectEconomics logic ... */ 
+export const useProjectEconomics = (project) => {
   const { materials } = useInventory();
   return useMemo(() => {
     let materialCost = 0;
     if (project?.recipe?.length > 0) {
       project.recipe.forEach(item => {
         const mat = materials.find(m => m.id === item.matId);
-        if (mat) materialCost += (mat.costPerUnit * item.reqPerUnit);
+        if (mat) materialCost += (parseFloat(mat.costPerUnit) * parseFloat(item.reqPerUnit));
       });
     }
     const retailPrice = parseFloat(project?.retailPrice) || 0;
     const platformFees = retailPrice > 0 ? (retailPrice * (6.5 / 100)) + 0.20 : 0;
     const netProfit = retailPrice - materialCost - platformFees;
     const marginPercent = retailPrice > 0 ? (netProfit / retailPrice) * 100 : 0;
+    
     return { materialCost, platformFees, netProfit, marginPercent };
   }, [project, materials]);
 };
