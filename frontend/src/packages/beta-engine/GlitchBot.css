@@ -2,15 +2,15 @@
 
 /* --- STANDARDIZED SCALING --- */
 
-/* Normal scale for Dashboard and Website floating mode */
+/* Normal scale: Dropped from 60px to 45px for a non-intrusive dashboard presence */
 .scale-normal .glitchbot-core-mascot {
-    width: 60px; /* This is the sweet spot for a saucer-shaped bot */
+    width: 45px; 
     height: auto;
 }
 
-/* Large scale for the Onboarding and Blueprint Tab */
+/* Large scale: Dropped from 130px to 90px for cleaner Onboarding/Blueprint layouts */
 .scale-large .glitchbot-core-mascot {
-    width: 130px; 
+    width: 90px; 
     height: auto;
 }
 
@@ -23,16 +23,38 @@
     color: var(--neon-teal);
     letter-spacing: 1px;
     white-space: nowrap;
+    z-index: 10;
 }
 
+/* Scaled down to match the new micro-bot */
 .scale-normal .bot-id-badge {
-    font-size: 7px;
-    padding: 1px 6px;
-    margin-top: 4px;
+    font-size: 6px; 
+    padding: 1px 4px;
+    margin-top: 3px;
 }
 
 .scale-large .bot-id-badge {
-    font-size: 10px;
-    padding: 3px 10px;
-    margin-top: 10px;
+    font-size: 9px;
+    padding: 2px 8px;
+    margin-top: 8px;
+}
+
+/* --- POSITIONING ZONES --- */
+
+/* Zone: Standard Dashboard Floating */
+.glitchbot-wrapper.layout-anchor-bottom {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Zone: Cinematic Interaction (Used in Onboarding) */
+.glitchbot-wrapper.layout-zone-push {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

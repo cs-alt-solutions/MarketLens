@@ -2,8 +2,7 @@
 import React from 'react';
 import { GLITCHBOT_DICT } from '../dictionary';
 
-export const BotCore = ({ onClick, scale = "normal", interactive = true }) => {
-  // Ensure this template literal generates "scale-normal" or "scale-large"
+export const BotCore = ({ onClick, scale = "normal", interactive = true, showBadge = true }) => {
   const containerClass = `glitchbot-core-container scale-${scale} ${interactive ? 'interactive' : ''}`;
   
   return (
@@ -16,10 +15,12 @@ export const BotCore = ({ onClick, scale = "normal", interactive = true }) => {
           />
       </div>
 
-      {/* Using ID prefix to look like a diagnostic HUD */}
-      <div className="bot-id-badge">
-          ID: {GLITCHBOT_DICT.UI.BADGE.replace('[', '').replace(']', '')}
-      </div>
+      {/* Renders the nameplate only when diagnostic mode is active */}
+      {showBadge && (
+        <div className="bot-id-badge">
+            ID: {GLITCHBOT_DICT.UI.BADGE.replace('[', '').replace(']', '')}
+        </div>
+      )}
     </div>
   );
 };

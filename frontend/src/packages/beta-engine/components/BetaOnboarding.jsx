@@ -1,7 +1,7 @@
 /* src/packages/beta-engine/components/BetaOnboarding.jsx */
 import React, { useState } from 'react';
 import { GLITCHBOT_DICT } from '../dictionary';
-import { BotCore } from './BotCore';
+import { GlitchBot } from '../GlitchBot';
 import './BetaOnboarding.css';
 
 export const BetaOnboarding = ({ onComplete }) => {
@@ -10,15 +10,13 @@ export const BetaOnboarding = ({ onComplete }) => {
 
   return (
     <div className="beta-onboarding-overlay z-layer-top">
-      
       <div className="beta-push-wrapper">
         
-        {/* The Bot physically pushing the card */}
-        <div className="pushing-bot">
-           <BotCore scale="large" interactive={false} />
+        <div className="pushing-bot-container">
+           {/* Cinematic + Zone-Push clears the layout blockage */}
+           <GlitchBot mode="cinematic" layout="zone-push" />
         </div>
 
-        {/* The Encapsulated VIP Card */}
         <div className="beta-glass-card">
           <div className="flex-center flex-col mb-25 text-center">
              <span className="badge-purple mb-10">{AGREEMENT.VERSION}</span>

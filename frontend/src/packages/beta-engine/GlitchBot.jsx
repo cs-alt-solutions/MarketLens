@@ -3,14 +3,21 @@ import React, { useState } from 'react';
 import './GlitchBot.css';
 import { BotCore } from './components/BotCore';
 import { DialogueMenu } from './components/DialogueMenu';
-import { BotIntro } from './components/BotIntro';
 
-export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
-  const [hasSeenIntro, setHasSeenIntro] = useState(false);
+/**
+ * GLITCHBOT: The primary state manager for the diagnostic companion.
+ * @param {string} currentContext - Tells the bot where it is (e.g., 'DASHBOARD').
+ * @param {string} mode - 'floating', 'cinematic', or 'docked'.
+ * @param {string} layout - 'anchor-bottom', 'zone-push', etc. (Handles positioning physics).
+ */
+export const GlitchBot = ({ 
+  currentContext = "APP", 
+  mode = "floating", 
+  layout = "anchor-bottom" 
+}) => {
+  // State for managing the dialogue matrix
   const [isOpen, setIsOpen] = useState(false);
   const [activeDialogue, setActiveDialogue] = useState(null);
-
-  const showIntro = !hasSeenIntro && mode === "floating";
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -26,20 +33,18 @@ export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
   };
 
   const handleSubmit = (feedbackData) => {
-    // We are temporarily logging this to the console. 
-    // Soon, we will lift this state so it populates the Lab Tab!
+    // Logic for lifting state to the Lab Tab will go here
     console.log("🔥 GLITCHBOT CAPTURED FEEDBACK:", feedbackData);
     
     setIsOpen(false);
     setActiveDialogue(null);
   };
 
-  if (showIntro) {
-      return <BotIntro onComplete={() => setHasSeenIntro(true)} />;
-  }
+  // Cinematic mode automatically hides diagnostic HUD
+  const showBadge = mode !== "cinematic";
 
   return (
-    <div className={`glitchbot-wrapper mode-${mode}`}>
+    <div className={`glitchbot-wrapper mode-${mode} layout-${layout}`}>
       {isOpen && (
         <DialogueMenu 
             currentContext={currentContext} 
@@ -49,7 +54,11 @@ export const GlitchBot = ({ currentContext = "APP", mode = "floating" }) => {
             onCancel={handleCancel}
         />
       )}
-      <BotCore onClick={handleToggle} />
+      <BotCore 
+        onClick={handleToggle} 
+        showBadge={showBadge}
+        scale={mode === "cinematic" ? "large" : "normal"}
+      />
     </div>
   );
 };
