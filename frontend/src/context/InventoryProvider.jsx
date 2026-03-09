@@ -1,7 +1,7 @@
 /* src/context/InventoryProvider.jsx */
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
-import { InventoryContext } from './InventoryContext'; // Import from shared file
+import { InventoryContext } from './InventoryContext'; 
 
 export const InventoryProvider = ({ children }) => {
   const [materials, setMaterials] = useState([]);
@@ -12,13 +12,16 @@ export const InventoryProvider = ({ children }) => {
   const [logisticsIntel, setLogisticsIntel] = useState({ maxOrders: 0, bottleneck: null });
   const [loading, setLoading] = useState(true); 
 
-  // --- INTERNAL ENGINES ---
+  // --- INTERNAL ENGINES (Move to Python Math Engine) ---
 
   const calculateSmartReorder = (invData, vendorsData) => {
+    // 🔥 FUTURE: Python should return 'calculatedStatus' and 'reorderDate'
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     return invData.map(item => {
+        if (item.engine_status) return item; // Prefer Python data
+
         let totalBurn = 0;
         (item.history || []).forEach(log => {
             if (log.type === 'USAGE' && new Date(log.date) > thirtyDaysAgo) {
@@ -136,7 +139,30 @@ export const InventoryProvider = ({ children }) => {
     fetchStudioData();
   }, [fetchStudioData]);
 
-  // --- ACTIONS ---
+  // --- ACTIONS (Rule 8 Compliant) ---
+
+  const addMaterial = async (payload) => {
+    try {
+      // 🔥 PYTHON BRIDGE: 
+      // await fetch('/api/math_engine/inventory/add', { method: 'POST', body: JSON.stringify(payload) })
+      
+      const { error } = await supabase.from('inventory').insert([payload]);
+      if (error) throw error;
+      fetchStudioData();
+    } catch (err) {
+      console.error("Failed to add material:", err);
+    }
+  };
+
+  const updateInventoryItem = async (id, updates) => {
+    await supabase.from('inventory').update(updates).eq('id', id);
+    fetchStudioData();
+  };
+
+  const deleteInventoryItem = async (id) => {
+    await supabase.from('inventory').delete().eq('id', id);
+    fetchStudioData();
+  };
 
   const addVendor = async (newVendor) => {
     const { data, error } = await supabase.from('vendors').insert([newVendor]).select();
@@ -152,21 +178,6 @@ export const InventoryProvider = ({ children }) => {
 
   const deleteVendor = async (id) => {
     await supabase.from('vendors').delete().eq('id', id);
-    fetchStudioData();
-  };
-
-  const addInventoryItem = async (newItem) => {
-    await supabase.from('inventory').insert([newItem]);
-    fetchStudioData();
-  };
-
-  const updateInventoryItem = async (id, updates) => {
-    await supabase.from('inventory').update(updates).eq('id', id);
-    fetchStudioData();
-  };
-
-  const deleteInventoryItem = async (id) => {
-    await supabase.from('inventory').delete().eq('id', id);
     fetchStudioData();
   };
 
@@ -236,7 +247,9 @@ export const InventoryProvider = ({ children }) => {
   return (
     <InventoryContext.Provider value={{ 
       materials, activeProjects, draftProjects, vendors, logisticsIntel, pendingShipments, loading, 
-      fetchStudioData, addInventoryItem, updateInventoryItem, deleteInventoryItem,
+      fetchStudioData, 
+      addMaterial, // UPDATED NAME
+      updateInventoryItem, deleteInventoryItem,
       addProject, updateProject, deleteProject, manufactureProduct,
       addVendor, updateVendor, deleteVendor, createFulfillmentTicket, completeFulfillment
     }}>

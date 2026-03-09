@@ -6,6 +6,19 @@ export const useStudioIntelligence = (activeProjects, draftProjects, materials) 
   // --- FLEET ANALYSIS (Production Health) ---
   const fleetAnalysis = useMemo(() => {
     return activeProjects.map(p => {
+        
+        // 🔥 PYTHON BRIDGE: If the backend provides the intelligence, use it immediately!
+        if (p.engine_maxBuildable !== undefined && p.engine_health) {
+            return {
+                ...p,
+                maxBuildable: p.engine_maxBuildable,
+                limitingMaterial: p.engine_limitingMaterial,
+                health: p.engine_health,
+                productionStatus: p.engine_productionStatus
+            };
+        }
+
+        // [DEV FALLBACK]: The React Math (Will be deprecated when math_engine.py is live)
         let maxBuildable = 9999;
         let limitingMaterial = null;
 
@@ -42,13 +55,18 @@ export const useStudioIntelligence = (activeProjects, draftProjects, materials) 
 
   // --- LOGISTICS & INVENTORY INTEL ---
   const logisticsData = useMemo(() => {
+    
+    // Grouping stock status
     const inv = materials.reduce((acc, m) => {
-      if (m.qty <= 0) acc.out.push(m);
-      else if (m.qty < 10) acc.low.push(m);
+      // 🔥 PYTHON BRIDGE: Prefer backend tags if available
+      const status = m.engine_status || (m.qty <= 0 ? 'out' : m.qty < 10 ? 'low' : 'good');
+      if (status === 'out') acc.out.push(m);
+      else if (status === 'low') acc.low.push(m);
       else acc.good.push(m);
       return acc;
     }, { out: [], low: [], good: [] });
 
+    // [DEV FALLBACK] for Logistics Capacity
     const shippingItems = materials.filter(m => m.category === 'Shipping' || m.category === 'Packaging');
     let maxShipments = 9999;
     let limitingFactor = 'None';
@@ -71,6 +89,7 @@ export const useStudioIntelligence = (activeProjects, draftProjects, materials) 
     return { 
         inventoryIntel: inv, 
         logisticsIntel: { 
+          // 🔥 PYTHON BRIDGE: In the future, math_engine.py just sends `engine_maxShipments`
           maxShipments: shippingItems.length === 0 ? 0 : maxShipments, 
           limitingFactor, 
           shippingItems 

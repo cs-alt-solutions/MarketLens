@@ -1,5 +1,5 @@
 /* src/features/workbench/MarketRadar.jsx */
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react'; // Removed useEffect
 import './MarketRadar.css';
 import { InputGroup } from '../../components/ui/InputGroup';
 import { ImagePlaceholder } from '../../components/ui/ImagePlaceholder';
@@ -13,20 +13,32 @@ export const MarketRadar = () => {
   ]);
 
   const [newComp, setNewComp] = useState({ name: '', price: '' });
+  
+  // 🔥 PYTHON BRIDGE: This state will eventually hold data from math_engine.py
+  // Prefixing with underscore or using it in a comment for now to satisfy ESLint
+  const [marketMetrics] = useState({
+      demandScore: 78, 
+      saturationScore: 42
+  });
 
-  const addCompetitor = (e) => {
+  // --- DERIVED STATE ---
+  // Calculates instantly during render. Clean, fast, and Rule-compliant.
+  const avgPrice = competitors.reduce((acc, c) => acc + c.price, 0) / competitors.length || 0;
+
+  const addCompetitor = async (e) => {
     e.preventDefault();
     if (!newComp.name) return;
-    setCompetitors([...competitors, { id: Date.now(), ...newComp, price: parseFloat(newComp.price) || 0 }]);
+    
+    const payload = { id: Date.now(), ...newComp, price: parseFloat(newComp.price) || 0 };
+    
+    // FUTURE: await fetch('/api/math_engine/competitor', { ... });
+
+    setCompetitors(prev => [...prev, payload]);
     setNewComp({ name: '', price: '' });
   };
 
-  const avgPrice = useMemo(() => {
-    return competitors.reduce((acc, c) => acc + c.price, 0) / competitors.length || 0;
-  }, [competitors]);
-
   return (
-    <div className="inventory-layout"> {/* Unified layout class */}
+    <div className="inventory-layout">
       <div className="inventory-scroll-area">
         <div className="inventory-header">
            <div>
@@ -36,7 +48,6 @@ export const MarketRadar = () => {
         </div>
 
         <div className="locker-grid mt-20 animate-fade-in">
-           {/* Competitive Add Slot */}
            <div className="panel-industrial pad-20 border-dashed">
               <h3 className="label-industrial text-accent">{TERMINOLOGY.MARKET.TARGET}</h3>
               <form onSubmit={addCompetitor}>
@@ -58,7 +69,6 @@ export const MarketRadar = () => {
               </form>
            </div>
 
-           {/* Competitor Cards */}
            {competitors.map(c => (
               <div key={c.id} className="panel-industrial">
                  <div className="h-120 overflow-hidden border-bottom-subtle">
@@ -78,7 +88,6 @@ export const MarketRadar = () => {
         </div>
       </div>
 
-      {/* Intelligence Sidebar */}
       <div className="sidebar-col">
           <div className="keyword-header">
              <h3 className="label-industrial glow-purple">MARKET INTELLIGENCE</h3>
@@ -90,9 +99,9 @@ export const MarketRadar = () => {
             </div>
 
             <div className="performance-dials mt-20">
-               <Dial value={78} label={TERMINOLOGY.MARKET.DEMAND} colorVar="--neon-teal" />
+               <Dial value={marketMetrics.demandScore} label={TERMINOLOGY.MARKET.DEMAND} colorVar="--neon-teal" />
                <div className="mt-20">
-                  <Dial value={42} label={TERMINOLOGY.MARKET.SATURATION} colorVar="--neon-purple" />
+                  <Dial value={marketMetrics.saturationScore} label={TERMINOLOGY.MARKET.SATURATION} colorVar="--neon-purple" />
                </div>
             </div>
           </div>

@@ -38,9 +38,12 @@ export const FinancialProvider = ({ children }) => {
     fetchData(); 
   }, [fetchData]);
 
-  // --- TRANSACTION ACTIONS ---
+  // --- TRANSACTION ACTIONS (Python Bridge Ready) ---
   const addTransaction = useCallback(async (payload) => {
     try {
+      // 🔥 FUTURE PYTHON BRIDGE: 
+      // await fetch('/api/math_engine/transaction', { method: 'POST', body: JSON.stringify(payload) })
+      
       const { data, error: txError } = await supabase
         .from('transactions')
         .insert([{
@@ -77,7 +80,7 @@ export const FinancialProvider = ({ children }) => {
       setTransactions(prev => prev.map(tx => tx.id === id ? data : tx));
       return data;
     } catch (err) {
-      console.error("Finance Engine: Update failed.", err);
+      console.error("Finance Engine: Failed to update transaction.", err);
       return null;
     }
   }, []);
@@ -90,7 +93,7 @@ export const FinancialProvider = ({ children }) => {
       setTransactions(prev => prev.filter(tx => tx.id !== id));
       return true;
     } catch (err) {
-      console.error("Finance Engine: Deletion failed.", err);
+      console.error("Finance Engine: Failed to delete transaction.", err);
       return false;
     }
   }, []);
@@ -98,19 +101,13 @@ export const FinancialProvider = ({ children }) => {
   // --- RECURRING COSTS ACTIONS ---
   const addRecurringCost = useCallback(async (payload) => {
     try {
-      const { data, error: recError } = await supabase
-        .from('recurring_costs')
-        .insert([payload])
-        .select()
-        .single();
-
+      const { data, error: recError } = await supabase.from('recurring_costs').insert([payload]).select().single();
       if (recError) throw recError;
-      
       setRecurringCosts(prev => [data, ...prev]);
       return data;
-    } catch (err) {
+    } catch (err) { 
       console.error("Finance Engine: Failed to add recurring cost.", err);
-      return null;
+      return null; 
     }
   }, []);
 
@@ -118,17 +115,19 @@ export const FinancialProvider = ({ children }) => {
     try {
       const { error: recError } = await supabase.from('recurring_costs').delete().eq('id', id);
       if (recError) throw recError;
-      
       setRecurringCosts(prev => prev.filter(c => c.id !== id));
       return true;
-    } catch (err) {
-      console.error("Finance Engine: Failed to remove recurring cost.", err);
-      return false;
+    } catch (err) { 
+      console.error("Finance Engine: Failed to delete recurring cost.", err);
+      return false; 
     }
   }, []);
 
-  // --- METRICS CALCULATION ---
+  // --- METRICS CALCULATION (Isolating the Math Leak) ---
   const metrics = useMemo(() => {
+    // 🔥 FUTURE PYTHON BRIDGE: This entire useMemo will be replaced by state fetched from math_engine.py
+
+    // [DEV FALLBACK]: Keeping React math active so your charts don't crash today.
     const totalIncome = transactions
       .filter(tx => tx.type === 'INCOME' || tx.type === 'SALE')
       .reduce((sum, tx) => sum + (parseFloat(tx.amount) || 0), 0);
@@ -175,6 +174,8 @@ export const useFinancialStats = () => {
   const margin = totalRev > 0 ? ((totalRev - totalCost) / totalRev) * 100 : 0;
 
   const channelMetrics = useMemo(() => {
+    // 🔥 FUTURE PYTHON BRIDGE: Python should aggregate this.
+    // [DEV FALLBACK]
     return transactions
       .filter(tx => tx.type === 'SALE')
       .reduce((acc, tx) => {
@@ -186,14 +187,8 @@ export const useFinancialStats = () => {
   }, [transactions]);
 
   return { 
-      totalRev, 
-      totalCost, 
-      margin, 
-      transactions, 
-      recurringCosts, 
-      netProfit: metrics.netProfit || 0, 
-      monthlyBurn: metrics.monthlyBurn || 0, 
-      loading,
-      channelMetrics
+      totalRev, totalCost, margin, transactions, recurringCosts, 
+      netProfit: metrics.netProfit || 0, monthlyBurn: metrics.monthlyBurn || 0, 
+      loading, channelMetrics
   };
 };

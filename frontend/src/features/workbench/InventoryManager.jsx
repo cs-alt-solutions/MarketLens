@@ -18,7 +18,8 @@ import { formatCurrency } from '../../utils/formatters';
 export const InventoryManager = () => {
   const { 
     materials, vendors, activeProjects, updateProject, 
-    logisticsIntel, pendingShipments, createFulfillmentTicket, completeFulfillment 
+    logisticsIntel, pendingShipments, createFulfillmentTicket, completeFulfillment,
+    addMaterial // NEW: Pulling the add function from your context to talk to the Python Engine
   } = useInventory(); 
   
   const { addTransaction } = useFinancial();
@@ -117,6 +118,24 @@ export const InventoryManager = () => {
       setActiveModal(null);
     } catch (err) {
       console.error("Sale logging failure:", err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // NEW: The Bridge to the Python Engine
+  const handleIntakeSubmit = async (payload) => {
+    setIsProcessing(true);
+    try {
+      if (addMaterial) {
+        // Passes the clean JSON payload down to your context -> python engine
+        await addMaterial(payload);
+      } else {
+        console.warn("addMaterial function missing in useInventory context. Payload:", payload);
+      }
+      setActiveModal(null); // Close the modal on success
+    } catch (error) {
+      console.error("Failed to route material to math engine:", error);
     } finally {
       setIsProcessing(false);
     }
@@ -254,7 +273,15 @@ export const InventoryManager = () => {
                 </div>
                 
                 <div className="modal-content-scroll max-h-500 overflow-y-auto pr-10">
-                    {activeModal === 'ADD_MATERIAL' && <IntakeForm onClose={() => setActiveModal(null)} />}
+                    
+                    {/* NEW: Passed the handler functions to the updated IntakeForm */}
+                    {activeModal === 'ADD_MATERIAL' && (
+                        <IntakeForm 
+                            onSubmit={handleIntakeSubmit} 
+                            onCancel={() => setActiveModal(null)} 
+                        />
+                    )}
+
                     {activeModal === 'ADD_VENDOR' && <VendorIntakeForm onClose={() => setActiveModal(null)} />}
                     
                     {activeModal === 'EDIT_ITEM' && activeTab !== 'VENDORS' && selectedItem && (

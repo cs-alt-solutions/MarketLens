@@ -13,8 +13,7 @@ export const InventoryProvider = ({ children }) => {
   const [logisticsIntel, setLogisticsIntel] = useState({ maxOrders: 0, bottleneck: null });
   const [loading, setLoading] = useState(true); 
 
-  // --- INTERNAL ENGINES ---
-
+  // --- INTERNAL ENGINES (UI Display Logic) ---
   const calculateSmartReorder = (invData, vendorsData) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -100,6 +99,7 @@ export const InventoryProvider = ({ children }) => {
     };
   };
 
+  // --- READ FROM SUPABASE (UI Data Fetch) ---
   const fetchStudioData = useCallback(async () => {
     setLoading(true); 
     try {
@@ -137,7 +137,42 @@ export const InventoryProvider = ({ children }) => {
     fetchStudioData();
   }, [fetchStudioData]);
 
-  // --- ACTIONS ---
+  // --- ACTIONS (Write via Python Engine) ---
+
+  // 🔥 THE PYTHON BRIDGE FOR SMART TAXONOMY 🔥
+  const addMaterial = async (payload) => {
+    try {
+      // TODO: Replace this URL with your actual Python math_engine endpoint (e.g., localhost:8000/api/intake)
+      // We send the JSON to Python, let Python do the math, and let Python write to Supabase.
+      /*
+      const response = await fetch('http://localhost:5000/api/engine/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error("Python Engine rejected the payload");
+      */
+
+      // [DEV FALLBACK] If your Python engine API isn't live yet, we insert directly so the UI still works today!
+      await supabase.from('inventory').insert([payload]);
+      
+      // Once Python/Supabase is updated, we refresh the UI
+      fetchStudioData();
+    } catch (err) {
+      console.error("Failed to process material through math engine:", err);
+    }
+  };
+
+  // Other Actions...
+  const updateInventoryItem = async (id, updates) => {
+    await supabase.from('inventory').update(updates).eq('id', id);
+    fetchStudioData();
+  };
+
+  const deleteInventoryItem = async (id) => {
+    await supabase.from('inventory').delete().eq('id', id);
+    fetchStudioData();
+  };
 
   const addVendor = async (newVendor) => {
     const { data, error } = await supabase.from('vendors').insert([newVendor]).select();
@@ -153,21 +188,6 @@ export const InventoryProvider = ({ children }) => {
 
   const deleteVendor = async (id) => {
     await supabase.from('vendors').delete().eq('id', id);
-    fetchStudioData();
-  };
-
-  const addInventoryItem = async (newItem) => {
-    await supabase.from('inventory').insert([newItem]);
-    fetchStudioData();
-  };
-
-  const updateInventoryItem = async (id, updates) => {
-    await supabase.from('inventory').update(updates).eq('id', id);
-    fetchStudioData();
-  };
-
-  const deleteInventoryItem = async (id) => {
-    await supabase.from('inventory').delete().eq('id', id);
     fetchStudioData();
   };
 
@@ -207,6 +227,7 @@ export const InventoryProvider = ({ children }) => {
   };
 
   const manufactureProduct = async (projectId, recipe, batchSize) => {
+    // Note: If manufacturing requires heavy math, this should ALSO hit your Python engine eventually!
     try {
       const targetProject = [...activeProjects, ...draftProjects].find(p => p.id === projectId);
       for (const item of recipe) {
@@ -237,7 +258,9 @@ export const InventoryProvider = ({ children }) => {
   return (
     <InventoryContext.Provider value={{ 
       materials, activeProjects, draftProjects, vendors, logisticsIntel, pendingShipments, loading, 
-      fetchStudioData, addInventoryItem, updateInventoryItem, deleteInventoryItem,
+      fetchStudioData, 
+      addMaterial, // EXPORTING THE CORRECT FUNCTION NAME NOW
+      updateInventoryItem, deleteInventoryItem,
       addProject, updateProject, deleteProject, manufactureProduct,
       addVendor, updateVendor, deleteVendor, createFulfillmentTicket, completeFulfillment
     }}>

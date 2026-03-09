@@ -1,78 +1,188 @@
 /* src/features/workbench/components/IntakeForm.jsx */
-import React, { useState } from 'react';
-import { useInventory } from '../../../context/InventoryContext';
-import { TERMINOLOGY, APP_CONFIG } from '../../../utils/glossary';
+import React, { useState, useEffect, useMemo } from 'react';
+import { supabase } from '../../../supabaseClient';
 
-export const IntakeForm = ({ onClose }) => {
-  const { addInventoryItem, vendors } = useInventory();
+export const IntakeForm = ({ onSubmit, onCancel }) => {
+  // --- STATE: The Taxonomy Dictionary ---
+  const [taxonomy, setTaxonomy] = useState([]);
+  const [isLoadingTaxonomy, setIsLoadingTaxonomy] = useState(true);
+
+  // --- STATE: User Selections ---
+  const [selectedBroad, setSelectedBroad] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedSpecificId, setSelectedSpecificId] = useState('');
   
-  const [formData, setFormData] = useState({
-    name: '',
-    category: APP_CONFIG.INVENTORY.WORKSHOP[0], // Default to first workshop category
-    qty: 0,
-    costPerUnit: 0.00,
-    vendorId: '', // <-- NEW FIELD
-    status: 'Stocked'
-  });
+  // --- STATE: Receiving Details ---
+  const [alias, setAlias] = useState('');
+  const [qty, setQty] = useState('');
+  const [isCustomQty, setIsCustomQty] = useState(false);
+  const [cost, setCost] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const newItem = {
-      ...formData,
-      qty: parseFloat(formData.qty),
-      costPerUnit: parseFloat(formData.costPerUnit),
-      vendorId: formData.vendorId || null, // Ensure empty string becomes null for database
-      history: [{
-        date: new Date().toISOString(),
-        qty: parseFloat(formData.qty),
-        type: 'INITIAL_INTAKE',
-        note: 'Initial inventory intake'
-      }]
+  // 1. Fetch the Master Dictionary on load (This is safe to keep in React for UI speed)
+  useEffect(() => {
+    const fetchTaxonomy = async () => {
+      const { data, error } = await supabase.from('material_categories').select('*');
+      if (!error && data) setTaxonomy(data);
+      setIsLoadingTaxonomy(false);
     };
+    fetchTaxonomy();
+  }, []);
 
-    const success = await addInventoryItem(newItem);
-    if (success) onClose();
+  // 2. Cascading Logic
+  const broadCategories = useMemo(() => [...new Set(taxonomy.map(t => t.broad_category))], [taxonomy]);
+  const availableTypes = useMemo(() => [...new Set(taxonomy.filter(t => t.broad_category === selectedBroad).map(t => t.type_name))], [taxonomy, selectedBroad]);
+  const availableSpecifics = useMemo(() => taxonomy.filter(t => t.broad_category === selectedBroad && t.type_name === selectedType), [taxonomy, selectedBroad, selectedType]);
+  const selectedMaterialDef = useMemo(() => taxonomy.find(t => t.id === selectedSpecificId), [taxonomy, selectedSpecificId]);
+
+  // Smart Batch Generator
+  const smartQtyOptions = useMemo(() => {
+    if (!selectedMaterialDef) return [];
+    const uom = selectedMaterialDef.default_uom;
+    if (uom === 'Gallons') return [1, 2, 3, 5, 10];
+    if (uom === 'Board Feet') return [5, 10, 20, 50, 100, 250];
+    if (uom === 'Grams') return [50, 100, 250, 500, 1000];
+    if (uom === 'Kilograms') return [1, 2, 3, 5, 10];
+    if (uom === 'Count') return [1, 5, 10, 50, 100, 500];
+    return [1, 5, 10, 20, 50]; 
+  }, [selectedMaterialDef]);
+
+  // Reset downstream dropdowns
+  const handleBroadChange = (e) => { setSelectedBroad(e.target.value); setSelectedType(''); setSelectedSpecificId(''); setQty(''); setIsCustomQty(false); };
+  const handleTypeChange = (e) => { setSelectedType(e.target.value); setSelectedSpecificId(''); setQty(''); setIsCustomQty(false); };
+  const handleSpecificChange = (e) => { setSelectedSpecificId(e.target.value); setQty(''); setIsCustomQty(false); };
+  
+  const handleQtySelect = (e) => {
+    if (e.target.value === 'custom') { setIsCustomQty(true); setQty(''); } 
+    else { setIsCustomQty(false); setQty(e.target.value); }
   };
 
-  // Combine categories for the dropdown
-  const allCategories = [...APP_CONFIG.INVENTORY.WORKSHOP, ...APP_CONFIG.INVENTORY.LOGISTICS];
+  // 3. Submit Logic -> DELEGATED TO PARENT/PYTHON ENGINE
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedSpecificId || !qty || !cost) return;
+
+    setIsSubmitting(true);
+    try {
+      // We build a pristine payload for your Python engine or Context
+      const payload = {
+        material_category_id: selectedSpecificId,
+        alias: alias || selectedMaterialDef.species_or_specific,
+        name: selectedMaterialDef.species_or_specific,
+        category: selectedMaterialDef.broad_category,
+        qty: parseFloat(qty),
+        unit: selectedMaterialDef.default_uom,
+        cost_per_unit: parseFloat(cost)
+      };
+
+      // Pass it UP. Do not write to DB from here.
+      if (onSubmit) {
+        await onSubmit(payload);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Error passing data to engine. Check console.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoadingTaxonomy) return <div className="p-20 text-center text-muted font-mono animate-fade-in">SYNCING GLOBAL DICTIONARY...</div>;
 
   return (
-    <form onSubmit={handleSubmit} className="animate-fade-in">
-      <div className="lab-form-group mb-15">
-        <label className="label-industrial">{TERMINOLOGY.INVENTORY.MATERIAL_NAME}</label>
-        <input required type="text" className="input-industrial" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+    <div className="intake-form-wrapper animate-fade-in">
+      <div className="panel-header">
+        <h3 className="no-margin font-mono text-teal">STANDARD MATERIAL INTAKE</h3>
       </div>
+      
+      <form onSubmit={handleSubmit} className="p-20 flex-col gap-20">
+        
+        {/* --- STEP 1: SMART CLASSIFICATION --- */}
+        <div className="classification-zone p-15 border-subtle border-radius-2 bg-row-odd">
+          <span className="label-industrial mb-10">1. Smart Classification</span>
+          
+          <div className="flex gap-15 mb-10">
+            <div className="flex-1">
+              <select className="input-industrial" value={selectedBroad} onChange={handleBroadChange} required>
+                <option value="">-- Select Craft --</option>
+                {broadCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              </select>
+            </div>
+            
+            <div className="flex-1">
+              <select className="input-industrial" value={selectedType} onChange={handleTypeChange} disabled={!selectedBroad} required>
+                <option value="">-- Select Type --</option>
+                {availableTypes.map(type => <option key={type} value={type}>{type}</option>)}
+              </select>
+            </div>
+          </div>
 
-      <div className="lab-form-group mb-15">
-        <label className="label-industrial">{TERMINOLOGY.GENERAL.CATEGORY}</label>
-        <select className="input-industrial" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
-           {allCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-        </select>
-      </div>
+          <div className="w-full">
+            <select className="input-industrial" value={selectedSpecificId} onChange={handleSpecificChange} disabled={!selectedType} required>
+              <option value="">-- Select Specific Material --</option>
+              {availableSpecifics.map(mat => (
+                <option key={mat.id} value={mat.id}>{mat.species_or_specific}</option>
+              ))}
+            </select>
+          </div>
 
-      {/* NEW VENDOR DROPDOWN */}
-      <div className="lab-form-group mb-15">
-        <label className="label-industrial">SUPPLIER / VENDOR</label>
-        <select className="input-industrial" value={formData.vendorId} onChange={e => setFormData({...formData, vendorId: e.target.value})}>
-           <option value="">-- No Vendor Assigned --</option>
-           {vendors.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
-        </select>
-      </div>
-
-      <div className="grid-2-col gap-15 mb-20">
-        <div className="lab-form-group">
-          <label className="label-industrial">{TERMINOLOGY.INVENTORY.ADD_QTY}</label>
-          <input required type="number" step="0.01" className="input-industrial" value={formData.qty} onChange={e => setFormData({...formData, qty: e.target.value})} />
+          {selectedMaterialDef?.help_text && (
+             <div className="mt-15 p-10 border-subtle border-radius-2 bg-panel flex gap-10 align-start">
+                <span className="text-orange font-bold">🤖</span>
+                <span className="font-small text-muted italic">"{selectedMaterialDef.help_text}"</span>
+             </div>
+          )}
         </div>
-        <div className="lab-form-group">
-          <label className="label-industrial">{TERMINOLOGY.INVENTORY.UNIT_PRICE}</label>
-          <input required type="number" step="0.01" className="input-industrial" value={formData.costPerUnit} onChange={e => setFormData({...formData, costPerUnit: e.target.value})} />
-        </div>
-      </div>
 
-      <button type="submit" className="btn-primary w-full">{TERMINOLOGY.GENERAL.SAVE}</button>
-    </form>
+        {/* --- STEP 2: RECEIVING LOGISTICS --- */}
+        <div className="logistics-zone p-15 border-subtle border-radius-2 bg-row-even">
+           <span className="label-industrial mb-10">2. Receiving Logistics</span>
+           
+           <div className="mb-15">
+             <label className="font-small text-muted mb-5 display-block">Shop Alias (Optional)</label>
+             <input 
+                type="text" 
+                className="input-industrial" 
+                placeholder={`e.g., "The good stuff"`}
+                value={alias}
+                onChange={(e) => setAlias(e.target.value)}
+                disabled={!selectedSpecificId}
+             />
+           </div>
+
+           <div className="flex gap-15 align-end">
+              <div className="flex-1">
+                 <label className="font-small text-muted mb-5 display-block">Quantity Received</label>
+                 <div className="flex gap-10 align-center">
+                    {!isCustomQty ? (
+                      <select className="input-industrial" value={qty} onChange={handleQtySelect} disabled={!selectedSpecificId} required>
+                        <option value="">-- Select Batch Size --</option>
+                        {smartQtyOptions.map(amount => <option key={amount} value={amount}>{amount}</option>)}
+                        <option value="custom">Custom Amount...</option>
+                      </select>
+                    ) : (
+                      <input type="number" step="0.01" className="input-industrial animate-fade-in" placeholder="Exact Qty" value={qty} onChange={(e) => setQty(e.target.value)} autoFocus required />
+                    )}
+                    <span className="font-mono text-teal whitespace-nowrap">{selectedMaterialDef?.default_uom || 'UNIT'}</span>
+                 </div>
+              </div>
+              
+              <div className="flex-1">
+                 <label className="font-small text-muted mb-5 display-block">Total Cost ($)</label>
+                 <input type="number" step="0.01" className="input-industrial" value={cost} onChange={(e) => setCost(e.target.value)} disabled={!selectedSpecificId} required />
+              </div>
+           </div>
+        </div>
+
+        {/* --- ACTIONS --- */}
+        <div className="flex-between mt-10">
+           <button type="button" className="btn-ghost" onClick={onCancel} disabled={isSubmitting}>ABORT</button>
+           <button type="submit" className="btn-primary" disabled={!selectedSpecificId || !qty || !cost || isSubmitting}>
+             {isSubmitting ? 'PROCESSING...' : 'PASS TO ENGINE'}
+           </button>
+        </div>
+
+      </form>
+    </div>
   );
 };
