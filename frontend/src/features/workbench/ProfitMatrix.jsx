@@ -145,7 +145,7 @@ export const ProfitMatrix = () => {
 
       {showTxModal && (
         <div className="modal-overlay">
-          <div className="modal-window animate-fade-in" style={{ width: '400px' }}>
+          <div className="modal-window animate-fade-in modal-small">
             <TransactionForm 
               initialData={editingTx} 
               onSubmit={handleTxSubmit} 

@@ -33,3 +33,12 @@
 ## 7. INTERACTIVE STACKING & AESTHETIC
 * **Industrial Dark:** Maintain the palette (Teal, Blue, Purple) defined in global.css.
 * **Hover Priority:** Any element utilizing negative margins for stacking MUST implement a :hover state that elevates the z-index.
+
+## 8. "SELECT-FIRST" DATA ENTRY (The "No-Typing" Policy)
+* **Concept:** Text fields are the enemy of clean data and accurate Profit Tracking.
+* **Execution:** All inputs for Materials, SOP Actions, and Units of Measure MUST utilize a Dropdown/Select component powered by our Global Dictionary.
+* **Exception:** Only use open text fields for custom project names, customer notes, or completely novel items (which should trigger a prompt to add to the Global Dictionary).
+
+## 9. SMART TAXONOMY & TAX AWARENESS
+* **Concept:** Data must be structured for immediate business insights and tax preparation.
+* **Execution:** Every material must map to a 3-tier taxonomy (Category > Type > Unit). Every expense logged in the Profit Tracker must map to an IRS-standard deduction category.
