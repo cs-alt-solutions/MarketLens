@@ -1,33 +1,32 @@
 /* src/features/workbench/Workshop.jsx */
 import React, { useState, useMemo } from 'react';
 import { useInventory } from '../../context/InventoryContext';
-import { TERMINOLOGY, APP_CONFIG } from '../../utils/glossary';
+import { TERMINOLOGY, APP_CONFIG, MESSAGES } from '../../utils/glossary';
 import { ProjectCard } from '../../components/cards/ProjectCard';
 import { ProjectWizard } from './components/wizard/ProjectWizard';
 import { Plus, WorkshopIcon, Box, DashboardIcon } from '../../components/Icons';
 import './Workshop.css';
 
 export const Workshop = () => {
-  const { activeProjects, draftProjects, deleteProject } = useInventory(); 
+  // Pulling engine_pipeline_stats directly from context to avoid UI math
+  const { 
+    activeProjects, 
+    draftProjects, 
+    deleteProject,
+    engine_pipeline_stats 
+  } = useInventory(); 
   
   const [viewMode, setViewMode] = useState('PIPELINE'); 
   const [activeTab, setActiveTab] = useState('FLEET'); 
   const [selectedProject, setSelectedProject] = useState(null);
 
   const allProjects = useMemo(() => {
-      const active = activeProjects || [];
-      const drafts = draftProjects || [];
-      return [...active, ...drafts];
+      return [...(activeProjects || []), ...(draftProjects || [])];
   }, [activeProjects, draftProjects]);
 
   const ideas = allProjects.filter(p => p.status === 'idea');
   const drafts = allProjects.filter(p => p.status === 'draft');
   const activeOps = allProjects.filter(p => p.status === 'active');
-
-  const totalProjects = allProjects.length;
-  const ideaPercent = totalProjects > 0 ? (ideas.length / totalProjects) * 100 : 0;
-  const draftPercent = totalProjects > 0 ? (drafts.length / totalProjects) * 100 : 0;
-  const activePercent = totalProjects > 0 ? (activeOps.length / totalProjects) * 100 : 0;
 
   const handleNewProject = () => {
     const ghostTemplate = {
@@ -46,7 +45,7 @@ export const Workshop = () => {
   };
 
   const handleDeleteProject = async (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this project?");
+    const confirmed = window.confirm(MESSAGES.CONFIRM_DELETE_PROJECT);
     if (confirmed) {
       await deleteProject(id);
       if (selectedProject?.id === id) setSelectedProject(null); 
@@ -71,7 +70,7 @@ export const Workshop = () => {
                       />
                   ))
               ) : (
-                  <div className="empty-state text-muted italic pad-20">No projects in this phase.</div>
+                  <div className="empty-state text-muted italic pad-20">{MESSAGES.EMPTY_PIPELINE_PHASE}</div>
               )}
           </div>
       </div>
@@ -82,50 +81,50 @@ export const Workshop = () => {
       <div className="inventory-header">
         <div>
           <h2 className="header-title">{TERMINOLOGY.WORKSHOP.HUB_HEADER}</h2>
-          <span className="header-subtitle">Manage your product pipeline</span>
+          <span className="header-subtitle">{TERMINOLOGY.WORKSHOP.HUB_SUBTITLE}</span>
         </div>
         <div className="flex-center gap-15">
           <div className="view-toggle-bg flex-center border-radius-2 overflow-hidden border-subtle">
              <button 
                  className={`view-btn ${viewMode === 'PIPELINE' ? 'active bg-panel' : 'text-muted'}`}
                  onClick={() => setViewMode('PIPELINE')}
-                 title="Kanban Board View"
+                 title={TERMINOLOGY.WORKSHOP.VIEW_KANBAN}
              >
                  <DashboardIcon />
              </button>
              <button 
                  className={`view-btn ${viewMode === 'FOCUS' ? 'active bg-panel' : 'text-muted'}`}
                  onClick={() => setViewMode('FOCUS')}
-                 title="Tabbed Focus View"
+                 title={TERMINOLOGY.WORKSHOP.VIEW_FOCUS}
              >
                  <WorkshopIcon />
              </button>
           </div>
 
           <button className="btn-primary flex-center gap-10" onClick={handleNewProject}>
-            <Plus /> LAUNCH WIZARD
+            <Plus /> {TERMINOLOGY.WORKSHOP.BTN_LAUNCH_WIZARD}
           </button>
         </div>
       </div>
 
       <div className="progress-pipeline mb-20">
           <div className="flex-between font-small font-mono text-muted mb-5">
-              <span>{ideas.length} IDEAS</span>
-              <span>{drafts.length} DRAFTING</span>
-              <span className="text-neon-teal">{activeOps.length} ACTIVE</span>
+              <span>{ideas.length} {TERMINOLOGY.WORKSHOP.LABEL_IDEAS}</span>
+              <span>{drafts.length} {TERMINOLOGY.WORKSHOP.LABEL_DRAFTS}</span>
+              <span className="text-neon-teal">{activeOps.length} {TERMINOLOGY.WORKSHOP.LABEL_ACTIVE}</span>
           </div>
           <div className="pipeline-bar-wrapper">
-              <div className="pipeline-segment bg-purple" style={{ width: `${ideaPercent}%` }} title="Ideas"></div>
-              <div className="pipeline-segment bg-warning" style={{ width: `${draftPercent}%` }} title="Drafts"></div>
-              <div className="pipeline-segment bg-teal" style={{ width: `${activePercent}%` }} title="Active"></div>
+              <div className="pipeline-segment bg-purple" style={{ width: `${engine_pipeline_stats?.ideaPercent || 0}%` }} title={TERMINOLOGY.WORKSHOP.LABEL_IDEAS}></div>
+              <div className="pipeline-segment bg-warning" style={{ width: `${engine_pipeline_stats?.draftPercent || 0}%` }} title={TERMINOLOGY.WORKSHOP.LABEL_DRAFTS}></div>
+              <div className="pipeline-segment bg-teal" style={{ width: `${engine_pipeline_stats?.activePercent || 0}%` }} title={TERMINOLOGY.WORKSHOP.LABEL_ACTIVE}></div>
           </div>
       </div>
 
       {viewMode === 'PIPELINE' ? (
           <div className="pipeline-grid">
-              {renderPipelineColumn('THE INCUBATOR (Ideas)', ideas.length, ideas, 'col-purple')}
-              {renderPipelineColumn('THE LAB (Drafting)', drafts.length, drafts, 'col-warning')}
-              {renderPipelineColumn('THE FLEET (Active)', activeOps.length, activeOps, 'col-teal')}
+              {renderPipelineColumn(TERMINOLOGY.WORKSHOP.COL_IDEAS, ideas.length, ideas, 'col-purple')}
+              {renderPipelineColumn(TERMINOLOGY.WORKSHOP.COL_DRAFTS, drafts.length, drafts, 'col-warning')}
+              {renderPipelineColumn(TERMINOLOGY.WORKSHOP.COL_ACTIVE, activeOps.length, activeOps, 'col-teal')}
           </div>
       ) : (
           <>
@@ -140,7 +139,7 @@ export const Workshop = () => {
                   className={`tab-btn ${activeTab === 'LAB' ? 'active dormant' : ''}`}
                   onClick={() => setActiveTab('LAB')}
                 >
-                  <Box /> DRAFTS & IDEAS ({ideas.length + drafts.length})
+                  <Box /> {TERMINOLOGY.WORKSHOP.TAB_LAB} ({ideas.length + drafts.length})
                 </button>
               </div>
 
@@ -148,11 +147,11 @@ export const Workshop = () => {
                 {activeTab === 'FLEET' ? (
                    activeOps.length > 0 ? activeOps.map(p => (
                        <ProjectCard key={p.id} project={p} onClick={() => setSelectedProject(p)} onDelete={handleDeleteProject} />
-                   )) : <div className="empty-state">No active products.</div>
+                   )) : <div className="empty-state text-muted italic pad-20">{MESSAGES.EMPTY_FLEET}</div>
                 ) : (
                    [...ideas, ...drafts].length > 0 ? [...ideas, ...drafts].map(p => (
                        <ProjectCard key={p.id} project={p} onClick={() => setSelectedProject(p)} onDelete={handleDeleteProject} />
-                   )) : <div className="empty-state">No ideas in the lab.</div>
+                   )) : <div className="empty-state text-muted italic pad-20">{MESSAGES.EMPTY_LAB}</div>
                 )}
               </div>
           </>

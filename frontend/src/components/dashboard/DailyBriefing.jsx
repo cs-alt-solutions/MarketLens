@@ -21,10 +21,10 @@ export default function DailyBriefing({ fleet = [], inventoryIntel = { low: [], 
         {isBrandNewAccount && (
             <div className="quest-card border-left-teal bg-row-odd p-15 flex-between">
               <div className="flex-col">
-                <span className="text-teal font-small font-mono mb-5">PRIORITY: SETUP</span>
-                <span className="font-bold text-main">Add your first Raw Material</span>
+                <span className="text-teal font-small font-mono mb-5">{DASHBOARD_STRINGS.prioritySetup}</span>
+                <span className="font-bold text-main">{DASHBOARD_STRINGS.addFirstMaterial}</span>
               </div>
-              <button className="btn-primary font-small">START</button>
+              <button className="btn-primary font-small">{DASHBOARD_STRINGS.btnStart}</button>
             </div>
         )}
 
@@ -37,14 +37,14 @@ export default function DailyBriefing({ fleet = [], inventoryIntel = { low: [], 
 
         {/* Production Tasks */}
         {!isBrandNewAccount && buildQuests.slice(0, 3).map((item, idx) => {
-          const targetBatch = item.maxBuildable < 10 ? item.maxBuildable : 10;
+          const targetBatch = item.engine_recommended_batch || 10; // Math handled by engine!
           return (
             <div key={`build-${item.id || idx}`} className="quest-card border-left-teal bg-row-odd p-15 flex-between">
               <div className="flex-col">
-                <span className="text-teal font-small font-mono mb-5">ACTION: PRODUCTION</span>
-                <span className="font-bold text-main">Craft {targetBatch}x {item.title}</span>
+                <span className="text-teal font-small font-mono mb-5">{DASHBOARD_STRINGS.actionProduction}</span>
+                <span className="font-bold text-main">{DASHBOARD_STRINGS.craftPrefix} {targetBatch}x {item.title}</span>
               </div>
-              <button className="btn-primary font-small">START</button>
+              <button className="btn-primary font-small">{DASHBOARD_STRINGS.btnStart}</button>
             </div>
           );
         })}
@@ -53,10 +53,10 @@ export default function DailyBriefing({ fleet = [], inventoryIntel = { low: [], 
         {!isBrandNewAccount && restockQuests.map((mat, idx) => (
           <div key={`restock-${mat.id || idx}`} className="quest-card border-left-orange bg-row-even p-15 flex-between">
             <div className="flex-col">
-              <span className="text-orange font-small font-mono mb-5">ACTION: LOGISTICS</span>
-              <span className="font-bold text-main">Restock {mat.name}</span>
+              <span className="text-orange font-small font-mono mb-5">{DASHBOARD_STRINGS.actionLogistics}</span>
+              <span className="font-bold text-main">{DASHBOARD_STRINGS.restockPrefix} {mat.name}</span>
             </div>
-            <button className="btn-ghost font-small">MARK DONE</button>
+            <button className="btn-ghost font-small">{DASHBOARD_STRINGS.btnMarkDone}</button>
           </div>
         ))}
 
