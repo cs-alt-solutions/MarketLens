@@ -2,6 +2,7 @@
 import { DashboardIcon, WorkshopIcon, Box, Finance, Radar } from '../components/Icons';
 
 export const TERMINOLOGY = {
+  // ... [Keeping your existing BOOT, BETA_AGREEMENT, GENERAL, etc.] ...
   BOOT: {
     KERNEL: "GATHERING MATERIALS...",
     MARKET: "SYNCING INVENTORY...",
@@ -40,6 +41,16 @@ export const TERMINOLOGY = {
     UNKNOWN: "UNKNOWN",
     CONFIRM: "CONFIRM"
   },
+  // 🚀 NEW: The Wizard Identity
+  WIZARD: {
+    TITLE: "Let's build something. 🚀",
+    SUBTITLE: "Every great solution starts with a solid foundation.",
+    STEP_1: "The Spark",
+    STEP_2: "Product Build",
+    STEP_3: "Fulfillment",
+    STEP_4: "Check-In"
+  },
+  // ... [Keeping your existing DASHBOARD, STATUS, FINANCE, etc.] ...
   DASHBOARD: {
     TELEMETRY: "STATUS",
     LIVE_FEED: "CURRENT INVENTORY",
@@ -111,7 +122,9 @@ export const TERMINOLOGY = {
     ACTIVE_OPS: "ACTIVE PRODUCTS",
     NEW_PROJECT: "NEW PROJECT",
     VAULT_HEADER: "ARCHIVE",
-    BOM_HEADER: "MATERIALS NEEDED",
+    BOM_HEADER: "BILL OF MATERIALS",
+    BOM_SECTION_CORE: "CORE MATERIALS",
+    BOM_SECTION_PACKAGING: "PACKAGING & FULFILLMENT",
     REF_VISUAL: "PRODUCT PHOTO",
     TARGET_RETAIL: "RETAIL PRICE",
     LAST_EDIT: "LAST UPDATED",
@@ -149,7 +162,6 @@ export const TERMINOLOGY = {
     TAB_ASSETS: "MATERIALS",
     TAB_VENDORS: "SUPPLY CHAIN",
     TAB_LOGISTICS: "LOGISTICS",
-    // NEW ADDITIONS FOR REFACTOR:
     VALUE_PREFIX: "Value: ",
     CAPACITY_PREFIX: "Capacity: ",
     ACTION_LOG_SALE: "Log Sale",
@@ -261,8 +273,32 @@ export const APP_CONFIG = {
     INITIAL_COMPETITION: TERMINOLOGY.GENERAL.UNKNOWN
   },
   INVENTORY: {
-    LOGISTICS: ['Packaging', 'Shipping'],
+    // Ensuring your keywords from below match the logistics array!
+    LOGISTICS: ['Packaging', 'Shipping', 'box', 'mailer', 'label', 'tape'],
     WORKSHOP: ['Raw Material', 'Consumables', 'Hardware', 'Electronics', 'Tools']
+  },
+  // 🚀 NEW: The Agentic API Blueprint
+  ENDPOINTS: {
+    SHOPIFY: {
+      url: "https://{store_name}.myshopify.com/admin/api/2026-01/graphql.json",
+      nodes: ["InventoryLevel", "OrderTransaction"]
+    },
+    ETSY: {
+      url: "https://api.etsy.com/v3/application/",
+      nodes: ["updateListingInventory", "ledger-entries"]
+    },
+    AMAZON: {
+      url: "SP-API",
+      nodes: ["FBA Inventory API", "Finances API"]
+    },
+    EBAY: {
+      url: "https://api.ebay.com/sell/fulfillment/v1",
+      nodes: ["getOrders"]
+    },
+    TIKTOK: {
+      url: "Partner API v2",
+      nodes: ["Order Statement Transactions", "is_on_hold_order"]
+    }
   }
 };
 
@@ -325,5 +361,10 @@ export const DASHBOARD_STRINGS = {
   runwayPriced: "PRICED",
   runwayReady: "READY TO LAUNCH",
   emptyAlerts: "PRODUCTION LINES CLEAR // NO SHORTAGES",
-  emptyBriefing: "ALL CAUGHT UP // NO PENDING ACTIONS"
+  emptyBriefing: "ALL CAUGHT UP // NO PENDING ACTIONS",
+  // 🚀 NEW: Bento Box Terminology
+  bentoSales: "DAILY SALES VELOCITY",
+  bentoAlerts: "STOCK & LOGISTICS ALERTS",
+  bentoMilestones: "ACTIVE PROJECT MILESTONES",
+  bentoProfit: "MARGIN INTELLIGENCE"
 };

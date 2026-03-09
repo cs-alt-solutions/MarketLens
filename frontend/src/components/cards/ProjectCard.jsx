@@ -1,77 +1,79 @@
 /* src/components/cards/ProjectCard.jsx */
 import React from 'react';
 import './ProjectCard.css';
-import { formatCurrency, formatDate } from '../../utils/formatters';
-import { TERMINOLOGY } from '../../utils/glossary';
-import { StatusBadge } from '../ui/StatusBadge';
-import { ProgressBar } from '../ui/ProgressBar';
-import { TrashIcon } from '../Icons';
+import { formatCurrency } from '../../utils/formatters';
+import { APP_CONFIG, TERMINOLOGY } from '../../utils/glossary';
+import { WorkshopIcon, Box, Finance } from '../Icons';
 
-export const ProjectCard = ({ project, onClick, onDelete, readOnly = false, showStatus = true }) => {
-  const { title, status = 'draft', retailPrice, updated_at, stockQty, recipe } = project;
-  const isDraft = status === 'draft' || status === 'idea' || status === 'Planning';
-  const normalizedStatus = status.toLowerCase();
+export const ProjectCard = ({ project, onClick }) => {
+  // 1. Safely extract our new nested data structures
+  const recipe = project.recipe || [];
+  const economics = project.economics || {};
+  
+  // 2. Separate Core Materials from Packaging using our Single Source of Truth
+  const logisticsKeywords = APP_CONFIG.INVENTORY.LOGISTICS;
+  
+  const packagingItems = recipe.filter(item => 
+    logisticsKeywords.some(keyword => item.name.toLowerCase().includes(keyword.toLowerCase()))
+  );
+  const coreItems = recipe.filter(item => 
+    !logisticsKeywords.some(keyword => item.name.toLowerCase().includes(keyword.toLowerCase()))
+  );
+
+  // 3. Fallback math in case the engine is still syncing
+  const retail = project.retailPrice || economics.targetRetail || 0;
+  const fees = economics.platformFees || (retail * 0.10); // Standard 10% fee assumption
+  const margin = economics.marginPercent || 0;
 
   return (
-    <div className={`project-card-container card-hover-effect status-${normalizedStatus}`} onClick={onClick}>
+    <div className="project-card bg-panel border-radius-2 border-subtle p-20 flex-col transition-hover clickable" onClick={onClick}>
       
-      <div className="project-card-header">
-        {showStatus ? (
-          <StatusBadge status={status} />
-        ) : (
-          <span className="text-muted font-small font-mono">
-            {TERMINOLOGY.GENERAL.ID_LABEL}: {project.id ? project.id.toString().slice(-4) : 'NEW'}
-          </span>
-        )}
+      {/* HEADER: Title & Status */}
+      <div className="flex-between mb-15 border-bottom-subtle pb-10">
+        <h3 className="m-0 font-large text-main">{project.title}</h3>
+        <span className={`status-badge status-${project.status}`}>
+          {TERMINOLOGY.STATUS[project.status.toUpperCase()] || project.status}
+        </span>
+      </div>
 
-        <h3 className="project-title">{title || 'Untitled Project'}</h3>
+      {/* BODY: The Bill of Materials (BOM) */}
+      <div className="flex-col gap-10 mb-20 flex-1">
+        <div className="flex-between text-small">
+          <span className="text-muted flex-center gap-5"><WorkshopIcon /> Core Materials:</span>
+          <span className="font-bold text-main">{coreItems.length > 0 ? coreItems.length : 'None'}</span>
+        </div>
+        <div className="flex-between text-small">
+          <span className="text-muted flex-center gap-5"><Box /> Packaging & Shipping:</span>
+          <span className="font-bold text-main">{packagingItems.length > 0 ? packagingItems.length : 'None'}</span>
+        </div>
         
-        {!readOnly && onDelete && (
-          <button 
-            className="btn-icon-hover-clean z-layer-top" 
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              onDelete(project.id); 
-            }}
-            title={TERMINOLOGY.GENERAL.DELETE}
-          >
-            <TrashIcon />
-          </button>
+        {/* Prototype Warning Flag */}
+        {recipe.some(r => r.isPrototype) && (
+          <div className="bg-app text-warning text-tiny font-mono p-5 text-center border-radius-1 mt-5 border-warning">
+            ⚠ CONTAINS UNVERIFIED PROTOTYPE MATERIALS
+          </div>
         )}
       </div>
 
-      <div className="project-card-body">
-        <div className="project-metrics">
-            <div className="metric-item">
-                <span className="metric-label">{TERMINOLOGY.WORKSHOP.BOM_HEADER}</span>
-                <span className="metric-value">{recipe?.length || 0} Items</span>
-            </div>
-            <div className="metric-item text-right">
-                <span className="metric-label">{TERMINOLOGY.BLUEPRINT.STOCK}</span>
-                <span className="metric-value stock-units">{stockQty || 0} {TERMINOLOGY.GENERAL.UNITS}</span>
-            </div>
+      {/* FOOTER: Agentic Economics */}
+      <div className="bg-app p-15 border-radius-2 border-subtle">
+        <div className="flex-between mb-5">
+          <span className="text-muted text-tiny tracking-wide">{TERMINOLOGY.BLUEPRINT.RETAIL}</span>
+          <span className="font-bold">{formatCurrency(retail)}</span>
         </div>
-
-        {!isDraft && (
-            <div className="mt-10 mb-10">
-              <ProgressBar 
-                  value={status === 'completed' ? 100 : 45} 
-                  colorVar={status === 'active' ? '--neon-teal' : '--neon-purple'}
-              />
-            </div>
-        )}
-
-        <div className="project-footer mt-20 pt-15">
-           <div>
-              <span className="metric-label">{TERMINOLOGY.WORKSHOP.TARGET_RETAIL}</span>
-              <div className="retail-price-display font-bold font-large">{formatCurrency(retailPrice || 0)}</div>
-           </div>
-           <div className="text-right">
-              <span className="metric-label">{TERMINOLOGY.WORKSHOP.LAST_EDIT}</span>
-              <div className="text-muted font-small">{updated_at ? formatDate(updated_at) : 'Just Now'}</div>
-           </div>
+        <div className="flex-between mb-5">
+          <span className="text-muted text-tiny tracking-wide">{TERMINOLOGY.BLUEPRINT.PLATFORM_FEES}</span>
+          <span className="text-alert">-{formatCurrency(fees)}</span>
+        </div>
+        <div className="flex-between border-top-subtle pt-5 mt-5">
+          <span className="text-neon-teal font-small font-bold flex-center gap-5"><Finance /> {TERMINOLOGY.FINANCE.NET}</span>
+          <div className="text-right">
+            <span className="text-neon-teal font-bold display-block">{formatCurrency(economics.netProfit || 0)}</span>
+            <span className="text-neon-teal text-tiny">{margin.toFixed(1)}% MARGIN</span>
+          </div>
         </div>
       </div>
+      
     </div>
   );
 };

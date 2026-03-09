@@ -10,7 +10,7 @@ import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, APP_CONFIG, DASHBOARD_STRINGS } from '../../utils/glossary';
 
 // Modals & UI Components
-import { ProjectBlueprint } from './components/ProjectBlueprint';
+import { ProjectWizard } from './components/wizard/ProjectWizard';
 import { IntakeForm } from './components/IntakeForm'; 
 import { SaleModal } from './components/SaleModal';   
 
@@ -140,7 +140,7 @@ export const DashboardHome = () => {
         </div>
       </div>
 
-      {selectedProject && <ProjectBlueprint project={selectedProject} onClose={() => setSelectedProject(null)} />}
+      {selectedProject && <P project={selectedProject} onClose={() => setSelectedProject(null)} />}
       
       {showIntakeModal && (
           <div className="modal-overlay" onClick={() => setShowIntakeModal(false)}>
