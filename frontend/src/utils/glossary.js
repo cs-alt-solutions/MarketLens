@@ -138,7 +138,17 @@ export const TERMINOLOGY = {
     HEX_COLOR: "HEX COLOR",
     PRIMARY_FONT: "PRIMARY FONT",
     MAKER_NOTES: "MAKER NOTES",
-    BRAND_SPECS: "BRAND & LABEL SPECS"
+    BRAND_SPECS: "BRAND & LABEL SPECS",
+    // 🚀 NEW GREMLIN ADDITIONS:
+    VIEW_KANBAN: "Pipeline View",
+    VIEW_FOCUS: "Focus View",
+    BTN_LAUNCH_WIZARD: "LAUNCH THE SPARK",
+    LABEL_IDEAS: "IDEAS",
+    LABEL_DRAFTS: "DRAFTS",
+    LABEL_ACTIVE: "ACTIVE",
+    COL_IDEAS: "THE INCUBATOR (Ideas)",
+    COL_DRAFTS: "THE PROVING GROUNDS (Drafts)",
+    COL_ACTIVE: "PRODUCTION (Active)"
   },
   INVENTORY: {
     HEADER: "INVENTORY & LOGISTICS",
@@ -362,9 +372,25 @@ export const DASHBOARD_STRINGS = {
   runwayReady: "READY TO LAUNCH",
   emptyAlerts: "PRODUCTION LINES CLEAR // NO SHORTAGES",
   emptyBriefing: "ALL CAUGHT UP // NO PENDING ACTIONS",
-  // 🚀 NEW: Bento Box Terminology
   bentoSales: "DAILY SALES VELOCITY",
   bentoAlerts: "STOCK & LOGISTICS ALERTS",
   bentoMilestones: "ACTIVE PROJECT MILESTONES",
-  bentoProfit: "MARGIN INTELLIGENCE"
+  bentoProfit: "MARGIN INTELLIGENCE",
+  // 🚀 NEW GREMLIN ADDITIONS:
+  prioritySetup: "PRIORITY: SETUP",
+  addFirstMaterial: "Add your first material to begin.",
+  btnStart: "START",
+  actionProduction: "ACTION: PRODUCTION",
+  craftPrefix: "Craft",
+  actionLogistics: "ACTION: LOGISTICS",
+  restockPrefix: "Restock",
+  btnMarkDone: "MARK DONE"
+};
+
+// 🚀 NEW GLOBALS FOR ALERTS & CONFIRMATIONS:
+export const MESSAGES = {
+  CONFIRM_DELETE_PROJECT: "Are you sure you want to delete this project? This action cannot be undone.",
+  EMPTY_PIPELINE_PHASE: "No projects in this phase. Start a new Spark.",
+  EMPTY_FLEET: "No active projects in the fleet. Time to launch something.",
+  EMPTY_LAB: "No drafts or ideas currently in the lab."
 };
