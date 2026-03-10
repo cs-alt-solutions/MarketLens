@@ -116,7 +116,10 @@ export const InventoryProvider = ({ children }) => {
       let rawMaterials = invRes.data || [];
 
       rawMaterials = calculateSmartReorder(rawMaterials, rawVendors);
-      const activeProjFilter = rawProjects.filter(p => p.status === 'In Progress' || p.status === 'Completed' || p.status === 'active');
+      
+      const activeProjFilter = rawProjects.filter(p => 
+          ['in progress', 'completed', 'active'].includes(p.status?.toLowerCase())
+      );
       rawMaterials = calculateCommittedStock(rawMaterials, activeProjFilter);
 
       setLogisticsIntel(calculateLogisticsCapacity(rawMaterials));
@@ -124,7 +127,10 @@ export const InventoryProvider = ({ children }) => {
       setMaterials(rawMaterials);
       setVendors(rawVendors);
       setActiveProjects(activeProjFilter);
-      setDraftProjects(rawProjects.filter(p => p.status === 'Planning' || p.status === 'Draft' || p.status === 'idea' || !p.status));
+      
+      setDraftProjects(rawProjects.filter(p => 
+          !p.status || ['planning', 'draft', 'idea'].includes(p.status?.toLowerCase())
+      ));
 
     } catch (err) {
       console.error("Supabase Error fetching studio telemetry:", err);
@@ -139,31 +145,15 @@ export const InventoryProvider = ({ children }) => {
 
   // --- ACTIONS (Write via Python Engine) ---
 
-  // 🔥 THE PYTHON BRIDGE FOR SMART TAXONOMY 🔥
   const addMaterial = async (payload) => {
     try {
-      // TODO: Replace this URL with your actual Python math_engine endpoint (e.g., localhost:8000/api/intake)
-      // We send the JSON to Python, let Python do the math, and let Python write to Supabase.
-      /*
-      const response = await fetch('http://localhost:5000/api/engine/intake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!response.ok) throw new Error("Python Engine rejected the payload");
-      */
-
-      // [DEV FALLBACK] If your Python engine API isn't live yet, we insert directly so the UI still works today!
       await supabase.from('inventory').insert([payload]);
-      
-      // Once Python/Supabase is updated, we refresh the UI
       fetchStudioData();
     } catch (err) {
       console.error("Failed to process material through math engine:", err);
     }
   };
 
-  // Other Actions...
   const updateInventoryItem = async (id, updates) => {
     await supabase.from('inventory').update(updates).eq('id', id);
     fetchStudioData();
@@ -227,7 +217,6 @@ export const InventoryProvider = ({ children }) => {
   };
 
   const manufactureProduct = async (projectId, recipe, batchSize) => {
-    // Note: If manufacturing requires heavy math, this should ALSO hit your Python engine eventually!
     try {
       const targetProject = [...activeProjects, ...draftProjects].find(p => p.id === projectId);
       for (const item of recipe) {
@@ -259,7 +248,7 @@ export const InventoryProvider = ({ children }) => {
     <InventoryContext.Provider value={{ 
       materials, activeProjects, draftProjects, vendors, logisticsIntel, pendingShipments, loading, 
       fetchStudioData, 
-      addMaterial, // EXPORTING THE CORRECT FUNCTION NAME NOW
+      addMaterial, 
       updateInventoryItem, deleteInventoryItem,
       addProject, updateProject, deleteProject, manufactureProduct,
       addVendor, updateVendor, deleteVendor, createFulfillmentTicket, completeFulfillment

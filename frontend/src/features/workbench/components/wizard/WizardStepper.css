@@ -1,0 +1,59 @@
+/* src/features/workbench/components/wizard/WizardStepper.css */
+
+.wizard-stepper {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 10px;
+}
+
+/* The Background Line */
+.stepper-track {
+    position: absolute;
+    top: 15px; /* Centers the line behind the 30px circles */
+    left: 10%; /* Prevents the line from touching the absolute edges */
+    right: 10%;
+    height: 3px;
+    background-color: var(--border-subtle);
+    z-index: -1;
+}
+
+/* The Active Progress Line */
+.stepper-fill {
+    position: absolute;
+    top: 15px;
+    left: 10%;
+    height: 3px;
+    background-color: var(--neon-teal);
+    z-index: -1;
+    transition: width 0.3s ease-in-out;
+    /* We calculate the exact width dynamically in the JSX, but cap it so it never overshoots */
+    max-width: 80%; 
+}
+
+/* The Nodes */
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--bg-panel);
+    border: 2px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.step-circle.active {
+    border-color: var(--neon-teal);
+    background-color: var(--neon-teal);
+    color: var(--bg-app); /* Dark text on the bright teal background */
+    box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

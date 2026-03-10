@@ -27,7 +27,6 @@
   0% { opacity: 0; transform: translateY(40px) scale(0.98); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-/* src/features/workbench/Workshop.css (Additions) */
 
 /* View Toggle */
 .view-toggle-bg {
@@ -65,9 +64,6 @@
     height: 100%;
     transition: width 0.5s ease;
 }
-.bg-purple { background: var(--neon-purple); }
-.bg-warning { background: #facc15; } /* Tailwind yellow-400 equivalent */
-.bg-teal { background: var(--neon-teal); }
 
 /* Kanban Columns */
 .pipeline-grid {

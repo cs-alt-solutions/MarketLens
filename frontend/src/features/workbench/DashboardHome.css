@@ -87,13 +87,9 @@
     z-index: 50; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); flex-shrink: 0;
 }
 
-
 /* FIX: Align draft missing badges */
 .align-start { align-items: flex-start; }
 .max-w-150 { max-width: 150px; }
-.font-tiny { font-size: 0.6rem; letter-spacing: 0.5px; }
-.warning-text { color: var(--neon-orange); border: 1px solid var(--neon-orange); padding: 2px 4px; border-radius: 2px; }
-/* Add to the bottom of src/features/workbench/DashboardHome.css */
 
 /* --- COMMAND BAR --- */
 .command-bar {
@@ -125,15 +121,6 @@
     border-color: var(--neon-teal);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* --- ALERT CARDS --- */
-.border-left-alert {
-    border-left: 3px solid var(--neon-red);
-}
-
-.border-left-warning {
-    border-left: 3px solid var(--neon-orange);
 }
 
 /* --- INTERACTIVE PROMPTS --- */

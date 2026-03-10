@@ -11,8 +11,8 @@
 
 /* --- LEFT SIDEBAR --- */
 .console-sidebar {
-  width: 260px;
-  min-width: 260px;
+  width: 280px; /* 🚀 INCREASED FROM 260px */
+  min-width: 280px; /* 🚀 INCREASED FROM 260px */
   background: var(--bg-panel); 
   border-right: 1px solid var(--border-subtle);
   display: flex;
@@ -103,6 +103,7 @@
   display: flex; 
   flex-direction: column;
 }
+
 /* --- GLOBAL TOP BAR --- */
 .global-top-bar {
     height: 50px;
@@ -114,50 +115,14 @@
     height: 100%; /* Fills the vertical space so the border-left looks clean */
 }
 
-/* --- THE TICKER SCROLL --- */
-.ticker-container {
-    white-space: nowrap;
-    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-}
-
-.ticker-scroll {
-    display: flex;
-    animation: ticker-slide 30s linear infinite;
-}
-
-.ticker-scroll:hover {
-    animation-play-state: paused; /* Lets the user read the data if they hover over it */
-}
-
-.ticker-item {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-/* Make sure the main content area handles its own scrolling now that we have a fixed top bar */
+/* Make sure the main content area handles its own scrolling now that we have a fixed top/bottom bar */
 .console-content-scroll {
     flex: 1;
     overflow-y: auto;
-    padding: 20px; /* Adjust this to match your desired page padding */
+    padding: 20px; 
 }
 
-@keyframes ticker-slide {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-/* Change this: */
-.global-top-bar {
-    height: 50px;
-    background: var(--bg-panel);
-    flex-shrink: 0;
-}
-
-/* src/features/workbench/ConsoleLayout.css */
-
-/* Update or add these specific rules */
-
+/* --- GLOBAL BOTTOM BAR --- */
 .global-bottom-bar {
     height: 40px; /* Standardize height */
     background: var(--bg-panel);
@@ -165,6 +130,8 @@
     border-top: 1px solid var(--border-subtle);
     overflow: hidden;
 }
+
+/* --- THE TICKER SCROLL --- */
 .ticker-fixed-label {
     white-space: nowrap;
     letter-spacing: 2px;
@@ -173,11 +140,13 @@
     box-shadow: 10px 0 15px rgba(0, 0, 0, 0.4); 
     z-index: 10;
 }
+
 .ticker-scroll-window {
     mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
     display: flex;
     align-items: center;
 }
+
 .ticker-container {
     display: flex;
     align-items: center;
@@ -192,10 +161,21 @@
     padding-left: 20px;
 }
 
+.ticker-scroll:hover {
+    animation-play-state: paused; /* Lets the user read the data if they hover over it */
+}
+
+.ticker-item {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
 @keyframes ticker-slide {
     0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
 }
+
 /* Ensure the actions don't get squeezed */
 .top-bar-actions {
     display: flex;

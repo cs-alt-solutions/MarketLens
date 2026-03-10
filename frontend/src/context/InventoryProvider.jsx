@@ -12,15 +12,14 @@ export const InventoryProvider = ({ children }) => {
   const [logisticsIntel, setLogisticsIntel] = useState({ maxOrders: 0, bottleneck: null });
   const [loading, setLoading] = useState(true); 
 
-  // --- INTERNAL ENGINES (Move to Python Math Engine) ---
+  // --- INTERNAL ENGINES ---
 
   const calculateSmartReorder = (invData, vendorsData) => {
-    // 🔥 FUTURE: Python should return 'calculatedStatus' and 'reorderDate'
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     return invData.map(item => {
-        if (item.engine_status) return item; // Prefer Python data
+        if (item.engine_status) return item; 
 
         let totalBurn = 0;
         (item.history || []).forEach(log => {
@@ -60,7 +59,7 @@ export const InventoryProvider = ({ children }) => {
      invData.forEach(m => committedMap[m.id] = 0);
 
      activeProjs.forEach(proj => {
-         if (proj.status === 'In Progress' && proj.recipe) {
+         if ((proj.status === 'In Progress' || proj.status === 'active') && proj.recipe) {
              const intendedBatch = proj.intendedBatchSize || 0; 
              if (intendedBatch > 0) {
                  proj.recipe.forEach(item => {
@@ -118,7 +117,10 @@ export const InventoryProvider = ({ children }) => {
       let rawMaterials = invRes.data || [];
 
       rawMaterials = calculateSmartReorder(rawMaterials, rawVendors);
-      const activeProjFilter = rawProjects.filter(p => p.status === 'In Progress' || p.status === 'Completed' || p.status === 'active');
+      
+      const activeProjFilter = rawProjects.filter(p => 
+          ['in progress', 'completed', 'active'].includes(p.status?.toLowerCase())
+      );
       rawMaterials = calculateCommittedStock(rawMaterials, activeProjFilter);
 
       setLogisticsIntel(calculateLogisticsCapacity(rawMaterials));
@@ -126,7 +128,10 @@ export const InventoryProvider = ({ children }) => {
       setMaterials(rawMaterials);
       setVendors(rawVendors);
       setActiveProjects(activeProjFilter);
-      setDraftProjects(rawProjects.filter(p => p.status === 'Planning' || p.status === 'Draft' || p.status === 'draft' || p.status === 'idea' || !p.status));
+      
+      setDraftProjects(rawProjects.filter(p => 
+          !p.status || ['planning', 'draft', 'idea'].includes(p.status?.toLowerCase())
+      ));
 
     } catch (err) {
       console.error("Supabase Error fetching studio telemetry:", err);
@@ -139,13 +144,10 @@ export const InventoryProvider = ({ children }) => {
     fetchStudioData();
   }, [fetchStudioData]);
 
-  // --- ACTIONS (Rule 8 Compliant) ---
+  // --- ACTIONS ---
 
   const addMaterial = async (payload) => {
     try {
-      // 🔥 PYTHON BRIDGE: 
-      // await fetch('/api/math_engine/inventory/add', { method: 'POST', body: JSON.stringify(payload) })
-      
       const { error } = await supabase.from('inventory').insert([payload]);
       if (error) throw error;
       fetchStudioData();
@@ -187,9 +189,18 @@ export const InventoryProvider = ({ children }) => {
     return data ? data[0] : null;
   };
 
-  const updateProject = async (updatedProject) => {
-    await supabase.from('projects').update(updatedProject).eq('id', updatedProject.id);
-    fetchStudioData();
+  const updateProject = async (updatedProjectData) => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update(updatedProjectData)
+        .eq('id', updatedProjectData.id);
+
+      if (error) throw error;
+      await fetchStudioData(); 
+    } catch (err) {
+      console.error("Failed to update project:", err);
+    }
   };
 
   const deleteProject = async (id) => {
@@ -248,7 +259,7 @@ export const InventoryProvider = ({ children }) => {
     <InventoryContext.Provider value={{ 
       materials, activeProjects, draftProjects, vendors, logisticsIntel, pendingShipments, loading, 
       fetchStudioData, 
-      addMaterial, // UPDATED NAME
+      addMaterial, 
       updateInventoryItem, deleteInventoryItem,
       addProject, updateProject, deleteProject, manufactureProduct,
       addVendor, updateVendor, deleteVendor, createFulfillmentTicket, completeFulfillment

@@ -1,10 +1,9 @@
 /* src/features/workbench/components/wizard/Step3Fulfillment.jsx */
 import React, { useState } from 'react';
-import { APP_CONFIG } from '../../../../utils/glossary';
+import { APP_CONFIG, TERMINOLOGY } from '../../../../utils/glossary';
 import { TrashIcon } from '../../../../components/Icons';
 
-// 🛠️ ARCHITECTURAL FIX: Move ID generation outside the component
-// This satisfies the React Purity rules because it's not "during render"
+// 🛠️ External helper maintains React purity
 const generateProtoId = (name) => {
   return 'proto-' + btoa(name + Math.random()).substring(0, 10);
 };
@@ -30,7 +29,7 @@ export const Step3Fulfillment = ({ localProject, handleUpdate, materials, hasAll
       if (!newName || !newCost) return;
       
       const protoItem = { 
-        matId: generateProtoId(newName), // 🚀 Using the external helper
+        matId: generateProtoId(newName),
         name: newName, 
         reqPerUnit: parseFloat(reqQty) || 1, 
         costPerUnit: parseFloat(newCost), 
@@ -53,8 +52,8 @@ export const Step3Fulfillment = ({ localProject, handleUpdate, materials, hasAll
 
   return (
     <div className="animate-fade-in flex-col h-full max-w-800 w-full">
-      <h2 className="text-neon-teal mb-10 text-center" style={{ fontSize: '2rem' }}>Fulfillment & Packaging 📦</h2>
-      <p className="text-muted mb-30 text-center font-large">We need to make sure we have the packaging available to actually ship this.</p>
+      <h2 className="text-neon-teal mb-10 text-center wizard-title-large">{TERMINOLOGY.WIZARD.STEP_3}</h2>
+      <p className="text-muted mb-30 text-center font-large">Ensure all necessary packaging is available for fulfillment.</p>
       
       <div className="bg-panel p-15 border-radius-2 border-subtle mb-20">
         <div className="flex-center gap-10">
@@ -66,18 +65,19 @@ export const Step3Fulfillment = ({ localProject, handleUpdate, materials, hasAll
           ) : (
             <>
               <input className="input-industrial w-full" placeholder="Box/Supply Name" value={newName} onChange={e => setNewName(e.target.value)} />
-              <input type="number" className="input-industrial" style={{width: '100px'}} placeholder="Est. Cost" value={newCost} onChange={e => setNewCost(e.target.value)} />
+              {/* 🚀 Replaced inline styles with strict CSS classes */}
+              <input type="number" className="input-industrial w-100" placeholder="Est. Cost" value={newCost} onChange={e => setNewCost(e.target.value)} />
             </>
           )}
-          <input type="number" className="input-industrial" style={{width: '80px'}} placeholder="Qty" value={reqQty} onChange={e => setReqQty(e.target.value)} />
-          <button className="btn-primary" onClick={addItem}>ADD</button>
+          <input type="number" className="input-industrial w-80" placeholder="Qty" value={reqQty} onChange={e => setReqQty(e.target.value)} />
+          <button className="btn-primary" onClick={addItem}>{TERMINOLOGY.GENERAL.ADD}</button>
         </div>
         <button className="text-neon-teal font-small mt-10 btn-ghost" onClick={() => setIsAddingNew(!isAddingNew)}>
-          {isAddingNew ? "Cancel" : "+ Add Prototype Packaging (Custom Boxes, etc.)"}
+          {isAddingNew ? TERMINOLOGY.GENERAL.CANCEL : "+ Add Prototype Packaging (Custom Boxes, etc.)"}
         </button>
       </div>
 
-      <div className="flex-col gap-10 overflow-y-auto pr-10 mb-20" style={{flex: 1}}>
+      <div className="flex-col gap-10 overflow-y-auto pr-10 mb-20 flex-1">
         <div className="bom-section-header">SHIPPING SUPPLIES REQUIRED PER UNIT</div>
         {currentFulfillmentList.length === 0 ? (
             <div className="text-muted italic text-small text-center mt-20">No packaging added to this product yet.</div>
@@ -98,10 +98,11 @@ export const Step3Fulfillment = ({ localProject, handleUpdate, materials, hasAll
           className={`p-15 border-radius-2 border-subtle flex-center gap-15 clickable transition ${hasAllPackaging ? 'bg-teal text-black font-bold' : 'bg-app text-muted'}`} 
           onClick={() => setHasAllPackaging(!hasAllPackaging)}
       >
-        <div className="step-circle" style={{ width: '24px', height: '24px', background: hasAllPackaging ? '#000' : 'transparent', color: '#fff', borderColor: hasAllPackaging ? '#000' : 'var(--text-muted)' }}>
+        {/* 🚀 Replaced massive inline style block with step-circle-check */}
+        <div className={`step-circle step-circle-check ${hasAllPackaging ? 'active' : ''}`}>
             {hasAllPackaging ? '✓' : ''}
         </div>
-        <span>I have added all the shipping supplies required for fulfillment.</span>
+        <span>Shipping supplies verified for fulfillment.</span>
       </div>
     </div>
   );

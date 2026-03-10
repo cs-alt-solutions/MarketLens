@@ -21,62 +21,26 @@
   z-index: 10;
 }
 
-/* --- THEME 1: ACTIVE (TEAL) --- */
-.project-card-container.status-active {
+/* --- THEMES --- */
+.project-card-container.status-active, 
+.project-card-container.status-completed {
     border-top-color: var(--neon-teal);
 }
-
-.project-card-container.status-active .project-title {
-    color: var(--text-main);
-}
-
-.project-card-container.status-active .retail-price-display,
-.project-card-container.status-active .stock-units {
-    color: var(--neon-teal);
-}
-
-/* --- THEME 2: DRAFT (AMBER) --- */
-.project-card-container.status-draft {
+.project-card-container.status-draft, 
+.project-card-container.status-planning {
     border-top-color: #fbbf36; /* Amber */
 }
-
-.project-card-container.status-draft .project-title {
-    color: var(--text-muted);
-}
-
-.project-card-container.status-draft .retail-price-display,
-.project-card-container.status-draft .stock-units {
-    color: #fbbf36; /* Amber */
-}
-/* Add this right under your /* --- THEME 2: DRAFT (AMBER) --- */ section in ProjectCard.css */
-
-/* --- THEME 3: IDEA (PURPLE) --- */
 .project-card-container.status-idea {
     border-top-color: var(--neon-purple);
-}
-
-.project-card-container.status-idea .project-title {
-    color: var(--text-muted); /* Keeps it feeling like a raw thought */
-}
-
-.project-card-container.status-idea .retail-price-display,
-.project-card-container.status-idea .stock-units {
-    color: var(--neon-purple);
 }
 
 /* --- LAYOUT STRUCTURE --- */
 .project-card-header {
   margin-bottom: 20px;
   display: flex;
-  align-items: center; 
+  align-items: flex-start; 
   justify-content: space-between;
   gap: 15px;
-}
-
-.project-card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
 .project-title {
@@ -85,16 +49,25 @@
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: 0.2px; 
+  color: var(--text-main);
   flex-grow: 1;
+  word-break: break-word; 
+}
+
+.project-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .project-metrics {
     display: flex;
     justify-content: space-between;
-    background: transparent; 
-    padding: 0;
+    background: rgba(0,0,0,0.2); 
+    padding: 15px;
+    border-radius: 6px;
     margin-bottom: 15px;
-    border: none;
+    border: 1px solid var(--border-subtle);
 }
 
 .metric-item {
@@ -105,7 +78,7 @@
 
 .metric-label {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -114,6 +87,7 @@
 .metric-value {
     font-size: 1rem;
     font-weight: 600;
+    font-family: var(--font-mono);
 }
 
 .project-footer {
@@ -121,81 +95,102 @@
     justify-content: space-between;
     align-items: flex-end;
     border-top: 1px solid var(--border-subtle); 
+    padding-top: 15px;
+    margin-top: auto;
 }
 
+/* Make this apply consistently to both views */
 .font-large {
-    font-size: 1.2rem;
+    font-size: 1.1rem; 
 }
 
-.btn-icon-hover-clean {
-  background: transparent !important;
-  border: none !important;
-  color: var(--text-muted);
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 6px;
-  margin: -6px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: none;
-  flex-shrink: 0;
+/* Ensure the stacking line-height is applied globally to the footer */
+.project-footer .text-right {
+    line-height: 1.2;
+    text-align: right;
 }
 
-.btn-icon-hover-clean:hover { 
-  color: var(--neon-red); 
-  background: rgba(239, 68, 68, 0.1);
+/* Fixes stacked span formatting */
+.block {
+    display: block;
 }
+
+/* --- STATUS BADGES --- */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.status-active, .status-completed { 
+    background: rgba(45, 212, 191, 0.1); 
+    color: var(--neon-teal); 
+    border: 1px solid rgba(45, 212, 191, 0.3); 
+}
+.status-draft, .status-planning { 
+    background: rgba(251, 191, 54, 0.1); 
+    color: #fbbf36; 
+    border: 1px solid rgba(251, 191, 54, 0.3); 
+}
+.status-idea { 
+    background: rgba(167, 139, 250, 0.1); 
+    color: var(--neon-purple); 
+    border: 1px solid rgba(167, 139, 250, 0.3); 
+}
+
 /* --- COMPACT PIPELINE MODE --- */
 .layout-pipeline {
-    padding: 12px;
+    padding: 15px;
     border-radius: 6px;
     margin-bottom: 0;
+    height: auto; /* 🚀 THE FIX: Stops the card from stretching vertically */
+    flex: 0 0 auto; /* 🚀 THE FIX: Prevents the flex column from forcing it to grow */
 }
 
 .layout-pipeline .project-card-header {
-    flex-direction: column;
-    align-items: flex-start;
+    margin-bottom: 15px;
 }
 
 .layout-pipeline .project-title {
-    font-size: 1.05rem;
+    font-size: 1rem;
     margin-bottom: 5px;
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
 }
 
-.layout-pipeline .project-footer {
-    border-top: 1px dashed var(--border-subtle);
-    display: flex;
+/* Gracefully stack the metrics so they fit in the narrow columns! */
+.layout-pipeline .project-metrics {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 15px;
+}
+
+.layout-pipeline .metric-item {
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 
-.layout-pipeline .font-medium {
-    font-size: 1.1rem !important;
-}
-/* src/components/cards/ProjectCard.css */
-.project-card {
-    height: 100%;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.layout-pipeline .metric-label {
+    font-size: 0.6rem;
 }
 
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+.layout-pipeline .metric-value {
+    font-size: 0.85rem;
 }
 
-.status-active { background: rgba(0, 255, 170, 0.1); color: var(--neon-teal); border: 1px solid var(--neon-teal); }
-.status-draft { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid #f59e0b; }
-.status-idea { background: var(--bg-app); color: var(--text-muted); border: 1px solid var(--border-subtle); }
-
-.border-warning { border: 1px solid #f59e0b; }
-.text-alert { color: #ef4444; }
+.layout-pipeline .project-footer {
+    border-top: none;
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

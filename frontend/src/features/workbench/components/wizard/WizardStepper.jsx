@@ -1,12 +1,13 @@
 /* src/features/workbench/components/wizard/WizardStepper.jsx */
 import React from 'react';
+import { TERMINOLOGY } from '../../../../utils/glossary';
 
 export const WizardStepper = ({ step }) => {
   const steps = [
-    { id: 1, label: 'Identity' },
-    { id: 2, label: 'Product' },
-    { id: 3, label: 'Fulfillment' },
-    { id: 4, label: 'Check-In' }
+    { id: 1, label: TERMINOLOGY.WIZARD.STEP_1 },
+    { id: 2, label: TERMINOLOGY.WIZARD.STEP_2 },
+    { id: 3, label: TERMINOLOGY.WIZARD.STEP_3 },
+    { id: 4, label: TERMINOLOGY.WIZARD.STEP_4 }
   ];
 
   return (

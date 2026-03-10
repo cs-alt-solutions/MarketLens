@@ -35,7 +35,7 @@ export const Step2Product = ({ localProject, handleUpdate, materials, hasAllCore
 
   return (
     <div className="animate-fade-in flex-col h-full max-w-800 w-full">
-      <h2 className="text-neon-teal mb-10 text-center">{TERMINOLOGY.WIZARD.STEP_2} 🛠️</h2>
+      <h2 className="text-neon-teal mb-10 text-center wizard-title-large">{TERMINOLOGY.WIZARD.STEP_2}</h2>
       
       <div className="bg-panel p-15 border-radius-2 border-subtle mb-20">
         <div className="flex-center gap-10">

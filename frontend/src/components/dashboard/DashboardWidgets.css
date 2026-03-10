@@ -53,16 +53,3 @@
   transform: translateX(5px);
   box-shadow: -5px 5px 15px rgba(0,0,0,0.5);
 }
-
-.border-left-teal { border-left: 3px solid var(--neon-teal); }
-.border-left-orange { border-left: 3px solid var(--neon-orange); }
-
-/* --- PRODUCTION ALERTS --- */
-.bg-alert-faint { background: rgba(239, 68, 68, 0.05); }
-.border-alert { border: 1px solid var(--neon-red); }
-.text-blink { animation: textBlink 1.5s infinite; }
-
-@keyframes textBlink {
-  0%, 100% { opacity: 1; text-shadow: 0 0 8px var(--neon-red); }
-  50% { opacity: 0.5; text-shadow: none; }
-}

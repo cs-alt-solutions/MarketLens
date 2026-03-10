@@ -4,6 +4,7 @@ import { useInventory } from '../../context/InventoryContext';
 import { TERMINOLOGY, APP_CONFIG, MESSAGES } from '../../utils/glossary';
 import { ProjectCard } from '../../components/cards/ProjectCard';
 import { ProjectWizard } from './components/wizard/ProjectWizard';
+import { ProjectConsole } from './components/wizard/ProjectConsole'; // 🚀 Added our new Console component
 import { Plus, WorkshopIcon, Box, DashboardIcon } from '../../components/Icons';
 import './Workshop.css';
 
@@ -24,22 +25,32 @@ export const Workshop = () => {
       return [...(activeProjects || []), ...(draftProjects || [])];
   }, [activeProjects, draftProjects]);
 
-  const ideas = allProjects.filter(p => p.status === 'idea');
-  const drafts = allProjects.filter(p => p.status === 'draft');
-  const activeOps = allProjects.filter(p => p.status === 'active');
+  // We normalize to lowercase to catch "Draft", "draft", "IDEA", etc.
+  // We also include legacy database statuses to ensure full visibility.
+  const ideas = allProjects.filter(p => p.status?.toLowerCase() === 'idea');
+  
+  const drafts = allProjects.filter(p => 
+      !p.status || ['draft', 'planning'].includes(p.status.toLowerCase())
+  );
+  
+  const activeOps = allProjects.filter(p => 
+      ['active', 'in progress', 'completed'].includes(p.status?.toLowerCase())
+  );
 
   const handleNewProject = () => {
+    // 🚀 We apply the 'isNew: true' flag here to trigger the Wizard fork
     const ghostTemplate = {
       isNew: true, 
       title: "",
       status: 'idea', 
       stockQty: 0,
       retailPrice: 0,
-      demand: APP_CONFIG.PROJECT.INITIAL_DEMAND,
-      competition: APP_CONFIG.PROJECT.INITIAL_COMPETITION,
-      tags: [],
-      recipe: [],
-      instructions: []
+      economics: {
+        targetRetail: 0,
+        demand_score: APP_CONFIG.PROJECT.INITIAL_DEMAND,
+        competition_score: APP_CONFIG.PROJECT.INITIAL_COMPETITION,
+      },
+      recipe: []
     };
     setSelectedProject(ghostTemplate);
   };
@@ -157,12 +168,18 @@ export const Workshop = () => {
           </>
       )}
 
-      {selectedProject && (
+      {/* 🚀 THE ARCHITECTURAL FORK: Route clicks seamlessly */}
+      {selectedProject && selectedProject.isNew ? (
         <ProjectWizard 
           project={selectedProject} 
           onClose={() => setSelectedProject(null)} 
         />
-      )}
+      ) : selectedProject ? (
+        <ProjectConsole 
+          project={selectedProject} 
+          onClose={() => setSelectedProject(null)} 
+        />
+      ) : null}
     </div>
   );
 };
