@@ -1,21 +1,42 @@
 /* src/components/ui/ConstructionZone.css */
 
+/* 🚀 THE PORTAL OVERLAY: Lighter background & blur so the app shines through */
+.global-construction-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999; 
+    background: rgba(9, 9, 11, 0.4); /* Dropped from 0.85 to 0.4 */
+    backdrop-filter: blur(4px); /* Dropped from 8px to 4px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.global-construction-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeInScale 0.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* 🚀 THE CARD ITSELF */
 .construction-zone-container {
     background: var(--bg-panel);
-    border: 1px solid rgba(251, 146, 60, 0.3);
+    border: 1px solid rgba(255, 123, 0, 0.5);
     border-radius: 8px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    width: 480px;
-    height: fit-content;
-
-    /* 🚀 THE CLEAN FIX: Remove absolute positioning here */
-    position: relative; 
-    margin: 0 auto; 
-    
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    z-index: 110;
+    width: 100%;
+    min-width: 320px;
+    max-width: 480px;
+    box-shadow: 0 0 30px rgba(255, 123, 0, 0.15), 0 30px 60px rgba(0, 0, 0, 0.8);
 }
 
 .caution-tape-bar {
@@ -23,11 +44,13 @@
     width: 100%;
     background: repeating-linear-gradient(
         45deg,
-        rgba(251, 146, 60, 0.8),
-        rgba(251, 146, 60, 0.8) 15px,
+        #ff7b00, 
+        #ff7b00 15px,
         #121214 15px,
         #121214 30px
     );
+    box-shadow: 0 0 15px rgba(255, 123, 0, 0.4);
+    z-index: 10;
 }
 
 .construction-content {
@@ -38,11 +61,39 @@
     width: 48px !important;
     height: 48px !important;
     stroke-width: 1.5px;
+    color: #ff7b00;
     animation: pulseOrange 2s infinite;
 }
 
 @keyframes pulseOrange {
-    0% { filter: drop-shadow(0 0 5px rgba(251, 146, 60, 0.2)); transform: scale(1); }
-    50% { filter: drop-shadow(0 0 15px rgba(251, 146, 60, 0.6)); transform: scale(1.05); }
-    100% { filter: drop-shadow(0 0 5px rgba(251, 146, 60, 0.2)); transform: scale(1); }
+    0% { filter: drop-shadow(0 0 5px rgba(255, 123, 0, 0.4)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 20px rgba(255, 123, 0, 0.8)); transform: scale(1.05); }
+    100% { filter: drop-shadow(0 0 5px rgba(255, 123, 0, 0.4)); transform: scale(1); }
+}
+
+.text-neon-orange {
+    color: #ff7b00;
+    text-shadow: 0 0 10px rgba(255, 123, 0, 0.3);
+}
+
+/* 🚀 THE NEW NEON ORANGE CONFIRM BUTTON */
+.btn-construction {
+    background: rgba(255, 123, 0, 0.1);
+    color: #ff7b00;
+    border: 1px solid rgba(255, 123, 0, 0.5);
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-family: var(--font-mono);
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.btn-construction:hover {
+    background: rgba(255, 123, 0, 0.2);
+    border-color: #ff7b00;
+    box-shadow: 0 0 15px rgba(255, 123, 0, 0.4);
+    transform: translateY(-2px);
 }

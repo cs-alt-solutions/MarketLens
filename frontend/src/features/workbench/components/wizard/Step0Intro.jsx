@@ -1,5 +1,6 @@
 /* src/features/workbench/components/wizard/Step0Intro.jsx */
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { WorkshopIcon, Box, Finance } from '../../../../components/Icons';
 import { TERMINOLOGY, MESSAGES } from '../../../../utils/glossary';
 import { ConstructionZone } from '../../../../components/ui/ConstructionZone';
@@ -33,10 +34,7 @@ export const Step0Intro = ({ onNext, onClose }) => {
           </button>
 
           {/* PATH B: INVENTORY INTAKE */}
-          <button className="intro-card fast-card" onClick={() => {
-              // Connects to Inventory Intake later.
-              setShowConstruction(true);
-          }}>
+          <button className="intro-card fast-card" onClick={() => setShowConstruction(true)}>
             <div className="intro-icon-wrapper text-purple">
                 <Box />
             </div>
@@ -63,44 +61,33 @@ export const Step0Intro = ({ onNext, onClose }) => {
           </button>
         </div>
         
-        <button className="btn-ghost mt-30" onClick={onClose}>
-            {TERMINOLOGY.GENERAL.CANCEL}
-        </button>
+        <div className="flex-center w-full" style={{ marginTop: '60px' }}>
+            <button className="btn-ghost" onClick={onClose}>
+                {TERMINOLOGY.GENERAL.CANCEL}
+            </button>
+        </div>
       </div>
 
-      {/* 🚀 THE NUCLEAR CENTERING OPTION */}
-      {showConstruction && (
-          <div 
-            className="modal-overlay flex-center flex-col" 
-            style={{ 
-                position: 'fixed', /* Changed to fixed to cover the whole modal */
-                inset: 0, 
-                zIndex: 200, 
-                background: 'rgba(9, 9, 11, 0.85)', /* Darker to hide the background shift */
-                backdropFilter: 'blur(6px)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}
-            onClick={() => setShowConstruction(false)}
-          >
-              <div onClick={(e) => e.stopPropagation()} className="flex-col flex-center">
-                  <ConstructionZone 
-                      title={MESSAGES.MODULE_OFFLINE_TITLE} 
-                      message={MESSAGES.MODULE_OFFLINE_DESC}
-                  />
-                  
-                  {/* Button sits naturally below the card now */}
-                  <button 
-                    className="btn-primary mt-20" 
-                    style={{ width: '200px' }}
-                    onClick={() => setShowConstruction(false)}
-                  >
-                      {TERMINOLOGY.GENERAL.CONFIRM}
-                  </button>
-              </div>
-          </div>
+      {/* 🚀 REACT PORTAL: Teleports the overlay directly to the <body> tag */}
+      {showConstruction && createPortal(
+        <div className="global-construction-overlay" onClick={() => setShowConstruction(false)}>
+            <div onClick={(e) => e.stopPropagation()} className="global-construction-wrapper">
+                <ConstructionZone 
+                    title={MESSAGES.MODULE_OFFLINE_TITLE} 
+                    message={MESSAGES.MODULE_OFFLINE_DESC}
+                />
+                <button 
+                  className="btn-construction mt-20" /* 🚀 THE NEW NEON ORANGE BUTTON */
+                  style={{ width: '220px' }}
+                  onClick={() => setShowConstruction(false)}
+                >
+                    {TERMINOLOGY.GENERAL.CONFIRM}
+                </button>
+            </div>
+        </div>,
+        document.body
       )}
+
     </div>
   );
 };

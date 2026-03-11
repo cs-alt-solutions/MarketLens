@@ -97,7 +97,7 @@ export const DashboardHome = () => {
             profit={formatCurrency(netProfit)} 
           />
 
-          {/* 🚀 THE ARCHITECTURALLY COMPLIANT ACTION BAR */}
+          {/* 🚀 THE STREAMLINED STUDIO ACTIONS BAR */}
           <div className="command-bar flex-between align-center bg-panel border-subtle border-radius-2 p-15">
               <div className="flex-col">
                   <span className="font-bold text-main font-large">{DASHBOARD_STRINGS.cmdCenterTitle}</span>
@@ -105,9 +105,7 @@ export const DashboardHome = () => {
               </div>
               
               <div className="flex-center gap-15">
-                  <button className="btn-ghost flex-center gap-10" onClick={() => setShowSaleModal(true)}>
-                      <Finance /> {TERMINOLOGY.FINANCE.RECORD_SALE}
-                  </button>
+                  {/* Removed the Record Sale button to drive traffic to the Finance tab */}
                   <button className="btn-primary flex-center gap-10" onClick={() => setShowUniversalWizard(true)}>
                       <Plus /> {DASHBOARD_STRINGS.btnOpenWorkbench}
                   </button>

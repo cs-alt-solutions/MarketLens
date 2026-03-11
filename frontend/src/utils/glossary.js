@@ -513,7 +513,7 @@ export const DASHBOARD_STRINGS = {
   btnMarkDone: "MARK DONE",
   cmdCenterTitle: "STUDIO ACTIONS",
   cmdCenterSubtitle: "Keep the momentum going. What are we working on today?",
-  btnOpenWorkbench: "OPEN WORKBENCH"
+  btnOpenWorkbench: "OPEN WIZARD"
 };
 
 export const MESSAGES = {
@@ -521,8 +521,10 @@ export const MESSAGES = {
   EMPTY_PIPELINE_PHASE: "No projects in this phase. Start a new Spark.",
   EMPTY_FLEET: "No active projects in the fleet. Time to launch something.",
   EMPTY_LAB: "No drafts or ideas currently in the lab.",
-  CONSTRUCTION_TITLE: "SECTOR IN DEVELOPMENT",
-  CONSTRUCTION_DESC: "Our engineers are currently welding this module together. Check back soon as we expand the studio.",
-  MODULE_OFFLINE_TITLE: "MODULE OFFLINE",
-  MODULE_OFFLINE_DESC: "The architecture for this system intake is currently being welded together. Return to the command center."
+  
+  // 🚀 WARMER, STUDIO-VIBE CONSTRUCTION MESSAGES
+  CONSTRUCTION_TITLE: "STILL IN THE WORKSHOP",
+  CONSTRUCTION_DESC: "We're currently putting the finishing touches on this area. Check back soon as we expand the studio.",
+  MODULE_OFFLINE_TITLE: "NOT QUITE READY",
+  MODULE_OFFLINE_DESC: "We are still building out the tools for this section. Let's head back and keep the momentum going."
 };
