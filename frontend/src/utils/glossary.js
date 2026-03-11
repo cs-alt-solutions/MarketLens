@@ -53,15 +53,15 @@ export const TERMINOLOGY = {
     STEP_3: "Fulfillment",
     STEP_4: "Check-In"
   },
-
-  // 🚀 NEW WIZARD INTRO SECTION
   WIZARD_INTRO: {
-    TITLE: "Welcome to the Workbench.",
-    SUBTITLE: "How are we executing this today?",
-    CARD_GUIDED_TITLE: "Guided Blueprint",
-    CARD_GUIDED_DESC: "Walk me through the Shift Studio method. Perfect for your first build.",
-    CARD_FAST_TITLE: "Fast Track",
-    CARD_FAST_DESC: "I know the drill. Skip the tutorial and give me the tools.",
+    TITLE: "Welcome to Shift Studio.",
+    SUBTITLE: "Time to create. Let's get the ideas flowing. What are we doing today?",
+    CARD_GUIDED_TITLE: "Launch a Spark",
+    CARD_GUIDED_DESC: "Map out a new idea, build your recipe, and calculate your profits before you make a single cut.",
+    CARD_FAST_TITLE: "Log New Supplies",
+    CARD_FAST_DESC: "Got a new shipment? Log your raw materials, hardware, or packaging into the system.",
+    CARD_FINANCE_TITLE: "Log Finances",
+    CARD_FINANCE_DESC: "Record a sale, log a business expense, or review your profit velocity.",
     SLIDE_1_TITLE: "Phase 1: The Spark",
     SLIDE_1_DESC: "We start by classifying your idea. The system uses this to automatically generate SEO tags and optimize your inventory grouping.",
     SLIDE_2_TITLE: "Phase 2: The Build",
@@ -303,114 +303,50 @@ export const APP_CONFIG = {
     LOGISTICS: ['Packaging', 'Shipping', 'box', 'mailer', 'label', 'tape'],
     WORKSHOP: ['Raw Material', 'Consumables', 'Hardware', 'Electronics', 'Tools']
   },
-
-  // 🚀 LEVEL 1: THE MASTER COLLECTIONS (Expanded to 7 Pillars)
   COLLECTIONS: [
-    { 
-      id: 'wood-resin', 
-      name: 'Wood, Resin, & Mixed Media', 
-      desc: 'High-durability builds & complex material hybrids',
-      subCategories: ['Woodworking', 'Resin Art & Casting', 'Live Edge & Furniture', 'Mixed Media Assemblage']
-    },
-    { 
-      id: 'art-collectibles', 
-      name: 'Art & Collectibles', 
-      desc: 'Fine art, miniatures, and traditional techniques',
-      subCategories: ['Painting', 'Drawing & Illustration', 'Sculpture & Ceramics', 'Dolls & Miniatures', 'Fiber Arts']
-    },
-    { 
-      id: 'apothecary', 
-      name: 'Apothecary & Scent', 
-      desc: 'Wellness-first philosophies & material safety',
-      subCategories: ['Candles', 'Candle Waxes', 'Skin & Body Care', 'Fragrances', 'Makeup & Nails']
-    },
-    { 
-      id: 'wearables', 
-      name: 'Wearables & Accessories', 
-      desc: 'Tactile interest & sustainable volume',
-      subCategories: ['Clothing', 'Accessories', 'Sustainable Textiles']
-    },
-    { 
-      id: 'invisible', 
-      name: 'Invisible Inventory', 
-      desc: 'Digital assets & instructional media',
-      subCategories: ['Templates', 'Creative Assets', 'Instructional', 'Licensing']
-    },
-    { 
-      id: 'pet-performance', 
-      name: 'Pet Wellness & Performance', 
-      desc: 'High-performance gear & pet parenting tech',
-      subCategories: ['Gear', 'Wellness & Hygiene', 'Material Tiers']
-    },
-    { 
-      id: 'tech-mfg', 
-      name: 'Tech & Manufacturing', 
-      desc: 'Advanced electronics & additive manufacturing',
-      subCategories: ['Parts & Electrical', 'Machining & Tools', '3D Specifics', 'Manufacturing Materials']
-    },
-    { 
-      id: 'flora-aquatics', 
-      name: 'Flora, Aquatics & Live Goods', 
-      desc: 'Indoor gardening, aquariums, and living ecosystems',
-      subCategories: ['Aquatic Life', 'Indoor Plants & Cuttings', 'Terrariums & Ecosystems', 'Aquarium & Plant Supplies']
-    }
+    { id: 'wood-resin', name: 'Wood, Resin, & Mixed Media', desc: 'High-durability builds & complex material hybrids', subCategories: ['Woodworking', 'Resin Art & Casting', 'Live Edge & Furniture', 'Mixed Media Assemblage'] },
+    { id: 'art-collectibles', name: 'Art & Collectibles', desc: 'Fine art, miniatures, and traditional techniques', subCategories: ['Painting', 'Drawing & Illustration', 'Sculpture & Ceramics', 'Dolls & Miniatures', 'Fiber Arts'] },
+    { id: 'apothecary', name: 'Apothecary & Scent', desc: 'Wellness-first philosophies & material safety', subCategories: ['Candles', 'Candle Waxes', 'Skin & Body Care', 'Fragrances', 'Makeup & Nails'] },
+    { id: 'wearables', name: 'Wearables & Accessories', desc: 'Tactile interest & sustainable volume', subCategories: ['Clothing', 'Accessories', 'Sustainable Textiles'] },
+    { id: 'invisible', name: 'Invisible Inventory', desc: 'Digital assets & instructional media', subCategories: ['Templates', 'Creative Assets', 'Instructional', 'Licensing'] },
+    { id: 'pet-performance', name: 'Pet Wellness & Performance', desc: 'High-performance gear & pet parenting tech', subCategories: ['Gear', 'Wellness & Hygiene', 'Material Tiers'] },
+    { id: 'tech-mfg', name: 'Tech & Manufacturing', desc: 'Advanced electronics & additive manufacturing', subCategories: ['Parts & Electrical', 'Machining & Tools', '3D Specifics', 'Manufacturing Materials'] },
+    { id: 'flora-aquatics', name: 'Flora, Aquatics & Live Goods', desc: 'Indoor gardening, aquariums, and living ecosystems', subCategories: ['Aquatic Life', 'Indoor Plants & Cuttings', 'Terrariums & Ecosystems', 'Aquarium & Plant Supplies'] }
   ],
-
-  // 🚀 LEVEL 2: PRODUCT TYPES (The "What exactly are we making?" step)
   PRODUCT_TYPES: {
-    // Wood & Resin
     'Woodworking': ['Hardwood', 'Softwood', 'Plywood', 'MDF'],
     'Resin Art & Casting': ['Epoxy Resin', 'UV Resin', 'Polyurethane', 'Silicone Molds'],
     'Live Edge & Furniture': ['River Tables', 'Charcuterie Boards', 'Floating Shelves', 'Slabs'],
     'Mixed Media Assemblage': ['Wood & Resin Hybrids', 'Inlay Stone', 'Stabilized Blanks'],
-
-    // Art
     'Painting': ['Acrylic', 'Oil', 'Watercolor', 'Gouache', 'Encaustics', 'Spray Paint'],
     'Drawing & Illustration': ['Charcoal', 'Graphite', 'Colored Pencil', 'Pastel', 'Digital Illustration'],
     'Sculpture & Ceramics': ['Fine Art Ceramics', 'Glass Sculptures', 'Art Objects', 'Vessels'],
     'Dolls & Miniatures': ['Art Dolls', 'Dioramas', 'Dollhouse Furniture', 'Gaming Miniatures'],
     'Fiber Arts': ['Batik', 'Embroidery', 'Macrame', 'Quilting', 'Rugmaking', 'Weaving'],
-
-    // Apothecary
     'Candles': ['Container', 'Pillar', 'Taper', 'Votive', 'Tea Light'],
     'Candle Waxes': ['Soy', 'Beeswax', 'Coconut', 'Gel', 'Paraffin', 'Rapeseed', 'Palm', 'Blends'],
     'Skin & Body Care': ['Moisturizers', 'Body Butters', 'Salves & Balms', 'Facial Care', 'Peels'],
     'Fragrances': ['Essential Oils', 'Perfumes', 'Attars', 'Carrier Oils'],
     'Makeup & Nails': ['Eyes', 'Face', 'Lips', 'Nails (Press-ons)', 'Nail Art Stamping'],
-
-    // Wearables
     'Clothing': ["Men's", "Women's", "Kids'", 'Gender-Neutral'],
     'Accessories': ['Suit & Tie', 'Eyewear', 'Hair & Costume'],
-    
-    // Invisible
     'Templates': ['Business Solutions', 'Lifestyle (ADHD Planners)', 'Social Media', 'Learning'],
     'Creative Assets': ['Fonts', 'Procreate Brushes', 'Lightroom Presets', 'Graphics (SVG/PNG)'],
     'Instructional': ['Online Courses', 'eBooks', 'Audiobooks', 'Tutorials'],
-
-    // Pet
     'Gear': ['Collars', 'Leashes', 'Harnesses', 'Pet Clothing'],
     'Wellness & Hygiene': ['Smart Hydration', 'Anxiety-Reduction', 'Mobility Aids', 'Automatic Litter Boxes'],
-
-    // Tech
     'Parts & Electrical': ['Breadboards', 'LEDs', 'Microcontrollers', 'Sensors', 'Motors'],
     'Machining & Tools': ['3D Printers', 'Laser Cutters', 'CNC Machines', 'Heat Presses'],
     '3D Specifics': ['Articulated Animals', 'Medical Support', 'Gaming Accessories', 'Custom Tooling'],
-
-    // Flora & Aquatics
     'Aquatic Life': ['Snails (Mystery, Nerite)', 'Live Fish (Mollies, Guppies)', 'Bottom Feeders (Plecos, Corys)', 'Shrimp & Invertebrates'],
     'Indoor Plants & Cuttings': ['Houseplant Cuttings', 'Rooted Pups', 'Aquatic Plants (Floaters/Stem)', 'Air Plants (Tillandsia)'],
     'Terrariums & Ecosystems': ['Closed Terrariums', 'Paludariums', 'Moss Walls', 'Bioactive Enclosures'],
     'Aquarium & Plant Supplies': ['Moss Poles', 'Rooter Plugs', 'Custom Soil/Substrate', 'Filter Media', 'Fertilizer Blends']
   },
-
-  // 🚀 LEVEL 3: SPECIFIC MATERIALS & ATTRIBUTES (The "Specific Format" step)
   PRODUCT_FORMATS: {
-    // Wood Specifics
     'Hardwood': ['Oak', 'Walnut', 'Cherry', 'Mahogany'],
     'Softwood': ['Pine', 'Cedar', 'Fir'],
     'Slabs': ['Burl', 'Olive Wood', 'Live Edge'],
-    
-    // Wearable Specifics
     "Men's": ['Tops', 'Bottoms', 'Dresses', 'Pajamas'],
     "Women's": ['Tops', 'Bottoms', 'Dresses', 'Pajamas'],
     "Kids'": ['Tops', 'Bottoms', 'Dresses', 'Pajamas'],
@@ -419,64 +355,36 @@ export const APP_CONFIG = {
     'Eyewear': ['Sunglasses', 'Eye Patches', 'Contact Lens Cases'],
     'Hair & Costume': ['Parandas', 'Gajras', 'Tiaras', 'Capes', 'Wings', 'Masks', 'Prosthetics'],
     'Sustainable Textiles': ['Tencel (Lyocell/Modal)', 'Hemp', 'Seacell', 'Algae Fibers', 'rPET'],
-
-    // Invisible Specifics
     'Licensing': ['Standard Resell', 'Private Label Rights (PLR)', 'Master Resell Rights (MRR)'],
-    
-    // Pet Specifics
     'Gear Specifics': ['LED Safety', 'GPS Collars', 'Custom-fit Harness'],
     'Material Tiers': ['Biothane', 'Hemp', 'Cork (Vegan Leather)', 'Organic Cotton'],
-
-    // Manufacturing Specifics
     'Manufacturing Materials': ['PLA Filament', 'Carbon Fiber', 'SLA Resin', 'High-Temp Resin', 'Acrylic Sheets', 'Delrin'],
-
-    // Flora & Aquatics Formats
     'Aquatic Life': ['Breeder Pair', 'Juvenile Group', 'Single Specimen', 'Mystery Box'],
     'Indoor Plants & Cuttings': ['Unrooted Cutting', 'Rooted in Sphagnum', 'Potted Plant', 'Bare Root'],
     'Aquarium & Plant Supplies': ['Small Bag', 'Bulk Mix', 'Custom Length (Poles)'],
-
-    // Apothecary Formats
     'Container': ['Glass Jar', 'Metal Tin', 'Ceramic Vessel', 'Wax Melt Clamshell'],
     'Skin & Body Care': ['Plastic Tub', 'Glass Jar', 'Pump Bottle', 'Rollerball', 'Tin'],
     'Fragrances': ['Glass Spray Bottle', 'Plastic Spray Bottle', 'Diffuser Reed Box']
   },
-
-  // 🚀 NEW: Silent Data Enrichment Engine (Now generates multi-colored tags!)
   generateEnrichment: (collectionId, subCollection, productType, productFormat) => {
-    // Structured as { tag: string, type: 'cyan' | 'pink' | 'purple' | 'green' }
     const tags = new Set();
     const meta = { isDigital: false, fragile: false, requiresShipping: true, weightClass: 'standard' };
-
-    if (collectionId) {
-        tags.add({ tag: 'handmade', type: 'cyan' });
-        tags.add({ tag: collectionId.replace('-', ''), type: 'pink' });
-    }
-
+    if (collectionId) { tags.add({ tag: 'handmade', type: 'cyan' }); tags.add({ tag: collectionId.replace('-', ''), type: 'pink' }); }
     if (subCollection) {
         const sub = subCollection.toLowerCase();
         tags.add({ tag: sub.replace(/[^a-z0-9]/g, ''), type: 'purple' });
-        // fragile logic...
         if (sub.includes('candle') || sub.includes('resin') || sub.includes('pottery') || sub.includes('aquatic') || sub.includes('plant')) {
-            meta.fragile = true;
-            tags.add({ tag: 'fragile', type: 'cyan' });
+            meta.fragile = true; tags.add({ tag: 'fragile', type: 'cyan' });
         }
-        // invisible logic...
         if (sub.includes('digital') || sub.includes('service') || sub.includes('software')) {
-            tags.add({ tag: 'digital', type: 'cyan' });
-            meta.isDigital = true; meta.requiresShipping = false;
+            tags.add({ tag: 'digital', type: 'cyan' }); meta.isDigital = true; meta.requiresShipping = false;
         }
     }
-
     if (productType) tags.add({ tag: productType.toLowerCase().replace(/[^a-z0-9]/g, ''), type: 'green' });
     if (productFormat) tags.add({ tag: productFormat.toLowerCase().replace(/[^a-z0-9]/g, ''), type: 'green' });
-    
-    // look up the Skeleton BOM...
     const baseRecipe = APP_CONFIG.BOM_TEMPLATES[subCollection] || APP_CONFIG.BOM_TEMPLATES['DEFAULT'];
-
     return { tags: Array.from(tags), metadata: meta, baseRecipe };
   },
-
-  // 🚀 PREDICTIVE BOM TEMPLATES (Silent Data Enrichment)
   BOM_TEMPLATES: {
     'Woodworking': [
       { name: 'Raw Lumber', category: 'Raw Material', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
@@ -504,7 +412,6 @@ export const APP_CONFIG = {
       { name: 'Base Wax', category: 'Raw Material', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
       { name: 'Fragrance / Scent', category: 'Raw Material', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
       { name: 'Wick & Sticker', category: 'Hardware', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
-      // Warning label goes on the bottom during the build, so let's make it a Consumable
       { name: 'Warning Label', category: 'Consumables', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true } 
     ],
     'Gear': [
@@ -524,7 +431,6 @@ export const APP_CONFIG = {
     ],
     'Indoor Plants & Cuttings': [
       { name: 'Rooter Plug / Sphagnum Moss', category: 'Raw Material', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
-      // 🚀 CHANGED: Nursery Pot is Hardware so it stays in Step 2!
       { name: 'Nursery Pot / Clamshell', category: 'Hardware', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true },
       { name: 'Rigid Shipping Tube / Box', category: 'Shipping', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true }
     ],
@@ -533,28 +439,12 @@ export const APP_CONFIG = {
       { name: 'Polymailer / Pouch', category: 'Shipping', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: true }
     ]
   },
-  
   ENDPOINTS: {
-    SHOPIFY: {
-      url: "https://{store_name}.myshopify.com/admin/api/2026-01/graphql.json",
-      nodes: ["InventoryLevel", "OrderTransaction"]
-    },
-    ETSY: {
-      url: "https://api.etsy.com/v3/application/",
-      nodes: ["updateListingInventory", "ledger-entries"]
-    },
-    AMAZON: {
-      url: "SP-API",
-      nodes: ["FBA Inventory API", "Finances API"]
-    },
-    EBAY: {
-      url: "https://api.ebay.com/sell/fulfillment/v1",
-      nodes: ["getOrders"]
-    },
-    TIKTOK: {
-      url: "Partner API v2",
-      nodes: ["Order Statement Transactions", "is_on_hold_order"]
-    }
+    SHOPIFY: { url: "https://{store_name}.myshopify.com/admin/api/2026-01/graphql.json", nodes: ["InventoryLevel", "OrderTransaction"] },
+    ETSY: { url: "https://api.etsy.com/v3/application/", nodes: ["updateListingInventory", "ledger-entries"] },
+    AMAZON: { url: "SP-API", nodes: ["FBA Inventory API", "Finances API"] },
+    EBAY: { url: "https://api.ebay.com/sell/fulfillment/v1", nodes: ["getOrders"] },
+    TIKTOK: { url: "Partner API v2", nodes: ["Order Statement Transactions", "is_on_hold_order"] }
   }
 };
 
@@ -577,21 +467,10 @@ export const CATEGORY_KEYWORDS = {
 };
 
 export const COMMON_ASSETS = [
-  "Soy Wax (Golden Brands 464)",
-  "Beeswax (Yellow Pellets)",
-  "8oz Amber Glass Jar",
-  "16oz Straight Sided Jar",
-  "CD-12 Cotton Wick",
-  "ECO-14 Wick",
-  "Santal & Coconut Fragrance",
-  "Lavender & Driftwood Fragrance",
-  "Small Shipping Box (6x6x6)",
-  "Medium Shipping Box (10x10x4)",
-  "Kraft Warning Labels",
-  "Black Screw-on Lid",
-  "Digital Scale Calibration Weight",
-  "Biothane Webbing (1 inch)",
-  "PLA Filament (1kg Black)"
+  "Soy Wax (Golden Brands 464)", "Beeswax (Yellow Pellets)", "8oz Amber Glass Jar", "16oz Straight Sided Jar",
+  "CD-12 Cotton Wick", "ECO-14 Wick", "Santal & Coconut Fragrance", "Lavender & Driftwood Fragrance",
+  "Small Shipping Box (6x6x6)", "Medium Shipping Box (10x10x4)", "Kraft Warning Labels", "Black Screw-on Lid",
+  "Digital Scale Calibration Weight", "Biothane Webbing (1 inch)", "PLA Filament (1kg Black)"
 ];
 
 export const MARKET_TICKER_DATA = [
@@ -631,12 +510,19 @@ export const DASHBOARD_STRINGS = {
   craftPrefix: "Craft",
   actionLogistics: "ACTION: LOGISTICS",
   restockPrefix: "Restock",
-  btnMarkDone: "MARK DONE"
+  btnMarkDone: "MARK DONE",
+  cmdCenterTitle: "STUDIO ACTIONS",
+  cmdCenterSubtitle: "Keep the momentum going. What are we working on today?",
+  btnOpenWorkbench: "OPEN WORKBENCH"
 };
 
 export const MESSAGES = {
   CONFIRM_DELETE_PROJECT: "Are you sure you want to delete this project? This action cannot be undone.",
   EMPTY_PIPELINE_PHASE: "No projects in this phase. Start a new Spark.",
   EMPTY_FLEET: "No active projects in the fleet. Time to launch something.",
-  EMPTY_LAB: "No drafts or ideas currently in the lab."
+  EMPTY_LAB: "No drafts or ideas currently in the lab.",
+  CONSTRUCTION_TITLE: "SECTOR IN DEVELOPMENT",
+  CONSTRUCTION_DESC: "Our engineers are currently welding this module together. Check back soon as we expand the studio.",
+  MODULE_OFFLINE_TITLE: "MODULE OFFLINE",
+  MODULE_OFFLINE_DESC: "The architecture for this system intake is currently being welded together. Return to the command center."
 };

@@ -122,6 +122,139 @@
 }
 
 /* ==========================================
+   🚪 STEP 0: INTRO & ROLE SELECTION
+========================================== */
+.intro-gate-container {
+    width: 100%;
+    max-width: 900px; /* Widened to fit 3 cards */
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+/* 🚀 3 Column Grid */
+.intro-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    width: 100%;
+}
+
+.intro-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 40px 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    color: var(--text-main); /* 🚀 Fixes black text */
+    position: relative; 
+}
+
+/* 🚀 COMING SOON BADGE */
+.coming-soon-badge {
+    background: rgba(251, 146, 60, 0.1);
+    color: var(--neon-orange);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    font-size: 0.6rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.intro-icon-wrapper {
+    background: rgba(0,0,0,0.2);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* 🚀 Forces the SVGs to scale up cleanly */
+.intro-icon-wrapper svg {
+    width: 36px !important;
+    height: 36px !important;
+    stroke-width: 1.5px;
+}
+
+/* Hover States */
+.intro-card.guided-card:hover { border-color: var(--neon-teal); box-shadow: 0 10px 30px rgba(45, 212, 191, 0.15); transform: translateY(-5px); }
+.intro-card.guided-card:hover .intro-icon-wrapper { border-color: var(--neon-teal); box-shadow: 0 0 20px rgba(45, 212, 191, 0.2); }
+
+.intro-card.fast-card:hover { border-color: #a855f7; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15); transform: translateY(-5px); }
+.intro-card.fast-card:hover .intro-icon-wrapper { border-color: #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+
+.intro-card.finance-card:hover { border-color: var(--neon-orange); box-shadow: 0 10px 30px rgba(251, 146, 60, 0.15); transform: translateY(-5px); }
+.intro-card.finance-card:hover .intro-icon-wrapper { border-color: var(--neon-orange); box-shadow: 0 0 20px rgba(251, 146, 60, 0.2); }
+
+
+/* ==========================================
+   🎥 INTRO SLIDES (THE "AHA!" CAROUSEL)
+========================================== */
+.intro-slide-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 20px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.slide-content-box {
+    flex: 1;
+}
+
+.slide-icon-massive {
+    filter: drop-shadow(0 0 20px rgba(45, 212, 191, 0.3));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 🚀 Make the main carousel icon massive */
+.slide-icon-massive svg {
+    width: 80px !important;
+    height: 80px !important;
+    stroke-width: 1.5px;
+}
+
+.pagination-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-subtle);
+    transition: all 0.3s ease;
+}
+
+.pagination-dots .dot.active {
+    background: var(--neon-teal);
+    width: 24px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+}
+
+/* Utilities for sizing */
+.text-large { font-size: 1.25rem; }
+.btn-large { padding: 15px 30px; font-size: 1.1rem; letter-spacing: 1px; }
+.line-height-relaxed { line-height: 1.6; }
+
+
+/* ==========================================
    🚀 STEP 1: LAUNCHPAD GRID
 ========================================== */
 .step1-choosing-grid {
@@ -543,109 +676,3 @@ input.input-bom-num[type=number] {
     color: var(--neon-teal);
     border-color: var(--neon-teal);
 }
-/* ==========================================
-   🚪 STEP 0: INTRO & ROLE SELECTION
-========================================== */
-.intro-gate-container {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    padding-top: 40px;
-}
-
-.intro-card-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    width: 100%;
-}
-
-.intro-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 40px 30px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.intro-icon-wrapper {
-    font-size: 3rem;
-    background: rgba(0,0,0,0.2);
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1px solid var(--border-subtle);
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
-}
-
-.intro-card.guided-card:hover {
-    border-color: var(--neon-teal);
-    box-shadow: 0 10px 30px rgba(45, 212, 191, 0.15);
-    transform: translateY(-5px);
-}
-.intro-card.guided-card:hover .intro-icon-wrapper {
-    border-color: var(--neon-teal);
-    box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
-}
-
-.intro-card.fast-card:hover {
-    border-color: #a855f7; /* Purple for fast track */
-    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
-    transform: translateY(-5px);
-}
-.intro-card.fast-card:hover .intro-icon-wrapper {
-    border-color: #a855f7;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
-}
-
-/* ==========================================
-   🎥 INTRO SLIDES (THE "AHA!" CAROUSEL)
-========================================== */
-.intro-slide-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding-top: 20px;
-    min-height: 400px;
-    display: flex;
-    justify-content: center;
-}
-
-.slide-content-box {
-    flex: 1;
-}
-
-.slide-icon-massive {
-    font-size: 5rem;
-    filter: drop-shadow(0 0 20px rgba(45, 212, 191, 0.3));
-}
-
-.pagination-dots .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--border-subtle);
-    transition: all 0.3s ease;
-}
-
-.pagination-dots .dot.active {
-    background: var(--neon-teal);
-    width: 24px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
-}
-
-/* Utilities for sizing */
-.text-large { font-size: 1.25rem; }
-.btn-large { padding: 15px 30px; font-size: 1.1rem; letter-spacing: 1px; }
-.line-height-relaxed { line-height: 1.6; }

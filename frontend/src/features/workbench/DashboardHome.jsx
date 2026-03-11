@@ -7,10 +7,11 @@ import { useInventory } from '../../context/InventoryContext';
 import { useFinancialStats, useFinancial } from '../../context/FinancialContext'; 
 import { useStudioIntelligence } from './hooks/useStudioIntelligence'; 
 import { formatCurrency } from '../../utils/formatters';
-import { TERMINOLOGY, APP_CONFIG, DASHBOARD_STRINGS } from '../../utils/glossary';
+import { TERMINOLOGY, DASHBOARD_STRINGS } from '../../utils/glossary';
 
 // Modals & UI Components
 import { ProjectWizard } from './components/wizard/ProjectWizard';
+import { ProjectConsole } from './components/wizard/ProjectConsole'; 
 import { IntakeForm } from './components/IntakeForm'; 
 import { SaleModal } from './components/SaleModal';   
 
@@ -21,7 +22,7 @@ import DraftRunway from '../../components/dashboard/DraftRunway';
 import ProductionAlerts from '../../components/dashboard/ProductionAlerts';
 
 // Icons
-import { Plus, Box, Finance, CloseIcon } from '../../components/Icons';
+import { Plus, Finance, CloseIcon } from '../../components/Icons';
 
 export const DashboardHome = () => {
   const { 
@@ -47,25 +48,12 @@ export const DashboardHome = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   
   // COMMAND STATE
+  const [showUniversalWizard, setShowUniversalWizard] = useState(false);
   const [showIntakeModal, setShowIntakeModal] = useState(false);
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [isProcessingSale, setIsProcessingSale] = useState(false);
 
   const sellableProjects = activeProjects.filter(p => p.stockQty > 0);
-
-  // --- WIRED ACTIONS ---
-  const handleNewProject = async () => {
-      const newDraft = {
-          title: "UNTITLED BUILD",
-          status: APP_CONFIG.PROJECT.DEFAULT_STATUS,
-          stockQty: 0,
-          soldQty: 0,
-          recipe: [],
-          instructions: []
-      };
-      const created = await addProject(newDraft);
-      if (created) setSelectedProject(created);
-  };
 
   const handleLogSale = async (project, qty, revenue, channel) => {
     setIsProcessingSale(true);
@@ -83,7 +71,6 @@ export const DashboardHome = () => {
       });
       setShowSaleModal(false);
     } catch (err) {
-      // FIXED: Properly logging the error to resolve ESLint 'no-unused-vars' and 'no-empty'
       console.error("Dashboard Error: Failed to log transaction.", err);
     } finally {
       setIsProcessingSale(false);
@@ -110,16 +97,21 @@ export const DashboardHome = () => {
             profit={formatCurrency(netProfit)} 
           />
 
-          <div className="command-bar">
-              <button className="btn-command" onClick={handleNewProject}>
-                  <Plus /> {TERMINOLOGY.WORKSHOP.NEW_PROJECT}
-              </button>
-              <button className="btn-command" onClick={() => setShowIntakeModal(true)}>
-                  <Box /> {DASHBOARD_STRINGS.actionIntake}
-              </button>
-              <button className="btn-command" onClick={() => setShowSaleModal(true)}>
-                  <Finance /> {TERMINOLOGY.FINANCE.LOG_SALE}
-              </button>
+          {/* 🚀 THE ARCHITECTURALLY COMPLIANT ACTION BAR */}
+          <div className="command-bar flex-between align-center bg-panel border-subtle border-radius-2 p-15">
+              <div className="flex-col">
+                  <span className="font-bold text-main font-large">{DASHBOARD_STRINGS.cmdCenterTitle}</span>
+                  <span className="text-muted font-small">{DASHBOARD_STRINGS.cmdCenterSubtitle}</span>
+              </div>
+              
+              <div className="flex-center gap-15">
+                  <button className="btn-ghost flex-center gap-10" onClick={() => setShowSaleModal(true)}>
+                      <Finance /> {TERMINOLOGY.FINANCE.RECORD_SALE}
+                  </button>
+                  <button className="btn-primary flex-center gap-10" onClick={() => setShowUniversalWizard(true)}>
+                      <Plus /> {DASHBOARD_STRINGS.btnOpenWorkbench}
+                  </button>
+              </div>
           </div>
 
           <div className="dashboard-grid">
@@ -140,7 +132,20 @@ export const DashboardHome = () => {
         </div>
       </div>
 
-      {selectedProject && <P project={selectedProject} onClose={() => setSelectedProject(null)} />}
+      {/* 🚀 THE UNIVERSAL WIZARD TRIGGER (Starts at Step 0) */}
+      {showUniversalWizard && (
+          <ProjectWizard 
+              initialStep={0} 
+              onClose={() => setShowUniversalWizard(false)} 
+              onSave={async (data) => {
+                  const created = await addProject(data);
+                  if (created) setSelectedProject(created);
+                  setShowUniversalWizard(false);
+              }}
+          />
+      )}
+
+      {selectedProject && <ProjectConsole project={selectedProject} onClose={() => setSelectedProject(null)} />}
       
       {showIntakeModal && (
           <div className="modal-overlay" onClick={() => setShowIntakeModal(false)}>

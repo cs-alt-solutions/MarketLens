@@ -1,0 +1,48 @@
+/* src/components/ui/ConstructionZone.css */
+
+.construction-zone-container {
+    background: var(--bg-panel);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 480px;
+    height: fit-content;
+
+    /* 🚀 THE CLEAN FIX: Remove absolute positioning here */
+    position: relative; 
+    margin: 0 auto; 
+    
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    z-index: 110;
+}
+
+.caution-tape-bar {
+    height: 12px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(251, 146, 60, 0.8),
+        rgba(251, 146, 60, 0.8) 15px,
+        #121214 15px,
+        #121214 30px
+    );
+}
+
+.construction-content {
+    padding: 40px 30px;
+}
+
+.icon-pulse svg {
+    width: 48px !important;
+    height: 48px !important;
+    stroke-width: 1.5px;
+    animation: pulseOrange 2s infinite;
+}
+
+@keyframes pulseOrange {
+    0% { filter: drop-shadow(0 0 5px rgba(251, 146, 60, 0.2)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 15px rgba(251, 146, 60, 0.6)); transform: scale(1.05); }
+    100% { filter: drop-shadow(0 0 5px rgba(251, 146, 60, 0.2)); transform: scale(1); }
+}

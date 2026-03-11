@@ -7,11 +7,10 @@ import { Step1Identity } from './Step1Identity';
 import { Step2Product } from './Step2Product';
 import { Step3Fulfillment } from './Step3Fulfillment';
 
-export const ProjectWizard = ({ onClose, onSave }) => {
-  // 🚀 Start at Step 0 to trigger the Activation Hub / Intro
-  const [currentStep, setCurrentStep] = useState(0);
+// 🚀 defaults to 1 so the Workshop button skips the intro. The Dashboard will pass 0.
+export const ProjectWizard = ({ onClose, onSave, initialStep = 1 }) => {
+  const [currentStep, setCurrentStep] = useState(initialStep);
   
-  // The master payload that gathers data across all steps
   const [localProject, setLocalProject] = useState({
     collectionId: '',
     subCollection: '',
@@ -21,7 +20,6 @@ export const ProjectWizard = ({ onClose, onSave }) => {
     recipe: []
   });
 
-  // Centralized update function passed down to all steps
   const handleUpdate = (field, value) => {
     setLocalProject(prev => ({ ...prev, [field]: value }));
   };
@@ -40,17 +38,16 @@ export const ProjectWizard = ({ onClose, onSave }) => {
   };
 
   return (
-     <div className="modal-backdrop flex-center">
+     <div className="modal-overlay">
         <div className="wizard-window-size animate-fade-in">
            <div className="wizard-frame">
               
-              {/* 🚀 Hide the Stepper on the Intro Screen */}
+              {/* Stepper only shows for actual project creation steps */}
               {currentStep > 0 && <WizardStepper currentStep={currentStep} />}
 
-              {/* THE ROUTER */}
               <div className="wizard-body mt-10">
                  {currentStep === 0 && (
-                    <Step0Intro onNext={() => setCurrentStep(1)} />
+                    <Step0Intro onNext={() => setCurrentStep(1)} onClose={onClose} />
                  )}
                  {currentStep === 1 && (
                     <Step1Identity localProject={localProject} handleUpdate={handleUpdate} onNext={handleNext} />
@@ -69,7 +66,7 @@ export const ProjectWizard = ({ onClose, onSave }) => {
                  )}
               </div>
 
-              {/* 🚀 Hide the Footer Bar on the Intro Screen (Step 0 handles its own nav) */}
+              {/* Footer only shows for actual project creation steps */}
               {currentStep > 0 && (
                  <div className="wizard-footer-bar">
                     <button className="btn-secondary" onClick={onClose}>

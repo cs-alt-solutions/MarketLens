@@ -5,15 +5,92 @@
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    background: var(--bg-app);
 }
 
 .dashboard-content-scroll {
     flex: 1; 
     overflow-y: auto;
-    padding: 20px 40px 80px 40px; 
-    scrollbar-width: thin; /* Maintain clean scroll look */
+    padding: 30px 40px 80px 40px; 
+    scrollbar-width: thin; 
 }
 
+/* 🚀 Master container for the Bento Box layout */
+.dashboard-cockpit {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Perfect spacing between Telemetry, Command Bar, and the Grid */
+}
+
+/* ==========================================
+   📦 THE BENTO GRID ARCHITECTURE
+========================================== */
+.dashboard-grid {
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 24px;
+}
+
+@media (min-width: 1200px) {
+    .dashboard-grid { 
+        /* The classic 70/30 asymmetrical Dashboard split */
+        grid-template-columns: 2.5fr 1fr; 
+        align-items: start; 
+    }
+}
+
+.dashboard-deck {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px; 
+}
+
+/* ==========================================
+   🎮 STUDIO ACTIONS COMMAND BAR
+========================================== */
+/* We rely heavily on utility classes from JSX, but add a custom pop here */
+.command-bar {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-left: 3px solid var(--neon-teal) !important; 
+    transition: all 0.3s ease;
+}
+
+.command-bar:hover {
+    box-shadow: 0 6px 25px rgba(45, 212, 191, 0.1);
+}
+
+/* ==========================================
+   ✨ INTERACTIVE BENTO PANELS
+========================================== */
+.panel-industrial.clickable {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.panel-industrial.clickable:hover {
+    transform: translateY(-4px); 
+    z-index: 10; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    border-color: var(--neon-cyan);
+}
+
+.card-prompt {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.panel-industrial.clickable:hover .card-prompt {
+    color: var(--neon-teal);
+}
+
+/* ==========================================
+   📊 LEGACY TELEMETRY HUD (Fallback)
+========================================== */
 .hud-top-bar {
     height: 60px;
     background: rgba(9, 9, 11, 0.95);
@@ -49,25 +126,7 @@
     background: rgba(var(--neon-teal-rgb), 0.05);
 }
 
-.dashboard-grid {
-    display: grid; grid-template-columns: 1fr; gap: 24px;
-}
-@media (min-width: 1200px) {
-    .dashboard-grid { grid-template-columns: 3fr 1fr; align-items: start; }
-}
-
-.dashboard-deck {
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px; /* Maintain consistent spacing between cards */
-}
-
-.panel-industrial.clickable:hover {
-    transform: translateY(-4px); /* Interactive elevation */
-    z-index: 10; /* Elevate above surrounding elements */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    border-color: var(--neon-cyan);
-}
+/* Logistics Sim Helpers */
 .logistics-sim-view { display: flex; flex-direction: column; }
 .sim-header { background: linear-gradient(to bottom, rgba(var(--neon-cyan-rgb), 0.05), transparent); }
 .sim-big-number {
@@ -80,58 +139,3 @@
     border-radius: 2px; display: inline-block;
 }
 .logistics-divider { height: 1px; background: var(--border-subtle); width: 100%; }
-
-.dashboard-footer {
-    height: 45px; background: var(--bg-panel-header);
-    border-top: 1px solid var(--border-subtle); display: flex; align-items: center;
-    z-index: 50; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); flex-shrink: 0;
-}
-
-/* FIX: Align draft missing badges */
-.align-start { align-items: flex-start; }
-.max-w-150 { max-width: 150px; }
-
-/* --- COMMAND BAR --- */
-.command-bar {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.btn-command {
-    flex: 1;
-    background: var(--bg-panel-header);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-main);
-    padding: 15px 20px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn-command:hover {
-    background: rgba(45, 212, 191, 0.1); /* Teal glow */
-    border-color: var(--neon-teal);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* --- INTERACTIVE PROMPTS --- */
-.card-prompt {
-    font-size: 0.7rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    transition: color 0.2s;
-}
-
-.panel-industrial.clickable:hover .card-prompt {
-    color: var(--neon-teal);
-}
