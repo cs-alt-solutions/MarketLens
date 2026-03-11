@@ -30,7 +30,7 @@ export const ProjectConsole = ({ project, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-backdrop flex-center" onClick={onClose}>
       <div className="modal-window blueprint-window-size flex-col animate-fade-in" onClick={e => e.stopPropagation()}>
         
         {/* HEADER: Title & Status Control */}

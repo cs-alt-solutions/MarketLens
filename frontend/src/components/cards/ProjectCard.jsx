@@ -25,12 +25,28 @@ export const ProjectCard = ({ project, onClick, layout = 'default' }) => {
   const statusClass = `status-${rawStatus === 'in progress' ? 'active' : rawStatus}`;
   const layoutClass = layout === 'pipeline' ? 'layout-pipeline' : '';
 
+  // Architecture Styling Logic
+  const isBlueprint = project.isBlueprint === true;
+  const isVariant = project.isBlueprint === false;
+
   return (
     <div className={`project-card-container ${statusClass} ${layoutClass}`} onClick={onClick}>
       
       <div className="project-card-header">
-        <h3 className="project-title">{project.title || 'Untitled Project'}</h3>
-        {/* 🚀 REMOVED the 'X' delete button from here */}
+        <div className="flex-col w-full">
+          {/* Architecture Badges */}
+          {isBlueprint && <span className="arch-badge badge-blueprint">MASTER BLUEPRINT</span>}
+          {isVariant && <span className="arch-badge badge-variant">SKU VARIANT</span>}
+          
+          <h3 className="project-title">{project.title || 'Untitled Project'}</h3>
+          
+          {/* Collection Metadata */}
+          {project.subCollection && (
+            <span className="text-muted font-mono text-tiny mt-5 block">
+              {project.subCollection.toUpperCase()}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="project-card-body">

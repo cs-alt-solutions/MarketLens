@@ -1,5 +1,31 @@
 /* src/components/cards/ProjectCard.css */
 
+/* --- NEW ARCHITECTURE BADGES --- */
+.arch-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.badge-blueprint {
+    background: rgba(45, 212, 191, 0.1);
+    color: var(--neon-teal);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+}
+
+.badge-variant {
+    background: rgba(167, 139, 250, 0.1);
+    color: var(--neon-purple);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+/* --- BASE CARD LAYOUT --- */
 .project-card-container {
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
@@ -34,7 +60,7 @@
     border-top-color: var(--neon-purple);
 }
 
-/* --- LAYOUT STRUCTURE --- */
+/* --- CARD STRUCTURE --- */
 .project-card-header {
   margin-bottom: 20px;
   display: flex;
@@ -99,20 +125,18 @@
     margin-top: auto;
 }
 
-/* Make this apply consistently to both views */
 .font-large {
     font-size: 1.1rem; 
-}
-
-/* Ensure the stacking line-height is applied globally to the footer */
-.project-footer .text-right {
-    line-height: 1.2;
-    text-align: right;
 }
 
 /* Fixes stacked span formatting */
 .block {
     display: block;
+}
+
+.project-footer .text-right {
+    line-height: 1.2;
+    text-align: right;
 }
 
 /* --- STATUS BADGES --- */
@@ -147,8 +171,8 @@
     padding: 15px;
     border-radius: 6px;
     margin-bottom: 0;
-    height: auto; /* 🚀 THE FIX: Stops the card from stretching vertically */
-    flex: 0 0 auto; /* 🚀 THE FIX: Prevents the flex column from forcing it to grow */
+    height: auto; 
+    flex: 0 0 auto; 
 }
 
 .layout-pipeline .project-card-header {

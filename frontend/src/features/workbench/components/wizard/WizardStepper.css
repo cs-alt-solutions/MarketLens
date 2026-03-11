@@ -2,58 +2,82 @@
 
 .wizard-stepper {
     position: relative;
-    z-index: 1;
-    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    padding-top: 10px;
 }
 
-/* The Background Line */
+/* 🚀 The background line */
 .stepper-track {
     position: absolute;
-    top: 15px; /* Centers the line behind the 30px circles */
-    left: 10%; /* Prevents the line from touching the absolute edges */
-    right: 10%;
-    height: 3px;
+    top: 25px; /* 10px padding + 15px (half of 30px circle) */
+    left: 10%; /* Starts inside the first node */
+    right: 10%; /* Ends inside the last node */
+    height: 2px;
     background-color: var(--border-subtle);
-    z-index: -1;
+    z-index: 1;
 }
 
-/* The Active Progress Line */
+/* 🚀 The active glowing line */
 .stepper-fill {
     position: absolute;
-    top: 15px;
-    left: 10%;
-    height: 3px;
+    top: 25px;
+    left: 7%;
+    height: 2px;
     background-color: var(--neon-teal);
-    z-index: -1;
-    transition: width 0.3s ease-in-out;
-    /* We calculate the exact width dynamically in the JSX, but cap it so it never overshoots */
-    max-width: 80%; 
+    z-index: 2;
+    transition: width 0.4s ease;
 }
 
-/* The Nodes */
+/* Node container - NO background color here! */
+.stepper-node {
+    position: relative;
+    z-index: 3; /* Forces circles to sit above the lines */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    background: transparent; 
+}
+
+/* The actual circle */
 .step-circle {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    background-color: var(--bg-panel);
+    background-color: var(--bg-panel); /* Solid background to mask the line beneath it */
     border: 2px solid var(--border-subtle);
     color: var(--text-muted);
-    font-weight: bold;
+    font-size: 0.85rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    margin-bottom: 8px; 
 }
 
+/* 🚀 Past and Present steps glow teal */
 .step-circle.active {
     border-color: var(--neon-teal);
+    color: var(--neon-teal);
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.2);
+}
+
+/* 🚀 EXACT current step fills solid */
+.step-circle.current {
     background-color: var(--neon-teal);
-    color: var(--bg-app); /* Dark text on the bright teal background */
-    box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+    color: var(--bg-app); /* Dark text on neon background */
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
 }
 
 .step-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    text-align: center;
 }

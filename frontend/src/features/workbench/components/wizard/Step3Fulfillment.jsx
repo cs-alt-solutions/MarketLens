@@ -1,108 +1,119 @@
 /* src/features/workbench/components/wizard/Step3Fulfillment.jsx */
-import React, { useState } from 'react';
-import { APP_CONFIG, TERMINOLOGY } from '../../../../utils/glossary';
-import { TrashIcon } from '../../../../components/Icons';
+import React from 'react';
 
-// 🛠️ External helper maintains React purity
-const generateProtoId = (name) => {
-  return 'proto-' + btoa(name + Math.random()).substring(0, 10);
-};
-
-export const Step3Fulfillment = ({ localProject, handleUpdate, materials, hasAllPackaging, setHasAllPackaging }) => {
-  const [selectedMatId, setSelectedMatId] = useState('');
-  const [reqQty, setReqQty] = useState('');
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newCost, setNewCost] = useState('');
-
-  const isLogistics = (cat) => APP_CONFIG.INVENTORY.LOGISTICS.includes(cat);
-  const shippingMaterials = materials.filter(m => isLogistics(m.category));
-  
+export const Step3Fulfillment = ({ localProject, handleUpdate }) => {
   const recipe = localProject.recipe || [];
-  const currentFulfillmentList = recipe.filter(i => {
-    const mat = materials.find(m => m.id === i.matId);
-    return i.isPrototype || (mat && isLogistics(mat.category));
-  });
 
-  const addItem = () => {
-    if (isAddingNew) {
-      if (!newName || !newCost) return;
-      
-      const protoItem = { 
-        matId: generateProtoId(newName),
-        name: newName, 
-        reqPerUnit: parseFloat(reqQty) || 1, 
-        costPerUnit: parseFloat(newCost), 
-        isPrototype: true 
-      };
-      
-      handleUpdate('recipe', [...recipe, protoItem]);
-      setNewName(''); 
-      setNewCost(''); 
-      setIsAddingNew(false);
-    } else {
-      const mat = materials.find(m => m.id.toString() === selectedMatId);
-      if (!mat) return;
-      const newItem = { matId: mat.id, name: mat.name, reqPerUnit: parseFloat(reqQty) || 1, costPerUnit: mat.costPerUnit };
-      handleUpdate('recipe', [...recipe, newItem]);
-    }
-    setSelectedMatId(''); 
-    setReqQty('');
+  const handleRecipeChange = (index, field, value) => {
+    const updatedRecipe = [...recipe];
+    updatedRecipe[index] = { ...updatedRecipe[index], [field]: value, isPlaceholder: false };
+    handleUpdate('recipe', updatedRecipe);
   };
 
-  return (
-    <div className="animate-fade-in flex-col h-full max-w-800 w-full">
-      <h2 className="text-neon-teal mb-10 text-center wizard-title-large">{TERMINOLOGY.WIZARD.STEP_3}</h2>
-      <p className="text-muted mb-30 text-center font-large">Ensure all necessary packaging is available for fulfillment.</p>
+  const removeRow = (index) => {
+    const updatedRecipe = recipe.filter((_, i) => i !== index);
+    handleUpdate('recipe', updatedRecipe);
+  };
+
+  const addFulfillmentRow = () => {
+    handleUpdate('recipe', [...recipe, { name: '', category: 'Shipping', reqPerUnit: 1, costPerUnit: 0, isPlaceholder: false }]);
+  };
+
+  // 🚀 Calculate ONLY the packaging/shipping materials showing on this page
+  const totalFulfillmentCost = recipe.reduce((sum, item) => {
+      if (!['Packaging', 'Shipping'].includes(item.category)) return sum;
+      const qty = parseFloat(item.reqPerUnit) || 0;
+      const cost = parseFloat(item.costPerUnit) || 0;
+      return sum + (qty * cost);
+  }, 0);
+return (
+    <div className="flex-col h-full animate-fade-in w-full pb-30">
       
-      <div className="bg-panel p-15 border-radius-2 border-subtle mb-20">
-        <div className="flex-center gap-10">
-          {!isAddingNew ? (
-            <select className="input-industrial w-full" value={selectedMatId} onChange={e => setSelectedMatId(e.target.value)}>
-              <option value="">-- Choose a Shipping Box or Mailer --</option>
-              {shippingMaterials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
-            </select>
-          ) : (
-            <>
-              <input className="input-industrial w-full" placeholder="Box/Supply Name" value={newName} onChange={e => setNewName(e.target.value)} />
-              {/* 🚀 Replaced inline styles with strict CSS classes */}
-              <input type="number" className="input-industrial w-100" placeholder="Est. Cost" value={newCost} onChange={e => setNewCost(e.target.value)} />
-            </>
-          )}
-          <input type="number" className="input-industrial w-80" placeholder="Qty" value={reqQty} onChange={e => setReqQty(e.target.value)} />
-          <button className="btn-primary" onClick={addItem}>{TERMINOLOGY.GENERAL.ADD}</button>
+      {/* 🚀 UPGRADED HEADER: Matches Step 2 perfectly */}
+      <div className="flex-col align-center w-full mb-30 border-bottom-subtle pb-20">
+        <h2 className="text-neon-teal wizard-title-large text-center mb-10">
+            Logistics & Packing Station
+        </h2>
+        <p className="text-muted wizard-subtitle text-center max-w-600 mb-15">
+            How are we getting <span className="text-main font-bold">"{localProject.title || 'this'}"</span> to the customer? 
+        </p>
+        <div className="notice-pill-teal">
+            <span>ONLY ADD BOXES, MAILERS, AND PACKING MATERIALS HERE</span>
         </div>
-        <button className="text-neon-teal font-small mt-10 btn-ghost" onClick={() => setIsAddingNew(!isAddingNew)}>
-          {isAddingNew ? TERMINOLOGY.GENERAL.CANCEL : "+ Add Prototype Packaging (Custom Boxes, etc.)"}
-        </button>
       </div>
 
-      <div className="flex-col gap-10 overflow-y-auto pr-10 mb-20 flex-1">
-        <div className="bom-section-header">SHIPPING SUPPLIES REQUIRED PER UNIT</div>
-        {currentFulfillmentList.length === 0 ? (
-            <div className="text-muted italic text-small text-center mt-20">No packaging added to this product yet.</div>
-        ) : (
-          currentFulfillmentList.map((item, idx) => {
-            const realIndex = recipe.findIndex(r => r.matId === item.matId && r.reqPerUnit === item.reqPerUnit);
-            return (
-              <div key={idx} className="flex-between p-15 border-bottom-subtle bg-panel border-radius-2 animate-fade-in">
-                <span className="font-bold">{item.reqPerUnit}x <span className="text-muted ml-5 font-normal">{item.name}</span> {item.isPrototype && <span className="text-warning font-mono text-small ml-10">[PROTOTYPE]</span>}</span>
-                <button className="btn-icon-hover-clean" onClick={() => handleUpdate('recipe', recipe.filter((_, i) => i !== realIndex))}><TrashIcon /></button>
-              </div>
-            )
-          })
-        )}
+      <div className="bom-scratchpad-container">
+          <div className="bom-grid-header">
+              <span className="label-industrial text-muted">SHIPPING MATERIAL</span>
+              <span className="label-industrial text-muted text-center">QTY</span>
+              <span className="label-industrial text-muted text-center">UNIT</span>
+              <span className="label-industrial text-muted text-center">EST. COST</span>
+              <span></span>
+          </div>
+          
+          <div className="bom-rows-wrapper flex-col gap-10">
+              {recipe.map((item, index) => {
+                  if (!['Packaging', 'Shipping'].includes(item.category)) return null;
+                  
+                  // Same smart unit default we used in Step 2!
+                  const currentUnit = item.unit || 'ea';
+                  
+                  return (
+                      <div key={index} className={`bom-row ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
+                          <div className="bom-input-group flex-1">
+                              <span className="bom-category-tag">{item.category}</span>
+                              <input
+                                  className="input-bom-text"
+                                  placeholder={item.isPlaceholder ? `e.g. ${item.name}` : 'Mailer, Box, Tape...'}
+                                  value={item.isPlaceholder ? '' : item.name}
+                                  onChange={(e) => handleRecipeChange(index, 'name', e.target.value)}
+                              />
+                          </div>
+                          <div className="bom-input-group w-80">
+                              <input
+                                  type="number" className="input-bom-num text-center" min="0" step="0.01"
+                                  value={item.reqPerUnit}
+                                  onChange={(e) => handleRecipeChange(index, 'reqPerUnit', e.target.value)}
+                              />
+                          </div>
+
+                          {/* 🚀 Add the Unit Dropdown here too! */}
+                          <div className="bom-input-group w-80">
+                              <select 
+                                  className="unit-dropdown"
+                                  value={currentUnit}
+                                  onChange={(e) => handleRecipeChange(index, 'unit', e.target.value)}
+                              >
+                                  {['ea', 'count', 'box', 'jar', 'roll', 'rolls', 'oz', 'lb', 'lbs', 'g', 'kg', 'fl oz', 'gal', 'L', 'ml', 'in', 'ft', 'yd', 'cm'].map(u => (
+                                      <option key={u} value={u}>{u}</option>
+                                  ))}
+                              </select>
+                          </div>
+
+                          <div className="bom-input-group w-100 flex-start align-center px-10">
+                              <span className="text-muted mr-5">$</span>
+                              <input
+                                  type="number" className="input-bom-num" min="0" step="0.01" placeholder="0.00"
+                                  value={item.costPerUnit || ''}
+                                  onChange={(e) => handleRecipeChange(index, 'costPerUnit', e.target.value)}
+                              />
+                          </div>
+                          <button className="bom-remove-btn" onClick={() => removeRow(index)} title="Remove Item">✕</button>
+                      </div>
+                  );
+              })}
+          </div>
+          <button className="bom-add-btn mt-10" onClick={addFulfillmentRow}>+ ADD SHIPPING SUPPLY</button>
       </div>
 
-      <div 
-          className={`p-15 border-radius-2 border-subtle flex-center gap-15 clickable transition ${hasAllPackaging ? 'bg-teal text-black font-bold' : 'bg-app text-muted'}`} 
-          onClick={() => setHasAllPackaging(!hasAllPackaging)}
-      >
-        {/* 🚀 Replaced massive inline style block with step-circle-check */}
-        <div className={`step-circle step-circle-check ${hasAllPackaging ? 'active' : ''}`}>
-            {hasAllPackaging ? '✓' : ''}
-        </div>
-        <span>Shipping supplies verified for fulfillment.</span>
+      <div className="bom-total-banner mt-30 mb-20">
+          <div className="flex-col">
+              <span className="label-industrial text-neon-teal">FULFILLMENT OVERHEAD</span>
+              <span className="text-tiny text-muted mt-5">Cost of materials to pack ONE unit (Excludes postage).</span>
+          </div>
+          <div className="profit-total-large text-neon-teal font-mono font-bold">
+              ${totalFulfillmentCost.toFixed(2)}
+          </div>
       </div>
     </div>
   );

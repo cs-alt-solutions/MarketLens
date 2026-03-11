@@ -3,6 +3,12 @@
 /* ==========================================
    WIZARD MODAL STRUCTURE
 ========================================== */
+.wizard-window-size {
+    width: 900px;
+    height: 80vh;
+    max-height: 800px;
+}
+
 .blueprint-window-size {
     width: 90vw;
     max-width: 900px;
@@ -13,67 +19,487 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-.blueprint-body {
+.wizard-body {
+    background: var(--bg-app);
+    flex: 1;
     overflow-y: auto;
-    padding: 40px; /* Ensures nothing touches the absolute edges */
+    padding: 15px; 
+}
+
+.wizard-frame {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 20px; 
+    min-height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.wizard-footer-bar {
+    padding: 15px 20px;
+    background: var(--bg-panel-header);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* ==========================================
-   TYPOGRAPHY & INPUTS (Replacing Inline Styles)
+   HEADER & LIVE TAG PANEL
 ========================================== */
 .wizard-title-large {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+    margin: 0 0 5px 0;
+}
+
+.wizard-subtitle {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.wizard-tag-panel-compact {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 12px 15px;
+    min-width: 250px;
+    max-width: 350px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-pill {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* --- MULTI-NEON CLASSIFICATION --- */
+.tag-cyan { 
+    background: rgba(45, 212, 191, 0.1); 
+    color: var(--neon-teal); 
+    border: 1px solid rgba(45, 212, 191, 0.3); 
+}
+.tag-pink { 
+    background: rgba(236, 72, 153, 0.1); 
+    color: #ec4899; 
+    border: 1px solid rgba(236, 72, 153, 0.3); 
+}
+.tag-purple { 
+    background: rgba(168, 85, 247, 0.1); 
+    color: #a855f7; 
+    border: 1px solid rgba(168, 85, 247, 0.3); 
+}
+.tag-green { 
+    background: rgba(74, 222, 128, 0.1); 
+    color: #4ade80; 
+    border: 1px solid rgba(74, 222, 128, 0.3); 
+}
+
+/* ==========================================
+   🚀 THE MASTER QUESTION STYLE
+========================================== */
+.label-prompt-large {
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    color: var(--neon-teal);
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+    display: block;
+}
+
+/* ==========================================
+   🚀 STEP 1: LAUNCHPAD GRID
+========================================== */
+.step1-choosing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+@media (min-width: 700px) {
+    .step1-choosing-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.collection-btn.step1-card {
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 140px; 
+}
+
+.collection-btn.step1-card .font-bold {
+    font-size: 1.1rem; 
+    margin-bottom: 8px;
+}
+
+.collection-btn.step1-card .text-tiny {
+    font-size: 0.75rem; 
+    line-height: 1.3;
+}
+
+/* ==========================================
+   🚀 STEPS 2-4: DYNAMIC CHOICE GRIDS
+========================================== */
+.choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.collection-btn.choice-card {
+    padding: 16px 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.collection-btn.choice-card .font-bold {
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+.collection-btn.choice-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    border-color: rgba(45, 212, 191, 0.4);
+}
+
+/* Base button styles */
+.collection-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-main);
+}
+
+.collection-btn:hover {
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+}
+
+.collection-btn.active {
+    background: rgba(45, 212, 191, 0.1);
+    border-color: var(--neon-teal);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+}
+
+/* ==========================================
+   ✨ STEP 5: HERO NAMING STAGE
+========================================== */
+.naming-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.naming-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.input-naming {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 2px dashed var(--border-subtle);
+    border-radius: 12px;
+    padding: 25px 30px;
+    font-size: 2.2rem;
+    color: var(--text-main);
+    text-align: center;
+    font-weight: 800;
+    font-family: var(--font-main);
+    transition: all 0.3s ease;
+    outline: none;
     letter-spacing: -0.5px;
 }
 
-.wizard-input-huge {
-    font-size: 2.5rem;
-    border-bottom: 2px solid var(--neon-teal);
-    background: transparent;
-    color: var(--text-main);
-    outline: none;
-    transition: border-color 0.2s ease;
+.input-naming:focus {
+    border-color: var(--neon-teal);
+    border-style: solid;
+    background: rgba(45, 212, 191, 0.05);
+    box-shadow: 0 0 30px rgba(45, 212, 191, 0.15);
+    color: var(--neon-teal);
 }
 
-.wizard-input-huge:focus {
-    border-bottom: 2px solid var(--text-main);
-}
-
-.profit-total-large {
-    font-size: 2rem;
+.input-naming::placeholder {
+    color: rgba(255, 255, 255, 0.15);
+    font-weight: 600;
 }
 
 /* ==========================================
-   LAYOUT UTILITIES
+   UI UTILITIES & BREADCRUMBS
 ========================================== */
+.breadcrumb-link {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.5px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+    color: var(--neon-teal);
+}
+
+.breadcrumb-arrow {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    padding: 0 10px;
+    font-weight: 300;
+}
+
+.input-chromeless {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
 .w-100 { width: 100px; }
 .w-80 { width: 80px; }
 .flex-1 { flex: 1; }
+.flex-col.gap-10 > * { margin-bottom: 10px; }
+.flex-col.gap-10 > *:last-child { margin-bottom: 0; }
 
-/* Forces space between the input rows in Steps 2 & 3 so they don't touch */
-.flex-col.gap-10 > * {
-    margin-bottom: 10px;
-}
-
-.flex-col.gap-10 > *:last-child {
-    margin-bottom: 0;
-}
-
-/* Ensure the central panel backgrounds contrast cleanly against the modal */
 .bg-panel {
     background-color: var(--bg-panel);
     border: 1px solid var(--border-subtle);
 }
 
 /* ==========================================
-   PROFIT DASHBOARD (Step 4)
+   🛠️ STEPS 2 & 3: BOM SCRATCHPAD
+========================================== */
+.notice-pill-teal {
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.3);
+    color: var(--neon-teal);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(45, 212, 191, 0.1);
+}
+
+.bom-scratchpad-container {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.bom-phase-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.bom-rows-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 🚀 5-Column Grid: Material, QTY, Unit, Cost, Delete */
+.bom-grid-header,
+.bom-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 70px 100px 40px; 
+    gap: 15px;
+    align-items: center;
+}
+
+.bom-grid-header {
+    padding: 0 10px 10px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 15px;
+}
+
+.bom-row {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    padding: 8px;
+    transition: all 0.2s ease;
+}
+
+.bom-row.is-placeholder {
+    background: transparent;
+    border: 1px dashed var(--border-subtle);
+    opacity: 0.8;
+}
+
+.bom-row:focus-within {
+    border-color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.05);
+    opacity: 1;
+}
+
+.bom-input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.bom-input-group:focus-within {
+    border-color: rgba(45, 212, 191, 0.3);
+}
+
+.bom-category-tag {
+    font-size: 0.6rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    background: var(--bg-app);
+    padding: 4px 8px;
+    border-radius: 4px 0 0 4px;
+    border-right: 1px solid var(--border-subtle);
+    white-space: nowrap;
+}
+
+.input-bom-text,
+.input-bom-num {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.input-bom-text::placeholder {
+    color: rgba(45, 212, 191, 0.5); 
+    font-style: italic;
+}
+
+/* 🚀 Kill the default browser up/down arrows on number inputs */
+input.input-bom-num::-webkit-outer-spin-button,
+input.input-bom-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+input.input-bom-num[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* 🚀 THE SMART UNIT DROPDOWN */
+.unit-dropdown {
+    background: transparent;
+    border: none;
+    color: var(--neon-teal); 
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; 
+}
+
+.unit-dropdown option {
+    background-color: var(--bg-panel); 
+    color: var(--text-main);
+    font-weight: normal;
+}
+
+.bom-remove-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.bom-remove-btn:hover {
+    color: #ef4444;
+}
+
+.bom-add-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--border-subtle);
+    color: var(--text-muted);
+    padding: 12px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.bom-add-btn:hover {
+    background: rgba(45, 212, 191, 0.1);
+    border-color: var(--neon-teal);
+    color: var(--neon-teal);
+}
+
+.bom-total-banner {
+    background: rgba(45, 212, 191, 0.05);
+    border: 1px solid var(--neon-teal);
+    border-radius: 8px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(45, 212, 191, 0.1);
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   LEGACY WIZARD STEPS (Profit/Checkboxes)
 ========================================== */
 .profit-cards-container {
     display: flex;
-    gap: 15px; /* Spaces out the Materials and Fees boxes */
+    gap: 15px; 
 }
 
 .profit-card {
@@ -87,7 +513,7 @@
 }
 
 .final-profit-banner {
-    background-color: rgba(0, 255, 170, 0.05); /* Very faint teal */
+    background-color: rgba(45, 212, 191, 0.05); 
     border: 1px solid var(--neon-teal);
     border-radius: 8px;
     display: flex;
@@ -95,9 +521,10 @@
     align-items: center;
 }
 
-/* ==========================================
-   CHECKBOX CIRCLES (Steps 2 & 3)
-========================================== */
+.profit-total-large {
+    font-size: 2rem;
+}
+
 .step-circle-check {
     width: 24px;
     height: 24px;
@@ -116,3 +543,109 @@
     color: var(--neon-teal);
     border-color: var(--neon-teal);
 }
+/* ==========================================
+   🚪 STEP 0: INTRO & ROLE SELECTION
+========================================== */
+.intro-gate-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+.intro-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.intro-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-icon-wrapper {
+    font-size: 3rem;
+    background: rgba(0,0,0,0.2);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.intro-card.guided-card:hover {
+    border-color: var(--neon-teal);
+    box-shadow: 0 10px 30px rgba(45, 212, 191, 0.15);
+    transform: translateY(-5px);
+}
+.intro-card.guided-card:hover .intro-icon-wrapper {
+    border-color: var(--neon-teal);
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
+}
+
+.intro-card.fast-card:hover {
+    border-color: #a855f7; /* Purple for fast track */
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+    transform: translateY(-5px);
+}
+.intro-card.fast-card:hover .intro-icon-wrapper {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+/* ==========================================
+   🎥 INTRO SLIDES (THE "AHA!" CAROUSEL)
+========================================== */
+.intro-slide-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 20px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.slide-content-box {
+    flex: 1;
+}
+
+.slide-icon-massive {
+    font-size: 5rem;
+    filter: drop-shadow(0 0 20px rgba(45, 212, 191, 0.3));
+}
+
+.pagination-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-subtle);
+    transition: all 0.3s ease;
+}
+
+.pagination-dots .dot.active {
+    background: var(--neon-teal);
+    width: 24px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.5);
+}
+
+/* Utilities for sizing */
+.text-large { font-size: 1.25rem; }
+.btn-large { padding: 15px 30px; font-size: 1.1rem; letter-spacing: 1px; }
+.line-height-relaxed { line-height: 1.6; }
