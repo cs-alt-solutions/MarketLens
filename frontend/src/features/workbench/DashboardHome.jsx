@@ -10,7 +10,7 @@ import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, DASHBOARD_STRINGS } from '../../utils/glossary';
 
 // Modals & UI Components
-import { ProjectWizard } from './components/wizard/ProjectWizard';
+import { MasterWizard } from './components/wizard/MasterWizard';
 import { ProjectConsole } from './components/wizard/ProjectConsole'; 
 import { IntakeForm } from './components/IntakeForm'; 
 import { SaleModal } from './components/SaleModal';   
@@ -130,12 +130,12 @@ export const DashboardHome = () => {
         </div>
       </div>
 
-      {/* 🚀 THE UNIVERSAL WIZARD TRIGGER (Starts at Step 0) */}
+      {/* 🚀 THE NEW MASTER WIZARD ROUTER */}
       {showUniversalWizard && (
-          <ProjectWizard 
-              initialStep={0} 
+          <MasterWizard 
+              initialFlow={null} // Null triggers Step 0 Intro
               onClose={() => setShowUniversalWizard(false)} 
-              onSave={async (data) => {
+              onSaveProject={async (data) => {
                   const created = await addProject(data);
                   if (created) setSelectedProject(created);
                   setShowUniversalWizard(false);

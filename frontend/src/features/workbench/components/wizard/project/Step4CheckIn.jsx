@@ -1,8 +1,8 @@
 /* src/features/workbench/components/wizard/Step4CheckIn.jsx */
 import React from 'react';
-import { formatCurrency } from '../../../../utils/formatters';
-import { WorkshopIcon } from '../../../../components/Icons';
-import { TERMINOLOGY } from '../../../../utils/glossary';
+import { formatCurrency } from '../../../../../utils/formatters';
+import { WorkshopIcon } from '../../../../../components/Icons';
+import { TERMINOLOGY } from '../../../../../utils/glossary';
 
 export const Step4CheckIn = ({ localProject, handleUpdate, economics, hasAllCore, hasAllPackaging }) => {
   const { materialCost, platformFees, netProfit, marginPercent } = economics;

@@ -1,6 +1,6 @@
 /* src/features/workbench/components/wizard/WizardStepper.jsx */
 import React from 'react';
-import { TERMINOLOGY } from '../../../../utils/glossary';
+import { TERMINOLOGY } from '../../../../../utils/glossary';
 import './WizardStepper.css'; // Ensure CSS is explicitly imported!
 
 export const WizardStepper = ({ currentStep }) => {

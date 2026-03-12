@@ -1,15 +1,13 @@
-/* src/features/workbench/components/wizard/ProjectWizard.jsx */
+/* src/features/workbench/components/wizard/project/ProjectWizard.jsx */
 import React, { useState } from 'react';
 import './ProjectWizard.css';
 import { WizardStepper } from './WizardStepper';
-import { Step0Intro } from './Step0Intro';
 import { Step1Identity } from './Step1Identity';
 import { Step2Product } from './Step2Product';
 import { Step3Fulfillment } from './Step3Fulfillment';
 
-// 🚀 defaults to 1 so the Workshop button skips the intro. The Dashboard will pass 0.
-export const ProjectWizard = ({ onClose, onSave, initialStep = 1 }) => {
-  const [currentStep, setCurrentStep] = useState(initialStep);
+export const ProjectWizard = ({ onClose, onSave }) => {
+  const [currentStep, setCurrentStep] = useState(1); // 🚀 Always starts at 1 now
   
   const [localProject, setLocalProject] = useState({
     collectionId: '',
@@ -29,7 +27,7 @@ export const ProjectWizard = ({ onClose, onSave, initialStep = 1 }) => {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) setCurrentStep(prev => prev - 1);
+    if (currentStep > 1) setCurrentStep(prev => prev - 1); // 🚀 Bottom floor is 1
   };
 
   const handleComplete = () => {
@@ -42,13 +40,9 @@ export const ProjectWizard = ({ onClose, onSave, initialStep = 1 }) => {
         <div className="wizard-window-size animate-fade-in">
            <div className="wizard-frame">
               
-              {/* Stepper only shows for actual project creation steps */}
-              {currentStep > 0 && <WizardStepper currentStep={currentStep} />}
+              <WizardStepper currentStep={currentStep} />
 
               <div className="wizard-body mt-10">
-                 {currentStep === 0 && (
-                    <Step0Intro onNext={() => setCurrentStep(1)} onClose={onClose} />
-                 )}
                  {currentStep === 1 && (
                     <Step1Identity localProject={localProject} handleUpdate={handleUpdate} onNext={handleNext} />
                  )}
@@ -66,32 +60,29 @@ export const ProjectWizard = ({ onClose, onSave, initialStep = 1 }) => {
                  )}
               </div>
 
-              {/* Footer only shows for actual project creation steps */}
-              {currentStep > 0 && (
-                 <div className="wizard-footer-bar">
-                    <button className="btn-secondary" onClick={onClose}>
-                        CANCEL
-                    </button>
+              <div className="wizard-footer-bar">
+                 <button className="btn-secondary" onClick={onClose}>
+                     CANCEL
+                 </button>
+                 
+                 <div className="flex-center gap-15">
+                    {currentStep > 1 && (
+                       <button className="btn-secondary" onClick={handleBack}>
+                           BACK
+                       </button>
+                    )}
                     
-                    <div className="flex-center gap-15">
-                       {currentStep > 1 && (
-                          <button className="btn-secondary" onClick={handleBack}>
-                              BACK
-                          </button>
-                       )}
-                       
-                       {currentStep < 4 ? (
-                          <button className="btn-primary" onClick={handleNext}>
-                              CONTINUE
-                          </button>
-                       ) : (
-                          <button className="btn-primary" onClick={handleComplete}>
-                              ACTIVATE PROJECT
-                          </button>
-                       )}
-                    </div>
+                    {currentStep < 4 ? (
+                       <button className="btn-primary" onClick={handleNext}>
+                           CONTINUE
+                       </button>
+                    ) : (
+                       <button className="btn-primary" onClick={handleComplete}>
+                           ACTIVATE PROJECT
+                       </button>
+                    )}
                  </div>
-              )}
+              </div>
 
            </div>
         </div>

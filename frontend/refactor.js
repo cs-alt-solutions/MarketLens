@@ -1,6 +1,11 @@
-// refactor.js
-const fs = require('fs');
-const path = require('path');
+/* eslint-disable */
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Recreate __dirname for modern ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const WIZARD_DIR = path.join(__dirname, 'src', 'features', 'workbench', 'components', 'wizard');
 const PROJECT_DIR = path.join(WIZARD_DIR, 'project');
@@ -49,7 +54,7 @@ const supplyFiles = ['SupplyWizard.jsx', 'Step1Details.jsx', 'Step2Finance.jsx']
 supplyFiles.forEach(file => {
   const filePath = path.join(SUPPLY_DIR, file);
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, `/* src/features/workbench/components/wizard/supply/${file} */\nimport React from 'react';\n\nexport const ${file.replace('.jsx', '')} = () => {\n  return <div>${file.replace('.jsx', '')} Placeholder</div>;\n};\n`);
+    fs.writeFileSync(filePath, `/* src/features/workbench/components/wizard/supply/${file} */\nimport React from 'react';\n\nexport const ${file.replace('.jsx', '')} = () => {\n  return <div className="p-20 text-center font-mono text-neon-teal">${file.replace('.jsx', '')} Placeholder</div>;\n};\n`);
     console.log(`  ✅ Scaffolded: supply/${file}`);
   }
 });

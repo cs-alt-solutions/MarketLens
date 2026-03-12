@@ -3,8 +3,8 @@ import React, { useState, useMemo } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import { TERMINOLOGY, APP_CONFIG, MESSAGES } from '../../utils/glossary';
 import { ProjectCard } from '../../components/cards/ProjectCard';
-import { ProjectWizard } from './components/wizard/ProjectWizard';
-import { ProjectConsole } from './components/wizard/ProjectConsole'; // 🚀 Added our new Console component
+import { MasterWizard } from './components/wizard/MasterWizard'; // 🚀 UPDATED IMPORT
+import { ProjectConsole } from './components/wizard/ProjectConsole'; 
 import { Plus, WorkshopIcon, Box, DashboardIcon } from '../../components/Icons';
 import './Workshop.css';
 
@@ -170,7 +170,8 @@ export const Workshop = () => {
 
       {/* 🚀 THE ARCHITECTURAL FORK: Route clicks seamlessly */}
       {selectedProject && selectedProject.isNew ? (
-        <ProjectWizard 
+        <MasterWizard 
+          initialFlow="project" // Bypasses Step 0 and jumps straight into the Spark
           project={selectedProject} 
           onClose={() => setSelectedProject(null)} 
         />

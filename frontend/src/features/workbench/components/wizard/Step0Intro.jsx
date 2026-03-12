@@ -5,7 +5,7 @@ import { WorkshopIcon, Box, Finance } from '../../../../components/Icons';
 import { TERMINOLOGY, MESSAGES } from '../../../../utils/glossary';
 import { ConstructionZone } from '../../../../components/ui/ConstructionZone';
 
-export const Step0Intro = ({ onNext, onClose }) => {
+export const Step0Intro = ({ onNext, onSupply, onClose }) => {
   const [showConstruction, setShowConstruction] = useState(false);
 
   return (
@@ -33,8 +33,8 @@ export const Step0Intro = ({ onNext, onClose }) => {
             </span>
           </button>
 
-          {/* PATH B: INVENTORY INTAKE */}
-          <button className="intro-card fast-card" onClick={() => setShowConstruction(true)}>
+          {/* 🚀 PATH B: INVENTORY INTAKE (Now routes to the Supply Wizard!) */}
+          <button className="intro-card fast-card" onClick={onSupply}>
             <div className="intro-icon-wrapper text-purple">
                 <Box />
             </div>
@@ -68,7 +68,6 @@ export const Step0Intro = ({ onNext, onClose }) => {
         </div>
       </div>
 
-      {/* 🚀 REACT PORTAL: Teleports the overlay directly to the <body> tag */}
       {showConstruction && createPortal(
         <div className="global-construction-overlay" onClick={() => setShowConstruction(false)}>
             <div onClick={(e) => e.stopPropagation()} className="global-construction-wrapper">
@@ -77,7 +76,7 @@ export const Step0Intro = ({ onNext, onClose }) => {
                     message={MESSAGES.MODULE_OFFLINE_DESC}
                 />
                 <button 
-                  className="btn-construction mt-20" /* 🚀 THE NEW NEON ORANGE BUTTON */
+                  className="btn-construction mt-20" 
                   style={{ width: '220px' }}
                   onClick={() => setShowConstruction(false)}
                 >
@@ -87,7 +86,6 @@ export const Step0Intro = ({ onNext, onClose }) => {
         </div>,
         document.body
       )}
-
     </div>
   );
 };

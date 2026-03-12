@@ -4,7 +4,7 @@ import { useInventory } from '../../../../context/InventoryContext';
 import { formatCurrency } from '../../../../utils/formatters';
 import { TERMINOLOGY } from '../../../../utils/glossary';
 import { TrashIcon, WorkshopIcon, Finance } from '../../../../components/Icons';
-import './ProjectWizard.css'; 
+import './project/ProjectWizard.css'; // 🚀 UPDATED CSS PATH
 
 export const ProjectConsole = ({ project, onClose }) => {
   const { updateProject, deleteProject } = useInventory();

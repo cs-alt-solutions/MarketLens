@@ -1,6 +1,6 @@
 /* src/features/workbench/components/wizard/Step1Identity.jsx */
 import React, { useState } from 'react';
-import { APP_CONFIG, TERMINOLOGY } from '../../../../utils/glossary';
+import { APP_CONFIG, TERMINOLOGY } from '../../../../../utils/glossary';
 
 export const Step1Identity = ({ localProject, handleUpdate, onNext }) => {
   const getInitialStep = () => {
