@@ -9,13 +9,9 @@ import { InventoryManager } from './InventoryManager';
 import { ProfitMatrix } from './ProfitMatrix';
 import { MarketRadar } from './MarketRadar';
 
-// The Single Source for our AI Co-Pilot
-import { GlitchBot } from '../../packages/beta-engine/GlitchBot';
-
 export const ConsoleLayout = () => {
   const [activeView, setActiveView] = useState('dashboard'); 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  // Ghost state for showBetaHub has been eradicated.
 
   const handleNavigate = (view) => setActiveView(view);
 
@@ -31,7 +27,7 @@ export const ConsoleLayout = () => {
   };
 
   return (
-    <div className="console-container">
+    <div className="console-container animate-fade-in">
       {/* --- SIDEBAR --- */}
       <div className={`console-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
@@ -73,7 +69,6 @@ export const ConsoleLayout = () => {
           
           <div className="ticker-container flex-1 overflow-hidden flex-center justify-start">
             
-            {/* NO HARDCODING: Sourced directly from glossary.js */}
             <div className="ticker-fixed-label bg-panel-header px-20 font-mono font-tiny text-teal border-right-subtle h-full flex-center z-layer-top">
               {TERMINOLOGY.MARKET.TICKER_LABEL}
             </div>
@@ -98,11 +93,6 @@ export const ConsoleLayout = () => {
           </div>
         </div>
       </div>
-
-      {/* --- INJECT THE BETA ENGINE COMPONENTS --- */}
-      <GlitchBot currentContext={activeView} />
-      
-      {/* Ghost BetaHub component removed entirely */}
 
     </div>
   );

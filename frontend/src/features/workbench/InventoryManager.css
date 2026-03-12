@@ -8,10 +8,10 @@
     overflow: hidden;
 }
 
-/* --- LEFT COLUMN: SCROLL AREA --- */
+/* --- THE DENSE LEDGER COMPRESSION --- */
 .inventory-scroll-area {
     overflow-y: auto;
-    padding: 20px 40px;
+    padding: 15px 25px; /* Condensing the massive padding */
     height: 100%;
     border-right: 1px solid var(--border-subtle); 
     display: flex;
@@ -22,44 +22,43 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Tighter margin */
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px; /* Tighter gap */
 }
 
-/* New compact stat pill for the header */
 .stat-pill {
     background: rgba(167, 139, 250, 0.1);
     border: 1px solid var(--neon-purple);
     color: var(--neon-purple);
-    padding: 8px 16px;
-    border-radius: 50px;
+    padding: 6px 12px; /* Denser pill */
+    border-radius: 4px; /* Industrial square-ish shape instead of pill */
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
 }
 
-/* --- TABS & SEARCH --- */
+/* --- SLEEK TABS --- */
 .tab-group {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 5px; /* Tighter tabs */
+    margin-top: 10px;
 }
 
 .tab-btn {
     background: transparent;
     border: 1px solid var(--border-subtle);
     color: var(--text-muted);
-    padding: 8px 16px;
+    padding: 6px 12px;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 .tab-btn:hover {
@@ -68,41 +67,26 @@
 }
 
 .tab-btn.active {
-    background: var(--bg-row-even);
+    background: rgba(34, 211, 238, 0.05);
     color: var(--neon-cyan);
     border-color: var(--neon-cyan);
     font-weight: 700;
 }
 
-.search-container {
-    margin-bottom: 25px;
+/* --- HIGH DENSITY GRID --- */
+.locker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 🚀 Much tighter cards */
+    gap: 10px; /* 🚀 Compressed gap */
+    padding-bottom: 20px;
 }
 
-.search-input {
-    width: 100%;
-    background: var(--bg-row-odd);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-main);
-    padding: 12px 20px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.search-input:focus {
-    border-color: var(--neon-teal);
-    background: rgba(45, 212, 191, 0.05);
-}
-
-/* --- SEPARATORS & GRID --- */
 .section-separator-inventory {
     display: flex;
     align-items: center;
-    margin: 20px 0 15px 0;
+    margin: 15px 0 10px 0; /* Tighter vertical rhythm */
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
     border-bottom: 1px solid var(--border-subtle);
     padding-bottom: 5px;
@@ -118,88 +102,46 @@
 
 .separator-line-inv { flex: 1; }
 
-.locker-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 15px;
-    padding-bottom: 40px;
-}
-
-/* --- RIGHT COLUMN: SIDEBAR DETAILS --- */
-.sidebar-col {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: var(--bg-app);
-}
-
-.keyword-header {
-    height: 60px;
-    padding: 0 20px;
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-}
-
-.keyword-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.sidebar-panel {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.sidebar-inner { padding-top: 20px; }
-
-.detail-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    margin: 10px 0 5px 0;
-    line-height: 1.1;
-}
-
-.vendor-logo-large {
-    width: 64px;
-    height: 64px;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-.notes-display {
-    white-space: pre-wrap;
-}
-/* Add to bottom of src/features/workbench/InventoryManager.css */
-
+/* --- CONTROLS COMPRESSION --- */
 .controls-section {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     background: var(--bg-row-odd);
-    padding: 15px;
-    border-radius: 6px;
+    padding: 10px 15px; /* Tighter padding */
+    border-radius: 4px;
     border: 1px solid var(--border-subtle);
 }
 
+.search-input {
+    width: 100%;
+    background: var(--bg-app);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
 .search-input.mb-15 {
-    margin-bottom: 15px;
-    background: var(--bg-app); /* Pop the search bar off the background */
+    margin-bottom: 10px; /* Tighter */
+}
+
+.search-input:focus {
+    border-color: var(--neon-teal);
+    background: rgba(45, 212, 191, 0.05);
 }
 
 .filter-select {
-    padding: 6px 30px 6px 10px !important;
-    font-size: 0.8rem !important;
+    padding: 4px 25px 4px 10px !important;
+    font-size: 0.75rem !important;
     height: auto !important;
     width: auto !important;
-    min-width: 160px;
+    min-width: 140px;
     background-color: var(--bg-app) !important;
     color: var(--text-main) !important;
     cursor: pointer;
 }
 
-.flex-start {
-    justify-content: flex-start;
-}
+.flex-start { justify-content: flex-start; }

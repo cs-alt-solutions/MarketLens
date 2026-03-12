@@ -54,8 +54,8 @@ export const TERMINOLOGY = {
     STEP_4: "Check-In"
   },
   WIZARD_INTRO: {
-    TITLE: "Welcome to Shift Studio.",
-    SUBTITLE: "Time to create. Let's get the ideas flowing. What are we doing today?",
+    TITLE: "Welcome to the Guided Tour",
+    SUBTITLE: "Not quite sure how to get started? No problem. We will walk you through the process step-by-step. Select a path below to begin.",
     CARD_GUIDED_TITLE: "Launch a Spark",
     CARD_GUIDED_DESC: "Map out a new idea, build your recipe, and calculate your profits before you make a single cut.",
     CARD_FAST_TITLE: "Log New Supplies",

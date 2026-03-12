@@ -1,7 +1,6 @@
 /* src/components/feedback/BootScreen.jsx */
 import React, { useState, useEffect } from 'react';
 import { TERMINOLOGY } from '../../utils/glossary';
-import { GlitchBotCommsLink } from '../../packages/beta-engine/components/GlitchBotCommsLink'; 
 import './BootScreen.css';
 
 export const BootScreen = ({ onComplete }) => {
@@ -27,10 +26,10 @@ export const BootScreen = ({ onComplete }) => {
       <div className="ambient-glow bg-splatter-1"></div>
       
       {phase === 'landing' && (
-        <div className="pulse-center animate-fade-in z-layer-top boot-layout-split">
+        <div className="pulse-center animate-fade-in z-layer-top flex-col flex-center text-center">
           
-          <div className="boot-brand-column text-left">
-            <h1 className="boot-logo text-teal mb-15">SHIFT STUDIO</h1>
+          <div className="boot-brand-column">
+            <h1 className="boot-logo text-teal mb-15">{TERMINOLOGY.GENERAL.APP_NAME}</h1>
             <p className="boot-tagline font-mono mb-30">{TERMINOLOGY.GENERAL.TAGLINE}</p>
             
             <button 
@@ -40,8 +39,6 @@ export const BootScreen = ({ onComplete }) => {
                 ENTER WORKSPACE
             </button>
           </div>
-
-          <GlitchBotCommsLink delay={600} />
 
         </div>
       )}

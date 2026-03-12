@@ -4,32 +4,35 @@ import './DashboardWidgets.css';
 import { TERMINOLOGY } from '../../utils/glossary';
 import { Alert } from '../Icons'; 
 import { useInventory } from '../../context/InventoryContext';
+import { Dial } from '../charts/Dial';
 
 export default function ProductionAlerts({ alerts = [], fleet = [] }) {
   const { logisticsIntel } = useInventory();
   
   const haltedProjects = fleet.filter(p => p.productionStatus === 'HALTED');
   const isCriticalLogistics = logisticsIntel.maxOrders < 10;
+  
+  // Cap the dial visual at 100 for aesthetic reasons
+  const displayCapacity = Math.min(logisticsIntel.maxOrders, 100);
 
   return (
     <div className="panel-industrial border-left-alert h-full">
       <div className="panel-header bg-alert-faint">
         <span className="label-industrial text-alert no-margin flex-center gap-5">
-           <Alert /> PRODUCTION & LOGISTICS ALERTS
+           <Alert /> PRODUCTION & LOGISTICS
         </span>
       </div>
       <div className="panel-content flex-col gap-10 p-0">
         
-        {/* Logistics Bottleneck Alert */}
-        <div className="p-15 border-bottom-subtle bg-row-even">
-           <div className="flex-between mb-10">
-              <span className="text-muted font-small font-mono">{TERMINOLOGY.LOGISTICS.CAPACITY}</span>
-              <span className={`font-bold font-large ${isCriticalLogistics ? 'text-alert' : 'text-teal'}`}>
-                {logisticsIntel.maxOrders}
-              </span>
-           </div>
+        {/* 🚀 UPGRADED LOGISTICS DIAL */}
+        <div className="flex-center flex-col py-20 border-bottom-subtle bg-row-even">
+           <Dial 
+              value={displayCapacity} 
+              label={TERMINOLOGY.LOGISTICS.CAPACITY} 
+              colorVar={isCriticalLogistics ? "--neon-orange" : "--neon-teal"} 
+           />
            {isCriticalLogistics && (
-               <div className="p-10 bg-panel border-alert text-center animate-pulse">
+               <div className="mt-15 p-10 bg-panel border-alert text-center animate-pulse">
                   <span className="text-alert font-bold font-mono font-small">
                     BOTTLENECK: {logisticsIntel.bottleneck?.toUpperCase()}
                   </span>

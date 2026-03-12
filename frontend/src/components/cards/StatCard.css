@@ -1,34 +1,71 @@
 /* src/components/cards/StatCard.css */
-.stat-card-glow {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg-panel);
-  border: 1px solid var(--border-subtle);
-  border-radius: 4px; /* Industrial sharp edges */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 120px;
+
+/* ==========================================
+   ⚙️ TELEMETRY ORBS (Global Stat Component)
+========================================== */
+.hud-orb {
+    background: linear-gradient(135deg, var(--bg-panel) 0%, #09090b 100%);
+    border: 2px solid var(--border-subtle);
+    border-radius: 50%;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.8);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    flex-shrink: 0;
+    position: relative;
 }
 
-/* Rule 7: Interactive Stacking & Feedback */
-.stat-card-glow:hover {
-  transform: translateY(-4px);
-  z-index: 10;
+.hud-orb:hover {
+    transform: translateY(-8px) scale(1.05);
+    z-index: 10;
 }
 
-.font-large {
-  font-size: 2rem;
-  letter-spacing: -0.02em;
+.hud-value-orb {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    line-height: 1;
+    margin-top: 10px;
 }
 
-.text-accent {
-  color: var(--neon-teal);
-  filter: drop-shadow(0 0 5px rgba(0, 242, 255, 0.2));
+.hud-label-orb {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-top: 5px;
+    text-align: center;
+    padding: 0 10px;
 }
 
-/* Ensure the layout doesn't "bounce" when numbers change */
-.leading-tight {
-  line-height: 1.1;
+/* 🚀 Dynamic Text Colors Based on Glow Prop */
+.hud-orb.glow-teal .hud-value-orb { color: var(--neon-teal); }
+.hud-orb.glow-orange .hud-value-orb { color: var(--neon-orange); }
+.hud-orb.glow-purple .hud-value-orb { color: var(--neon-purple); }
+.hud-orb.glow-red .hud-value-orb { color: var(--neon-red); }
+
+/* Intense Orb Hover Glows */
+.hud-orb.glow-teal:hover { box-shadow: 0 0 30px rgba(45, 212, 191, 0.5), inset 0 0 15px rgba(45, 212, 191, 0.2); border-color: var(--neon-teal); }
+.hud-orb.glow-orange:hover { box-shadow: 0 0 30px rgba(251, 146, 60, 0.5), inset 0 0 15px rgba(251, 146, 60, 0.2); border-color: var(--neon-orange); }
+.hud-orb.glow-purple:hover { box-shadow: 0 0 30px rgba(167, 139, 250, 0.5), inset 0 0 15px rgba(167, 139, 250, 0.2); border-color: var(--neon-purple); }
+.hud-orb.glow-red:hover { box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239, 68, 68, 0.2); border-color: var(--neon-red); }
+
+/* Live Beacon Container */
+.orb-beacon-container {
+    position: absolute;
+    top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 1024px) {
+    .hud-orb { width: 130px; height: 130px; }
+    .hud-value-orb { font-size: 1.2rem; }
 }

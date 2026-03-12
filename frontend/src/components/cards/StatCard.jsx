@@ -1,31 +1,17 @@
 /* src/components/cards/StatCard.jsx */
 import React from 'react';
-import './StatCard.css'; // This matches the file created above
+import './StatCard.css';
 
-export const StatCard = ({ label, value, icon: Icon, trend, glowColor = 'teal' }) => {
-  const glowClass = `glow-${glowColor}`;
-
+export const StatCard = ({ label, value, glowColor = 'teal', showBeacon = false, beaconType = '' }) => {
   return (
-    <div className={`panel-industrial stat-card-glow ${glowClass} pad-20`}>
-      <div className="flex-between mb-15">
-        <span className="label-industrial text-muted uppercase font-small tracking-wider">
-          {label}
-        </span>
-        <div className="text-accent">
-          {Icon && <Icon size={20} />}
+    <div className={`hud-orb glow-${glowColor}`}>
+      {showBeacon && (
+        <div className="orb-beacon-container">
+           <div className={`beacon-pulse ${beaconType}`}></div>
         </div>
-      </div>
-      
-      <div className="flex-align-end gap-10">
-        <span className="font-large font-bold font-mono leading-tight">
-          {value}
-        </span>
-        {trend && (
-          <span className={`font-tiny mb-5 ${trend.includes('+') ? 'text-good' : 'text-warning'}`}>
-            {trend}
-          </span>
-        )}
-      </div>
+      )}
+      <span className="hud-value-orb">{value}</span>
+      <span className="hud-label-orb">{label}</span>
     </div>
   );
 };

@@ -1,23 +1,40 @@
+/* src/components/dashboard/TelemetryHUD.jsx */
 import React from 'react';
+import { AnimatedNumber } from '../charts/AnimatedNumber';
+import { StatCard } from '../cards/StatCard';
+import { formatCurrency } from '../../utils/formatters';
+import { TERMINOLOGY } from '../../utils/glossary';
 
-export default function TelemetryHUD({ sales, expenses, profit }) {
+export default function TelemetryHUD({ sales = 0, expenses = 0, profit = 0, burn = 0 }) {
   return (
-    <div className="flex-between gap-20">
-      <div className="panel-industrial flex-col pad-20 w-full glow-teal">
-        <span className="label-industrial text-muted">Total Sales</span>
-        <span className="hud-value text-teal mt-10">{sales}</span>
-        <span className="text-good font-small mt-10 font-mono">↑ 12% vs Last Wk</span>
-      </div>
-      <div className="panel-industrial flex-col pad-20 w-full glow-orange">
-        <span className="label-industrial text-muted">Total Expenses</span>
-        <span className="hud-value text-orange mt-10">{expenses}</span>
-        <span className="text-alert font-small mt-10 font-mono">↓ 3% vs Last Wk</span>
-      </div>
-      <div className="panel-industrial flex-col pad-20 w-full glow-purple">
-        <span className="label-industrial text-muted">Net Profit</span>
-        <span className="hud-value text-purple mt-10">{profit}</span>
-        <span className="text-good font-small mt-10 font-mono">↑ 15% vs Last Wk</span>
-      </div>
-    </div>
+    <>
+      <StatCard 
+         label={TERMINOLOGY.FINANCE.REVENUE} 
+         value={<AnimatedNumber value={sales} formatter={formatCurrency} />} 
+         glowColor="teal" 
+         showBeacon={true} 
+      />
+      <StatCard 
+         label={TERMINOLOGY.FINANCE.EXPENSE} 
+         value={<AnimatedNumber value={expenses} formatter={formatCurrency} />} 
+         glowColor="orange" 
+         showBeacon={true} 
+         beaconType="warning" 
+      />
+      <StatCard 
+         label={TERMINOLOGY.FINANCE.NET} 
+         value={<AnimatedNumber value={profit} formatter={formatCurrency} />} 
+         glowColor="purple" 
+         showBeacon={true} 
+         beaconType="purple" 
+      />
+      <StatCard 
+         label={TERMINOLOGY.FINANCIAL.MONTHLY_BURN} 
+         value={<AnimatedNumber value={burn} formatter={formatCurrency} />} 
+         glowColor="red" 
+         showBeacon={true} 
+         beaconType="alert" 
+      />
+    </>
   );
 }

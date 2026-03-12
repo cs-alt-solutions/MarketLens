@@ -6,7 +6,6 @@ import './DashboardHome.css';
 import { useInventory } from '../../context/InventoryContext';
 import { useFinancialStats, useFinancial } from '../../context/FinancialContext'; 
 import { useStudioIntelligence } from './hooks/useStudioIntelligence'; 
-import { formatCurrency } from '../../utils/formatters';
 import { TERMINOLOGY, DASHBOARD_STRINGS } from '../../utils/glossary';
 
 // Modals & UI Components
@@ -20,9 +19,10 @@ import TelemetryHUD from '../../components/dashboard/TelemetryHUD';
 import DailyBriefing from '../../components/dashboard/DailyBriefing';
 import DraftRunway from '../../components/dashboard/DraftRunway';
 import ProductionAlerts from '../../components/dashboard/ProductionAlerts';
+import { RevenueChart } from '../../components/charts/RevenueChart';
 
 // Icons
-import { Plus, Finance, CloseIcon } from '../../components/Icons';
+import { Plus, CloseIcon, Package, DollarSign, DashboardIcon } from '../../components/Icons';
 
 export const DashboardHome = () => {
   const { 
@@ -38,17 +38,16 @@ export const DashboardHome = () => {
     netProfit = 0, 
     totalRev = 0, 
     totalCost = 0,
+    monthlyBurn = 0, 
     loading: finLoading
   } = useFinancialStats();
   
   const { addTransaction } = useFinancial(); 
-
-  const { fleetAnalysis, inventoryIntel, logisticsIntel } = useStudioIntelligence(activeProjects, draftProjects, materials);
-
+  const { fleetAnalysis, inventoryIntel } = useStudioIntelligence(activeProjects, draftProjects, materials);
   const [selectedProject, setSelectedProject] = useState(null);
   
-  // COMMAND STATE
-  const [showUniversalWizard, setShowUniversalWizard] = useState(false);
+  const [isActionsFlipped, setIsActionsFlipped] = useState(false);
+  const [wizardMode, setWizardMode] = useState(null); 
   const [showIntakeModal, setShowIntakeModal] = useState(false);
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [isProcessingSale, setIsProcessingSale] = useState(false);
@@ -86,59 +85,123 @@ export const DashboardHome = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container animate-fade-in">
       <div className="dashboard-content-scroll">
           
         <div className="dashboard-cockpit z-layer-top relative">
           
-          <TelemetryHUD 
-            sales={formatCurrency(totalRev)} 
-            expenses={formatCurrency(totalCost)} 
-            profit={formatCurrency(netProfit)} 
-          />
-
-          {/* 🚀 THE STREAMLINED STUDIO ACTIONS BAR */}
-          <div className="command-bar flex-between align-center bg-panel border-subtle border-radius-2 p-15">
-              <div className="flex-col">
-                  <span className="font-bold text-main font-large">{DASHBOARD_STRINGS.cmdCenterTitle}</span>
-                  <span className="text-muted font-small">{DASHBOARD_STRINGS.cmdCenterSubtitle}</span>
-              </div>
-              
-              <div className="flex-center gap-15">
-                  {/* Removed the Record Sale button to drive traffic to the Finance tab */}
-                  <button className="btn-primary flex-center gap-10" onClick={() => setShowUniversalWizard(true)}>
-                      <Plus /> {DASHBOARD_STRINGS.btnOpenWorkbench}
-                  </button>
-              </div>
+          {/* 🚀 1. The Floating HUD Orbs (Top Row, perfectly spaced) */}
+          <div className="dashboard-orbs-row mb-30">
+              <TelemetryHUD 
+                sales={totalRev} 
+                expenses={totalCost} 
+                profit={netProfit} 
+                burn={monthlyBurn} 
+              />
           </div>
 
-          <div className="dashboard-grid">
-            <div className="dashboard-col-main flex-col gap-20">
+          <div className="dashboard-bento-grid">
+            
+            {/* 🚀 2. The Massive Velocity Chart (Now a standard Bento Cell, exactly like Profit Matrix) */}
+            <div className="bento-cell bento-span-12 p-20 flex-col">
+              <span className="label-industrial text-accent mb-15">{DASHBOARD_STRINGS.profitMonitor}</span>
+              <div className="chart-wrapper-large" style={{ minHeight: '350px' }}>
+                 <RevenueChart />
+              </div>
+            </div>
+
+            {/* 3. Command Center (Span 8) */}
+            <div className={`bento-span-8 flip-container ${isActionsFlipped ? 'flipped' : ''}`}>
+                <div className="flipper">
+                    
+                    <div className="flip-front mega-action-trigger flex-between h-full px-30">
+                        <div className="scanline-overlay"></div>
+                        <div className="flex-center gap-20 z-layer-top relative">
+                            <div className="action-icon-wrapper flex-center flex-shrink-0">
+                                <DashboardIcon />
+                            </div>
+                            <div className="flex-col text-left">
+                                <span className="font-bold text-main tracking-wide mega-title">
+                                    {DASHBOARD_STRINGS.cmdCenterTitle}
+                                </span>
+                                <span className="text-muted font-mono mt-5 mega-subtitle">
+                                    {DASHBOARD_STRINGS.cmdCenterSubtitle}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex-center gap-15 z-layer-top relative h-full py-10">
+                            <button className="path-btn path-guided" onClick={() => setWizardMode('intro')}>
+                                <span className="font-mono font-bold text-teal mb-5 text-uppercase">Guided Mode</span>
+                                <span className="font-small text-muted text-center">Step-by-step wizard</span>
+                            </button>
+                            <button className="path-btn path-express" onClick={() => setIsActionsFlipped(true)}>
+                                <span className="font-mono font-bold text-cyan mb-5 text-uppercase">Express Mode</span>
+                                <span className="font-small text-muted text-center">Direct tool access</span>
+                            </button>
+                        </div>
+                        <div className="hover-glow-backdrop"></div>
+                    </div>
+
+                    <div className="flip-back relative overflow-hidden">
+                        <div className="scanline-overlay"></div>
+                        <div className="flex-col h-full z-layer-top relative">
+                            <div className="flex-between mb-15">
+                                <span className="font-mono text-accent font-bold tracking-wide">EXPRESS PROTOCOLS</span>
+                                <button className="btn-icon-hover-clean" onClick={(e) => { e.stopPropagation(); setIsActionsFlipped(false); }}>
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                            <div className="protocol-grid">
+                                <button className="action-protocol-btn btn-spark" onClick={() => { setIsActionsFlipped(false); setWizardMode('project'); }}>
+                                    <div className="icon-glow-wrapper"><Plus /></div>
+                                    <span className="protocol-title">{DASHBOARD_STRINGS.actionNewProject}</span>
+                                    <span className="protocol-desc">Launch a Spark</span>
+                                </button>
+                                <button className="action-protocol-btn btn-supplies" onClick={() => { setIsActionsFlipped(false); setShowIntakeModal(true); }}>
+                                    <div className="icon-glow-wrapper"><Package /></div>
+                                    <span className="protocol-title">{DASHBOARD_STRINGS.actionIntake}</span>
+                                    <span className="protocol-desc">Log Supplies</span>
+                                </button>
+                                <button className="action-protocol-btn btn-revenue" onClick={() => { setIsActionsFlipped(false); setShowSaleModal(true); }}>
+                                    <div className="icon-glow-wrapper"><DollarSign /></div>
+                                    <span className="protocol-title">{DASHBOARD_STRINGS.actionLogSale}</span>
+                                    <span className="protocol-desc">Record Revenue</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* 4. Alerts (Span 4) */}
+            <div className="bento-cell bento-span-4">
+              <ProductionAlerts alerts={inventoryIntel?.out || []} fleet={fleetAnalysis} />
+            </div>
+
+            {/* 5. Pipelines */}
+            <div className="bento-cell bento-span-12">
               <DailyBriefing fleet={fleetAnalysis} inventoryIntel={inventoryIntel} />
+            </div>
+            
+            <div className="bento-cell bento-span-12">
               <DraftRunway drafts={draftProjects} />
             </div>
 
-            <div className="dashboard-col-side flex-col gap-20">
-              <ProductionAlerts 
-                alerts={inventoryIntel?.out || []} 
-                fleet={fleetAnalysis} 
-                logistics={logisticsIntel} 
-              />
-            </div>
           </div>
 
         </div>
       </div>
 
-      {/* 🚀 THE NEW MASTER WIZARD ROUTER */}
-      {showUniversalWizard && (
+      {wizardMode && (
           <MasterWizard 
-              initialFlow={null} // Null triggers Step 0 Intro
-              onClose={() => setShowUniversalWizard(false)} 
+              initialFlow={wizardMode === 'intro' ? null : wizardMode} 
+              onClose={() => setWizardMode(null)} 
               onSaveProject={async (data) => {
                   const created = await addProject(data);
                   if (created) setSelectedProject(created);
-                  setShowUniversalWizard(false);
+                  setWizardMode(null);
               }}
           />
       )}
