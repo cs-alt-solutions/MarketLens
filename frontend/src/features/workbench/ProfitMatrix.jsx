@@ -2,13 +2,22 @@
 import React, { useState } from 'react';
 import { useFinancialStats, useFinancial } from '../../context/FinancialContext';
 import { useInventory } from '../../context/InventoryContext';
+
+// Components
 import { StatCard } from '../../components/cards/StatCard';
 import { AnimatedNumber } from '../../components/charts/AnimatedNumber';
 import { RevenueChart } from '../../components/charts/RevenueChart';
-import { SaleModal } from './components/SaleModal'; 
+
+// 🚀 NEW INTELLIGENCE MODULES
+import { TopEarners } from './components/TopEarners';
+import { ExpenseXRay } from './components/ExpenseXRay';
 import { TransactionHistory } from './components/TransactionHistory';
+
+// Modals & Modifiers
+import { SaleModal } from './components/SaleModal'; 
 import { TransactionForm } from './components/TransactionForm';
 import { RecurringPanel } from './components/RecurringPanel';
+
 import { TERMINOLOGY } from '../../utils/glossary';
 import { formatCurrency } from '../../utils/formatters';
 import { Finance, Plus } from '../../components/Icons';
@@ -30,9 +39,10 @@ export const ProfitMatrix = () => {
     setIsProcessing(true);
     try {
       await addTransaction({
-        description: `Sale: ${project.title} (${qty}x) [${channel}]`, 
+        description: `Sale: ${project.title} (${qty}x)`, 
         amount: revenue,
-        type: 'SALE'
+        type: 'SALE',
+        salesChannel: channel
       });
 
       await updateProject({
@@ -52,18 +62,6 @@ export const ProfitMatrix = () => {
   const handleOpenNewTx = () => {
     setEditingTx(null);
     setShowTxModal(true);
-  };
-
-  const handleEditTx = (tx) => {
-    setEditingTx(tx);
-    setShowTxModal(true);
-  };
-
-  const handleDeleteTx = async (id) => {
-    const confirmed = window.confirm("Delete this transaction permanently?");
-    if (confirmed) {
-      await deleteTransaction(id);
-    }
   };
 
   const handleTxSubmit = async (data) => {
@@ -95,12 +93,12 @@ export const ProfitMatrix = () => {
           </div>
         </div>
 
-        {/* 🚀 Top Stats Row */}
+        {/* 🚀 Top Stats Row (Orbs perfectly spread) */}
         <div className="profit-grid-header mb-20">
-           <StatCard label={TERMINOLOGY.FINANCE.REVENUE} value={<AnimatedNumber value={totalRev} formatter={formatCurrency} />} glowColor="teal" />
-           <StatCard label={TERMINOLOGY.FINANCE.EXPENSE} value={<AnimatedNumber value={totalCost} formatter={formatCurrency} />} glowColor="orange" />
-           <StatCard label={TERMINOLOGY.FINANCE.MARGIN_AVG} value={`${margin.toFixed(1)}%`} glowColor="purple" />
-           <StatCard label={TERMINOLOGY.FINANCIAL.MONTHLY_BURN} value={<AnimatedNumber value={monthlyBurn} formatter={formatCurrency} />} glowColor="red" />
+           <StatCard label={TERMINOLOGY.FINANCE.REVENUE} value={<AnimatedNumber value={totalRev} formatter={formatCurrency} />} glowColor="teal" showBeacon={true} />
+           <StatCard label={TERMINOLOGY.FINANCE.EXPENSE} value={<AnimatedNumber value={totalCost} formatter={formatCurrency} />} glowColor="orange" showBeacon={true} beaconType="warning" />
+           <StatCard label={TERMINOLOGY.FINANCE.MARGIN_AVG} value={`${margin.toFixed(1)}%`} glowColor="purple" showBeacon={true} beaconType="purple" />
+           <StatCard label={TERMINOLOGY.FINANCIAL.MONTHLY_BURN} value={<AnimatedNumber value={monthlyBurn} formatter={formatCurrency} />} glowColor="red" showBeacon={true} beaconType="alert" />
         </div>
 
         {/* --- CHANNEL PERFORMANCE TRAY --- */}
@@ -115,7 +113,7 @@ export const ProfitMatrix = () => {
            </div>
         )}
 
-        {/* 🚀 THE NEW BENTO GRID ARCHITECTURE */}
+        {/* 🚀 THE NEW INTELLIGENCE GRID */}
         <div className="profit-bento-grid">
             
             {/* The Massive Visual Anchor (Span 12) */}
@@ -126,40 +124,37 @@ export const ProfitMatrix = () => {
                </div>
             </div>
 
-            {/* Split Ledgers (Span 6 each) */}
-            <div className="bento-cell bento-span-6 table-panel-wrapper">
+            {/* 🚀 COLUMN 1: Velocity Leaderboard (Span 4) */}
+            <div className="bento-cell bento-span-4 table-panel-wrapper">
+                <TopEarners projects={activeProjects} />
+            </div>
+
+            {/* 🚀 COLUMN 2: Expense X-Ray & Recurring Costs (Span 4) */}
+            <div className="bento-cell bento-span-4 table-panel-wrapper flex-col gap-30">
+                <ExpenseXRay transactions={transactions} recurringCosts={recurringCosts} />
+                <div className="border-top-subtle pt-20 mt-10">
+                    <RecurringPanel costs={recurringCosts} />
+                </div>
+            </div>
+
+            {/* 🚀 COLUMN 3: Densified Feed (Span 4) */}
+            <div className="bento-cell bento-span-4 table-panel-wrapper">
                 <TransactionHistory 
                     transactions={transactions} 
-                    onEdit={handleEditTx} 
-                    onDelete={handleDeleteTx} 
+                    onEdit={(tx) => { setEditingTx(tx); setShowTxModal(true); }} 
+                    onDelete={deleteTransaction} 
                 />
-            </div>
-            
-            <div className="bento-cell bento-span-6 table-panel-wrapper">
-                <RecurringPanel costs={recurringCosts} />
             </div>
 
         </div>
 
       </div>
 
-      {showSaleModal && (
-        <SaleModal 
-          projects={sellableProjects}
-          onSave={handleLogSale}
-          onClose={() => setShowSaleModal(false)}
-          isProcessing={isProcessing}
-        />
-      )}
-
+      {showSaleModal && <SaleModal projects={sellableProjects} onSave={handleLogSale} onClose={() => setShowSaleModal(false)} isProcessing={isProcessing} />}
       {showTxModal && (
         <div className="modal-overlay" onClick={() => setShowTxModal(false)}>
           <div className="modal-window animate-fade-in modal-small" onClick={(e) => e.stopPropagation()}>
-            <TransactionForm 
-              initialData={editingTx} 
-              onSubmit={handleTxSubmit} 
-              onCancel={() => { setShowTxModal(false); setEditingTx(null); }} 
-            />
+            <TransactionForm initialData={editingTx} onSubmit={handleTxSubmit} onCancel={() => { setShowTxModal(false); setEditingTx(null); }} />
           </div>
         </div>
       )}
